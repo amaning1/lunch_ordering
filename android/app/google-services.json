@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "313784691850",
+    "project_id": "lunch-ordering-ed65a",
+    "storage_bucket": "lunch-ordering-ed65a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313784691850:android:63a034e309a4274cb6d173",
+        "android_client_info": {
+          "package_name": "com.kmills.lunch_ordering"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313784691850-jdqs9fohnaeoqb8r9nv7grqd90f3mtf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAk0MO-ivGFwHPxcwZyv1mavr0uI6WUSs4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313784691850-jdqs9fohnaeoqb8r9nv7grqd90f3mtf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
