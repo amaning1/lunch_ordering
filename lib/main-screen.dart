@@ -1,6 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+
+var date = DateTime.now();
+var today = DateFormat('EEEE').format(date);
 
 class MenuScreen extends StatefulWidget {
   @override
@@ -9,6 +15,29 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   TextEditingController textFieldController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
+  late User loggedInUser;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    final user = _auth.currentUser!;
+    try {
+      if (user != null) {
+        loggedInUser = user;
+        print(loggedInUser.email);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   void dispose() {
@@ -18,11 +47,20 @@ class _MenuScreenState extends State<MenuScreen> {
 
   String foodChoice = 'Fufu and beans';
   String drinkChoice = 'Asaana';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {},
+          onPressed: () {
+            _firestore.collection(today).add({
+              'Food': foodChoice,
+              'Drink': drinkChoice,
+              'User': loggedInUser.email,
+              'Date': date,
+              'Comments': textFieldController.text,
+            });
+          },
           label: Text(
             'Order Food',
             style: TextStyle(color: Colors.white),
@@ -41,7 +79,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       child: Container(
                           margin: EdgeInsets.only(left: 50),
                           padding: EdgeInsets.all(10.0),
-                          child: Text('Wednesday\'s Lunch Menu',
+                          child: Text('$today\'s Lunch Menu',
                               style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 50.0,
@@ -79,6 +117,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         value: value,
                         child: Text(
                           value,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
@@ -115,13 +154,12 @@ class _MenuScreenState extends State<MenuScreen> {
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Center(
-                          child: Text(
-                            value,
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.black,
-                            ),
+                        child: Text(
+                          value,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.black,
                           ),
                         ),
                       );
@@ -138,10 +176,18 @@ class _MenuScreenState extends State<MenuScreen> {
                       showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                              title: Text('Please type your comment'),
-                              content: TextField(
-                                controller: textFieldController,
-                              )));
+                                  title: Text('Please type your comment'),
+                                  content: TextField(
+                                    controller: textFieldController,
+                                  ),
+                                  actions: <Widget>[
+                                    IconButton(
+                                        onPressed: () {
+                                          _auth.signOut();
+                                          Navigator.pop(context);
+                                        },
+                                        icon: Icon(Icons.close))
+                                  ]));
                     },
                     child: Text('ANY COMMENTS'),
                     // 'ANY COMMENTS?',
