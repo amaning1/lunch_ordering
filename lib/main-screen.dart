@@ -60,13 +60,28 @@ class _MenuScreenState extends State<MenuScreen> {
               'Date': date,
               'Comments': textFieldController.text,
             });
+            showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                        title: Text('Your Order Has Been Placed'),
+                        actions: <Widget>[
+                          IconButton(
+                              onPressed: () {
+                                //Navigator.pop(context);
+                                Navigator.pushNamed(context, '/');
+                              },
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ))
+                        ]));
           },
           label: Text(
             'Order Food',
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.blueAccent,
-          icon: Icon(Icons.add),
+          icon: Icon(Icons.add, color: Colors.white),
         ),
         body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -77,13 +92,14 @@ class _MenuScreenState extends State<MenuScreen> {
                   Expanded(
                     child: Center(
                       child: Container(
-                          margin: EdgeInsets.only(left: 50),
-                          padding: EdgeInsets.all(10.0),
-                          child: Text('$today\'s Lunch Menu',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 50.0,
-                              ))),
+                        margin: EdgeInsets.only(left: 50),
+                        padding: EdgeInsets.all(12.0),
+                        child: Text('$today\'s Lunch Menu',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 50.0,
+                            )),
+                      ),
                     ),
                   )
                 ],
@@ -169,7 +185,9 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
               Container(
                 margin: EdgeInsets.all(20),
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(3),
+                height: 50,
+                width: 50,
                 child: Center(
                   child: TextButton(
                     onPressed: () {
@@ -183,13 +201,13 @@ class _MenuScreenState extends State<MenuScreen> {
                                   actions: <Widget>[
                                     IconButton(
                                         onPressed: () {
-                                          _auth.signOut();
                                           Navigator.pop(context);
                                         },
                                         icon: Icon(Icons.close))
                                   ]));
                     },
-                    child: Text('ANY COMMENTS'),
+                    child: Text('ANY COMMENTS?',
+                        style: TextStyle(color: Colors.blueAccent)),
                     // 'ANY COMMENTS?',
                     // style: TextStyle(
                     //   color: Colors.blueAccent,
