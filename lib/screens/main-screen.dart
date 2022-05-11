@@ -1,17 +1,10 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'dart:async';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../APIs.dart';
+import '../providers/food_providers.dart';
 import '../shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 int? menuIDx;
 int? selected = 0;
@@ -25,146 +18,27 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  TextEditingController textFieldController = TextEditingController();
   String value = '';
   var size, height, width;
   int selectedIndex = 0;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   String token = '';
-
-  Future<List<Menu>?> fetchFood() async {
-    await getToken();
-    List<Menu>? list;
-    final response = await http.get(
-      Uri.parse(AppURL.getMenu),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-      },
-    );
-
-    if (response.statusCode == 200) {
-      String data = response.body;
-
-      var rest = jsonDecode(data)['data']['menu']['foods'] as List;
-      print(rest);
-      list = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Column(
-              children: [
-                const Icon(Icons.cancel, color: Colors.red),
-                Text('Error code fetch food' +
-                    ' ' +
-                    response.statusCode.toString()),
-              ],
-            ),
-            content: Text(response.body),
-          );
-        },
-      );
-      print(response.statusCode);
-      print(response);
-    }
-    return list;
-  }
-
-  Future getMenuID() async {
-    await getToken();
-    final response =
-        await http.get(Uri.parse(AppURL.getMenu), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-    });
-
-    if (response.statusCode == 200) {
-      String data = response.body;
-      final int menu_id = jsonDecode(data)['data']['menu']['menu_id'];
-      menuIDx = menu_id;
-      print(menuIDx);
-    } else {
-      print(response.statusCode);
-      print(response);
-    }
-    return menuIDx;
-  }
-
-  Future orderFood(String comment) async {
-    await getToken();
-    final response = await http.post(
-      Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/order'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-      },
-      body: jsonEncode(<String, dynamic>{
-        'menu_id': menuIDx,
-        'food_id': selected.toString(),
-        'drink_id': "14",
-        'comment': comment
-      }),
-    );
-    if (response.statusCode == 202) {
-      print(response.body);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(const Radius.circular(10.0))),
-            title: Column(
-              children: [
-                const Icon(Icons.check, color: Colors.green),
-              ],
-            ),
-            content: const Text('Your order has been placed'),
-          );
-        },
-      );
-    } else {
-      print(response.statusCode);
-      print(response.body);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            title: Column(
-              children: [
-                const Icon(Icons.cancel, color: Colors.red),
-                Text('Error code' + ' ' + response.statusCode.toString()),
-              ],
-            ),
-            content: Text(response.body),
-          );
-        },
-      );
-    }
-  }
-
-  // Future getToken() async {
-  //   final SharedPreferences sharedPreferences =
-  //       await SharedPreferences.getInstance();
-  //   var tok = sharedPreferences.getString('token');
-  //
-  //   token = tok!;
-  // }
+  late FoodProvider foodVm;
 
   @override
   void initState() {
     super.initState();
     getToken();
-    fetchFood();
-    getMenuID();
+    Future.delayed(Duration.zero, () {
+      foodVm = Provider.of<FoodProvider>(context, listen: true)
+          .fetchFood(context) as FoodProvider;
+      foodVm = Provider.of<FoodProvider>(context, listen: true).getMenuID()
+          as FoodProvider;
+    });
   }
 
   @override
   void dispose() {
-    textFieldController.dispose();
     super.dispose();
   }
 
@@ -174,6 +48,7 @@ class _MenuScreenState extends State<MenuScreen> {
     height = size.height;
     width = size.width;
     bool isSelected = false;
+    final foodProvider = Provider.of<FoodProvider>(context, listen: true);
 
     return Scaffold(
       key: scaffoldKey,
@@ -300,7 +175,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold)),
                             FutureBuilder<List<Menu>?>(
-                                future: fetchFood(),
+                                future: foodProvider.fetchFood(context),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     List<Menu>? menu = snapshot.data;
@@ -352,7 +227,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                   focusedBorder: false,
                                   contentPadding:
                                       EdgeInsets.symmetric(vertical: 40),
-                                  controller: textFieldController,
+                                  controller: foodProvider.textFieldController,
                                   type: TextInputType.text,
                                   colour: darkblue),
                             ),
@@ -368,7 +243,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                             darkblue),
                                   ),
                                   onPressed: () async {
-                                    orderFood(textFieldController.text);
+                                    foodProvider.orderFood(context);
                                   },
                                   child: Text(
                                     'Place Order',

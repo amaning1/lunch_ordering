@@ -1,13 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/components.dart';
-
-String token = '';
+import '../shared_preferences.dart';
 
 class AdminPage extends StatefulWidget {
   @override
@@ -23,16 +20,12 @@ class _AdminPageState extends State<AdminPage> {
   bool isLoading = false;
   DateTime _selectedDate = DateTime.now();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final TextEditingController option1controller = TextEditingController();
-  final TextEditingController option2controller = TextEditingController();
-  final TextEditingController option3controller = TextEditingController();
-  final TextEditingController option4controller = TextEditingController();
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate, // Refer step 1
+      initialDate: _selectedDate,
       firstDate: DateTime(2022),
       lastDate: DateTime(2023),
     );
@@ -40,52 +33,6 @@ class _AdminPageState extends State<AdminPage> {
       setState(() {
         _selectedDate = picked;
       });
-  }
-
-  Future addMenu() async {
-    final response = await http.post(
-      Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-      },
-      body: jsonEncode(<String, dynamic>{
-        "menu_date": "$_selectedDate",
-        "foods": [
-          int.parse(option1controller.text),
-          int.parse(option2controller.text),
-          int.parse(option3controller.text),
-          int.parse(option4controller.text),
-        ],
-        "drinks": [1, 2, 4]
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      String data = response.body;
-      print(response.body);
-      return AlertDialog(
-        title: Text('Added Successfully'),
-        content: Text(response.body),
-      );
-    } else {
-      print(response.statusCode);
-      print(response.body);
-      return AlertDialog(
-        title: Text('Error code' + response.statusCode.toString()),
-        content: Text(response.body),
-      );
-    }
-  }
-
-  Future getToken() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    var tok = sharedPreferences.getString('token');
-    setState(() {
-      token = tok!;
-    });
-    print(token);
   }
 
   @override
@@ -97,10 +44,6 @@ class _AdminPageState extends State<AdminPage> {
 
   @override
   void dispose() {
-    option1controller.dispose();
-    option2controller.dispose();
-    option3controller.dispose();
-    option4controller.dispose();
     super.dispose();
   }
 
@@ -112,46 +55,7 @@ class _AdminPageState extends State<AdminPage> {
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 60.0),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              ListTile(
-                  leading: Icon(Icons.menu),
-                  title: const Text('Menu',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/adminAdd');
-                  }),
-              ListTile(
-                  leading: Icon(Icons.dashboard),
-                  title: const Text('Dashboard',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/fourth');
-                  }),
-              ListTile(
-                  leading: Icon(Icons.history),
-                  title: const Text('Orders',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/adminOrders');
-                  }),
-              ListTile(
-                  leading: Icon(Icons.logout),
-                  title: const Text('Logout',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    logout();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/signin', (route) => false);
-                  }),
-            ],
-          ),
-        ),
-      ),
+      drawer: NavDrawer(),
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(

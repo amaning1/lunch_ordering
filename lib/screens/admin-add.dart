@@ -37,46 +37,7 @@ class _AdminAddState extends State<AdminAdd> {
     bool isSelected = false;
     return Scaffold(
       key: scaffoldKey,
-      drawer: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 60.0),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              ListTile(
-                  leading: Icon(Icons.menu),
-                  title: const Text('Menu',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/adminAdd');
-                  }),
-              ListTile(
-                  leading: Icon(Icons.dashboard),
-                  title: const Text('Dashboard',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/fourth');
-                  }),
-              ListTile(
-                  leading: Icon(Icons.history),
-                  title: const Text('Orders',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/adminOrders');
-                  }),
-              ListTile(
-                  leading: Icon(Icons.logout),
-                  title: const Text('Logout',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    logout();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/signin', (route) => false);
-                  }),
-            ],
-          ),
-        ),
-      ),
+      drawer: NavDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),

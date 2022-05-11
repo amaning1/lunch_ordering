@@ -2,94 +2,117 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:lunch_ordering/providers/Manage.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
-import '../Domain/user.dart';
+import '../components.dart';
+import '../constants.dart';
 
-enum Status {
-  LoggedIn,
-  NotLoggedIn,
-  Registered,
-  Registering,
-  NotRegistered,
-  Authenticating,
-  LoggedOut,
-}
+class AuthProvider extends Manage {
+  bool isAuthenticating = false;
+  TextEditingController numberController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-class AuthProvider extends ChangeNotifier {
-  Status _loggedInStatus = Status.NotLoggedIn;
-  Status _registered = Status.NotRegistered;
+  Future loadUserNumberPassword() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var phone_number = prefs.getString('phone_number');
+      var password = prefs.getString('password');
+      var rememberMe = prefs.getBool("remember_me");
 
-  Status get loggedInStatus => _loggedInStatus;
+      print(rememberMe);
+      print(phone_number);
+      print(password);
 
-  set loggedInStatus(Status value) {
-    _loggedInStatus = value;
+      if (rememberMe == true) {
+        numberController.text = phone_number!;
+        passwordController.text = password!;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
-  Status get registered => _registered;
+  Future autoLogIn(context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var phone_number_pref = prefs.getString('phone_number');
+    var password_pref = prefs.getString('password');
+    print('sup');
+    if (phone_number_pref != null) {
+      CircularProgressIndicator();
 
-  set registered(Status value) {
-    _registered = value;
+      numberController.text = phone_number_pref;
+      passwordController.text = password_pref!;
+
+      login(context);
+    } else {
+      CircularProgressIndicator();
+      Navigator.pushNamedAndRemoveUntil(context, '/signin', (route) => false);
+    }
   }
 
-  Future login(number, password) async {
-    final String token;
-    return await http.post(
+  LoginImplementation(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      changeStatus(true);
+      saveUserDetails(numberController.text, passwordController.text);
+      login(context);
+    }
+  }
+
+  Future login(context) async {
+    //isAuthenticating = true;
+    changeStatus(true);
+    final response = await http.post(
       Uri.parse(AppURL.Login),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, dynamic>{
-        'phone_number': number,
-        'password': password,
+      body: jsonEncode(<String, String>{
+        'phone_number': numberController.text,
+        'password': passwordController.text,
       }),
     );
-  }
+    if (response.statusCode == 202) {
+      String data = response.body;
 
-  Future<User?> register(number, password, name) async {
-    final String token;
-    final response = await http.post(
-      Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/register'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'phone_number': number,
-        'password': password,
-        'type': "1",
-        'name': name,
-      }),
-    );
-  }
+      final String token = jsonDecode(data)['data']['token'];
+      final String name = jsonDecode(data)['data']['user']['name'];
+      final String phone_number =
+          jsonDecode(data)['data']['user']['phone_number'];
+      final int type = jsonDecode(data)['data']['user']['type'];
+      final int status = jsonDecode(data)['data']['user']['status'];
 
-  static Future<FutureOr> onValue(Response response) async {
-    var result;
-    final Map<String, dynamic> responseData = json.decode(response.body);
-    print(responseData);
+      // isAuthenticating = false;
+      changeStatus(false);
+      print(token + name + phone_number);
+      print(numberController.text);
+      print(passwordController.text);
+      print(type + status);
+      saveToken(token);
 
-    if (response.statusCode == 200) {
-      User authUser = User.fromJson(responseData);
-
-      UserPreferences().saveUser(authUser);
-
-      result = {
-        'status': true,
-        'message': 'User Logged In',
-        'data': authUser,
-      };
+      if (type == 2 || type == 1) {
+        saveToken(token);
+        Navigator.pushNamed(context, '/fourth');
+      } else {
+        saveToken(token);
+        Navigator.pushNamed(context, '/third');
+      }
     } else {
-      result = {
-        'status': false,
-        'message': 'User unable to log in',
-        'data': responseData,
-      };
-
-      print(responseData);
+      changeStatus(false);
+      // isAuthenticating = false;
+      notifyListeners();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(response);
+        },
+      );
+      print(response.statusCode);
+      print(response.body);
     }
-    return result;
+    return null;
   }
 }

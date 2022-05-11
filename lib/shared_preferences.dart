@@ -13,38 +13,46 @@ class UserPreferences {
 
     return saveUser(user);
   }
+}
 
-  saveUserDetails(numbercontroller, passwordcontroller) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('phone_number', numbercontroller);
-    prefs.setString('password', passwordcontroller);
-  }
+saveUserDetails(numbercontroller, passwordcontroller) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('phone_number', numbercontroller);
+  prefs.setString('password', passwordcontroller);
+}
 
-  Future<User> getUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? name = prefs.getString('name');
-    String? phone_number = prefs.getString('phone_number');
-    int? status = prefs.getInt('status');
-    String? token = prefs.getString('token');
-    int? type = prefs.getInt('type');
+Future<User> getUser() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? name = prefs.getString('name');
+  String? phone_number = prefs.getString('phone_number');
+  int? status = prefs.getInt('status');
+  String? token = prefs.getString('token');
+  int? type = prefs.getInt('type');
 
-    return User(
-      name: name,
-      phone_number: phone_number,
-      status: status,
-      token: token,
-      type: type,
-    );
-  }
+  return User(
+    name: name,
+    phone_number: phone_number,
+    status: status,
+    token: token,
+    type: type,
+  );
+}
 
-  void removeUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('name');
-    prefs.remove('phone_number');
-    prefs.remove('status');
-    prefs.remove('token');
-    prefs.remove('type');
-  }
+void removeUser() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove('name');
+  prefs.remove('phone_number');
+  prefs.remove('status');
+  prefs.remove('token');
+  prefs.remove('type');
+}
+
+Future<bool?> getRememberMe() async {
+  final SharedPreferences sharedPreferences =
+      await SharedPreferences.getInstance();
+  bool? rMBR = sharedPreferences.getBool('remember_me');
+
+  return rMBR;
 }
 
 Future getToken() async {
@@ -53,4 +61,10 @@ Future getToken() async {
   var tok = sharedPreferences.getString('token');
 
   return tok;
+}
+
+Future saveToken(token) async {
+  final SharedPreferences sharedPreferences =
+      await SharedPreferences.getInstance();
+  sharedPreferences.setString('token', token);
 }

@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
+import 'package:lunch_ordering/providers/food_providers.dart';
+import 'package:provider/provider.dart';
+
+import 'main-screen.dart';
 
 class AdminOrders extends StatefulWidget {
   const AdminOrders({Key? key}) : super(key: key);
@@ -13,67 +17,18 @@ class AdminOrders extends StatefulWidget {
 class _AdminOrdersState extends State<AdminOrders> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var height, width;
+  int selectedIndex = 0;
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController foodcontroller = TextEditingController();
-  TextEditingController drinkcontroller = TextEditingController();
-
-  void addFoodToList() {
-    setState(() {
-      food.add(foodcontroller.text);
-    });
-  }
-
-  void addDrinkToList() {
-    setState(() {
-      drink.add(drinkcontroller.text);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    final foodProvider = Provider.of<FoodProvider>(context);
     bool isSelected = false;
     return Scaffold(
       key: scaffoldKey,
-      drawer: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 60.0),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              ListTile(
-                  leading: Icon(Icons.menu),
-                  title: const Text('Menu',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/adminAdd');
-                  }),
-              ListTile(
-                  leading: Icon(Icons.dashboard),
-                  title: const Text('Dashboard',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/fourth');
-                  }),
-              ListTile(
-                  leading: Icon(Icons.history),
-                  title: const Text('History',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {}),
-              ListTile(
-                  leading: Icon(Icons.logout),
-                  title: const Text('Logout',
-                      style: TextStyle(fontFamily: 'Poppins')),
-                  onTap: () {
-                    logout();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/signin', (route) => false);
-                  }),
-            ],
-          ),
-        ),
-      ),
+      drawer: NavDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
@@ -122,16 +77,47 @@ class _AdminOrdersState extends State<AdminOrders> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: food.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ChefCards(
-                              height: height,
-                              width: width,
-                              number: '12',
-                              text: food[index],
-                              icon: null);
+                    FutureBuilder<List<Menu>?>(
+                        future: foodProvider.fetchAllFoods(context),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<Menu>? menu = snapshot.data;
+                            return ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: menu?.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: ListTile(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      title: Text(menu![index].Option!),
+                                      subtitle:
+                                          Text(menu[index].id!.toString()),
+                                      selected: index == selectedIndex,
+                                      trailing: IconButton(
+                                        onPressed: () {
+                                          foodProvider
+                                              .deleteFood(menu[index].id!);
+                                          setState(() {
+                                            menu;
+                                          });
+                                        },
+                                        icon: Icon(Icons.delete),
+                                      ),
+                                    ),
+                                  );
+                                });
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+                          return LinearProgressIndicator(
+                            color: blue,
+                          );
                         }),
                   ],
                 ),

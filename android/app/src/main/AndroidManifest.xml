@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:label="lunch_ordering"
+        android:label="BSL Lunch"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

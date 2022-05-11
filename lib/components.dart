@@ -29,6 +29,54 @@ void logout() async {
   print(sharedPreferences.getBool('remember_me'));
 }
 
+class NavDrawer extends StatelessWidget {
+  const NavDrawer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 60.0),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            ListTile(
+                leading: Icon(Icons.menu),
+                title:
+                    const Text('Menu', style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/adminAdd', (route) => false);
+                }),
+            ListTile(
+                leading: Icon(Icons.dashboard),
+                title: const Text('Dashboard',
+                    style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/fourth', (route) => false);
+                }),
+            ListTile(
+                leading: Icon(Icons.history),
+                title: const Text('History',
+                    style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {}),
+            ListTile(
+                leading: Icon(Icons.logout),
+                title: const Text('Logout',
+                    style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {
+                  logout();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/signin', (route) => false);
+                }),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class optionFood extends StatelessWidget {
   const optionFood({Key? key, required this.controller, required this.label})
       : super(key: key);
