@@ -2,36 +2,28 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
+import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
+import '../constants.dart';
 import '../screens/main-screen.dart';
+import '../screens/view-history.dart';
+import 'Manage.dart';
 
-class FoodProvider extends ChangeNotifier {
+class FoodProvider extends Manage {
   TextEditingController textFieldController = TextEditingController();
   TextEditingController option1controller = TextEditingController();
   TextEditingController option2controller = TextEditingController();
   TextEditingController option3controller = TextEditingController();
   TextEditingController option4controller = TextEditingController();
-
+  List<Menu> menu = [];
   String token = '';
 
   DateTime tomorrow = DateTime.now().add(new Duration(days: 1));
-  // _selectDate(BuildContext context) async {
-  //   final DateTime? picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: _selectedDate,
-  //     firstDate: DateTime(2022),
-  //     lastDate: DateTime(2023),
-  //   );
-  //   if (picked != null && picked != _selectedDate)
-  //     setState(() {
-  //       _selectedDate = picked;
-  //     });
-  // }
 
   Future getToken() async {
     final SharedPreferences sharedPreferences =
@@ -55,21 +47,39 @@ class FoodProvider extends ChangeNotifier {
     );
   }
 
-  Future getOrders(menu_id) async {
-    await getToken();
-    final queryParams = menu_id;
-    String queryString = Uri.parse(queryParams).query;
-    final uri = Uri.parse(AppURL.Foods).replace(queryParameters: {
-      'menu_id': menu_id,
-    });
-    final response = await http.get(
-      uri,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-      },
-    );
-  }
+  // Future<List<Orders>?> getOrders(context) async {
+  //   await getToken();
+  //   await getMenuID();
+  //   List<Orders>? list;
+  //   final queryParams = menuIDx;
+  //   String queryString = Uri.parse(queryParams).query;
+  //   final uri = Uri.parse(AppURL.Foods).replace(queryParameters: {
+  //     'menu_id': menuIDx,
+  //   });
+  //   final response = await http.get(
+  //     uri,
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //       HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+  //     },
+  //   );
+  //   if (response.statusCode == 200) {
+  //     String data = response.body;
+  //     print(data);
+  //     var rest = jsonDecode(data)['orders'] as List;
+  //     list = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
+  //   } else {
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return alertDialog(response);
+  //       },
+  //     );
+  //     print(response.statusCode);
+  //     print(response);
+  //   }
+  //   return list;
+  // }
 
   Future getMenuID() async {
     await getToken();
@@ -130,17 +140,7 @@ class FoodProvider extends ChangeNotifier {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            title: Column(
-              children: [
-                const Icon(Icons.cancel, color: Colors.red),
-                Text('Error code' + ' ' + response.statusCode.toString()),
-              ],
-            ),
-            content: Text(response.body),
-          );
+          return alertDialog(response);
         },
       );
     }
@@ -159,25 +159,60 @@ class FoodProvider extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       String data = response.body;
-
       var rest = jsonDecode(data)['data']['menu']['foods'] as List;
       print(rest);
-      list = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
-    } else {
+      menu = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
+      Navigator.pushNamed(context, '/third');
+    } else if (response.statusCode == 401) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Column(
-              children: [
-                const Icon(Icons.cancel, color: Colors.red),
-                Text('Error code fetch food' +
-                    ' ' +
-                    response.statusCode.toString()),
-              ],
-            ),
-            content: Text(response.body),
-          );
+              title: Column(
+                children: [
+                  const Icon(Icons.cancel, color: Colors.red),
+                  Text('Oh no!'),
+                ],
+              ),
+              content: Text('Please Try Again Later'));
+        },
+      );
+      print(response.statusCode);
+      print(response);
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(response);
+        },
+      );
+      print(response.statusCode);
+      print(response);
+    }
+    return list;
+  }
+
+  Future<List<Orders>?> getPreviousOrders(context) async {
+    await getToken();
+    List<Orders>? list;
+    final response = await http.get(
+      Uri.parse(AppURL.orderMenu),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      String data = response.body;
+      print(data);
+      var rest = jsonDecode(data)['orders'] as List;
+      list = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(response);
         },
       );
       print(response.statusCode);
@@ -201,23 +236,13 @@ class FoodProvider extends ChangeNotifier {
       String data = response.body;
 
       var rest = jsonDecode(data)['foods'] as List;
-      print(rest);
       list = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
+      notifyListeners();
     } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Column(
-              children: [
-                const Icon(Icons.cancel, color: Colors.red),
-                Text('Error code fetch food' +
-                    ' ' +
-                    response.statusCode.toString()),
-              ],
-            ),
-            content: Text(response.body),
-          );
+          return alertDialog(response);
         },
       );
       print(response.statusCode);
@@ -226,7 +251,9 @@ class FoodProvider extends ChangeNotifier {
     return list;
   }
 
-  Future addMenu() async {
+  Future addMenu(List, context) async {
+    await getToken();
+    changeStatus(true);
     final response = await http.post(
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
       headers: <String, String>{
@@ -234,13 +261,8 @@ class FoodProvider extends ChangeNotifier {
         HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
       },
       body: jsonEncode(<String, dynamic>{
-        "menu_date": tomorrow,
-        "foods": [
-          int.parse(option1controller.text),
-          int.parse(option2controller.text),
-          int.parse(option3controller.text),
-          int.parse(option4controller.text),
-        ],
+        "menu_date": "$tomorrow",
+        "foods": List,
         "drinks": [1, 2, 4]
       }),
     );
@@ -248,17 +270,56 @@ class FoodProvider extends ChangeNotifier {
     if (response.statusCode == 201) {
       String data = response.body;
       print(response.body);
-      return AlertDialog(
-        title: Text('Added Successfully'),
-        content: Text(response.body),
+      changeStatus(false);
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Added Successfully'),
+            content: Text(response.body),
+          );
+        },
       );
     } else {
+      changeStatus(false);
+      notifyListeners();
       print(response.statusCode);
       print(response.body);
-      return AlertDialog(
-        title: Text('Error code' + response.statusCode.toString()),
-        content: Text(response.body),
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialogLogin(response);
+        },
       );
     }
+  }
+}
+
+class Menu {
+  int? id;
+  String? Option;
+
+  Menu({this.id, this.Option});
+
+  factory Menu.fromJson(Map<String, dynamic> responseData) {
+    return Menu(
+      id: responseData['id'],
+      Option: responseData['name'],
+    );
+  }
+}
+
+class Orders {
+  int? id;
+  String? food, drink, comment;
+
+  Orders({this.id, this.food, this.drink, this.comment});
+  factory Orders.fromJson(Map<String, dynamic> responseData) {
+    return Orders(
+      id: responseData['id'],
+      food: responseData['food'],
+      drink: responseData['drink'],
+      comment: responseData['comment'],
+    );
   }
 }

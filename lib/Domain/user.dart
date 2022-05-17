@@ -3,7 +3,7 @@ class User {
   int? status;
   String? name;
   String? phone_number;
-  int? type;
+  String? type;
 
   User({this.token, this.status, this.name, this.phone_number, this.type});
 

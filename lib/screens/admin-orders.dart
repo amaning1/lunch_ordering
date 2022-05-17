@@ -19,6 +19,16 @@ class _AdminOrdersState extends State<AdminOrders> {
   var height, width;
   int selectedIndex = 0;
   var scaffoldKey = GlobalKey<ScaffoldState>();
+  late FoodProvider foodVm;
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      foodVm = Provider.of<FoodProvider>(context, listen: true)
+          .fetchAllFoods(context) as FoodProvider;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +41,8 @@ class _AdminOrdersState extends State<AdminOrders> {
       drawer: NavDrawer(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
+          padding: EdgeInsets.only(
+              top: width * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -98,7 +109,6 @@ class _AdminOrdersState extends State<AdminOrders> {
                                       title: Text(menu![index].Option!),
                                       subtitle:
                                           Text(menu[index].id!.toString()),
-                                      selected: index == selectedIndex,
                                       trailing: IconButton(
                                         onPressed: () {
                                           foodProvider
@@ -115,7 +125,7 @@ class _AdminOrdersState extends State<AdminOrders> {
                           } else if (snapshot.hasError) {
                             return Text("${snapshot.error}");
                           }
-                          return LinearProgressIndicator(
+                          return CircularProgressIndicator(
                             color: blue,
                           );
                         }),

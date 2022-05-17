@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:lunch_ordering/providers/auth_provider.dart';
+import 'package:lunch_ordering/screens/sign-up.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,7 +26,6 @@ class _SignInState extends State<SignIn> {
   late String password = '';
   bool SwitchSelected = false;
   late AuthProvider authVm;
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -41,8 +41,6 @@ class _SignInState extends State<SignIn> {
 
   @override
   void dispose() {
-    // passwordcontroller.dispose();
-    // numbercontroller.dispose();
     super.dispose();
   }
 
@@ -58,7 +56,7 @@ class _SignInState extends State<SignIn> {
           child: Padding(
             padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05),
             child: Form(
-              key: authProvider.formKey,
+              key: authProvider.formKey2,
               child: Padding(
                 padding: EdgeInsets.all(width * 0.02),
                 child: Column(
@@ -191,7 +189,11 @@ class _SignInState extends State<SignIn> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, '/signup');
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const SignUp()),
+                                    );
                                   },
                                   child: Text(
                                     'Sign up now',

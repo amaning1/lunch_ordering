@@ -13,9 +13,17 @@ const KButtonTextStyle = TextStyle(
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w600,
     fontSize: 16);
+const KCardTextStyle = TextStyle(
+    color: Color(0xFF002C59),
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w400,
+    fontSize: 20);
 
 const KNTSYAStyle = TextStyle(
     color: Color(0xFF002C59),
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w600,
     fontSize: 24);
+
+const KTextStyle3 =
+    TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400, fontSize: 15);

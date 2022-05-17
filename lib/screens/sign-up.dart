@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
+import 'package:lunch_ordering/screens/sign-in.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth_provider.dart';
+import '../providers/registration_provider.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -13,66 +18,27 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final TextEditingController numbercontroller = TextEditingController();
-  final TextEditingController passwordcontroller = TextEditingController();
-  final TextEditingController namecontroller = TextEditingController();
   bool isLoading = false;
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var height, width;
   @override
   void dispose() {
-    numbercontroller.dispose();
-    passwordcontroller.dispose();
     super.dispose();
-  }
-
-  registerImplementation() async {
-    if (formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
-      register();
-    }
-  }
-
-  Future<User?> register() async {
-    final String token;
-    final response = await http.post(
-      Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/register'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'phone_number': numbercontroller.text,
-        'password': passwordcontroller.text,
-        'type': "1",
-        'name': namecontroller.text,
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      String data = response.body;
-      Navigator.pushNamed(context, '/signin');
-    } else {
-      print(response.statusCode);
-      print(response.body);
-    }
-    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+    final regProvider = Provider.of<RegProvider>(context);
     return Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
+            padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05),
             child: Form(
-              key: formKey,
+              key: regProvider.formKey1,
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: EdgeInsets.all(width * 0.02),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -82,8 +48,9 @@ class _SignUpState extends State<SignUp> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset('images/img.png', height: 40, width: 45),
-                          const SizedBox(width: 5),
+                          Image.asset('images/img.png',
+                              height: width * 0.1, width: width * 0.125),
+                          SizedBox(width: width * 0.01),
                           const Text('BSL ORDERS',
                               style: TextStyle(
                                 fontSize: 20,
@@ -107,7 +74,8 @@ class _SignUpState extends State<SignUp> {
                         ],
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 17, 20, 17),
+                        padding: EdgeInsets.fromLTRB(width * 0.05,
+                            width * 0.035, width * 0.05, width * 0.035),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -122,7 +90,7 @@ class _SignUpState extends State<SignUp> {
                             SizedBox(height: height * 0.01),
                             form(
                               focusedBorder: true,
-                              controller: namecontroller,
+                              controller: regProvider.nameController,
                               label: 'Enter Name',
                               type: TextInputType.text,
                               colour: Color(0xFFF2F2F2),
@@ -131,7 +99,7 @@ class _SignUpState extends State<SignUp> {
                             SizedBox(height: height * 0.01),
                             form(
                               focusedBorder: true,
-                              controller: numbercontroller,
+                              controller: regProvider.numberController,
                               label: 'Phone Number',
                               type: TextInputType.number,
                               colour: Color(0xFFF2F2F2),
@@ -139,7 +107,8 @@ class _SignUpState extends State<SignUp> {
                             Text('Password', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
                             passwordForm(
-                              passwordcontroller: passwordcontroller,
+                              passwordcontroller:
+                                  regProvider.passwordController,
                             ),
                             SizedBox(height: height * 0.01),
                             Center(
@@ -148,9 +117,9 @@ class _SignUpState extends State<SignUp> {
                                 height: height * 0.1,
                                 child: Button(
                                   text: 'Continue',
-                                  isLoading: isLoading,
+                                  isLoading: regProvider.isloadingregister,
                                   onPressed: () async {
-                                    registerImplementation();
+                                    regProvider.register(context);
                                   },
                                 ),
                               ),
@@ -166,22 +135,19 @@ class _SignUpState extends State<SignUp> {
                               children: [
                                 const Text(
                                   'Have an account?',
-                                  style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 15),
+                                  style: KTextStyle3,
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, '/signin');
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const SignIn()),
+                                    );
                                   },
                                   child: Text(
                                     'Sign in',
-                                    style: TextStyle(
-                                        color: blue,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 15),
+                                    style: KTextStyle3,
                                   ),
                                 ),
                               ],

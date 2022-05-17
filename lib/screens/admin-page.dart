@@ -1,9 +1,11 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/components.dart';
+import '../providers/food_providers.dart';
 import '../shared_preferences.dart';
 
 class AdminPage extends StatefulWidget {
@@ -12,34 +14,19 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
-  String Option1 = '';
-  String Option2 = '';
-  String Option3 = '';
-  String date = "";
   var height, width;
   bool isLoading = false;
-  DateTime _selectedDate = DateTime.now();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var scaffoldKey = GlobalKey<ScaffoldState>();
-
-  _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2022),
-      lastDate: DateTime(2023),
-    );
-    if (picked != null && picked != _selectedDate)
-      setState(() {
-        _selectedDate = picked;
-      });
-  }
+  late FoodProvider foodVm;
 
   @override
   void initState() {
     super.initState();
+    // Future.delayed(Duration.zero, (){
+    //   foodVm = Provider.of<FoodProvider>(context).getOrders(menu_id, context)
+    // });
     getToken();
-    print(_selectedDate);
   }
 
   @override
@@ -51,6 +38,7 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    final foodProvider = Provider.of<FoodProvider>(context);
     bool isSelected = false;
 
     return Scaffold(

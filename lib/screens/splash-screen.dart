@@ -1,34 +1,28 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lunch_ordering/providers/auth_provider.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
-import 'package:lunch_ordering/screens/sign-in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import '../components.dart';
 
-class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({Key? key}) : super(key: key);
+import '../constants.dart';
+import 'main-screen.dart';
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoadingScreen> createState() => _LoadingScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen> {
-  late AuthProvider authVm;
+class _SplashScreenState extends State<SplashScreen> {
   late FoodProvider foodVm;
+  int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      authVm = Provider.of<AuthProvider>(context, listen: false)
-          .autoLogIn(context) as AuthProvider;
       foodVm = Provider.of<FoodProvider>(context, listen: false)
           .fetchFood(context) as FoodProvider;
-      foodVm = Provider.of<FoodProvider>(context, listen: true).getMenuID()
-          as FoodProvider;
     });
   }
 

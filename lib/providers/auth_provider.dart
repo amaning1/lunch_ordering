@@ -4,6 +4,8 @@ import 'dart:core';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/Manage.dart';
+import 'package:lunch_ordering/providers/food_providers.dart';
+
 import 'package:lunch_ordering/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
@@ -12,9 +14,10 @@ import '../constants.dart';
 
 class AuthProvider extends Manage {
   bool isAuthenticating = false;
+  final TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final formKey2 = GlobalKey<FormState>();
 
   Future loadUserNumberPassword() async {
     try {
@@ -41,12 +44,14 @@ class AuthProvider extends Manage {
     var phone_number_pref = prefs.getString('phone_number');
     var password_pref = prefs.getString('password');
     print('sup');
+
     if (phone_number_pref != null) {
       CircularProgressIndicator();
 
       numberController.text = phone_number_pref;
       passwordController.text = password_pref!;
-
+      print(numberController.text);
+      print(passwordController.text);
       login(context);
     } else {
       CircularProgressIndicator();
@@ -55,9 +60,8 @@ class AuthProvider extends Manage {
   }
 
   LoginImplementation(BuildContext context) async {
-    if (formKey.currentState!.validate()) {
+    if (formKey2.currentState!.validate()) {
       changeStatus(true);
-      saveUserDetails(numberController.text, passwordController.text);
       login(context);
     }
   }
@@ -82,23 +86,25 @@ class AuthProvider extends Manage {
       final String name = jsonDecode(data)['data']['user']['name'];
       final String phone_number =
           jsonDecode(data)['data']['user']['phone_number'];
-      final int type = jsonDecode(data)['data']['user']['type'];
-      final int status = jsonDecode(data)['data']['user']['status'];
+      final String type = jsonDecode(data)['data']['user']['type'];
+      final String status = jsonDecode(data)['data']['user']['status'];
 
       // isAuthenticating = false;
       changeStatus(false);
       print(token + name + phone_number);
       print(numberController.text);
       print(passwordController.text);
-      print(type + status);
+      print(type);
       saveToken(token);
+      saveUserDetails(numberController.text, passwordController.text);
+      clearForm();
 
-      if (type == 2 || type == 1) {
+      if (type == "chef" || type == "admin") {
         saveToken(token);
         Navigator.pushNamed(context, '/fourth');
       } else {
         saveToken(token);
-        Navigator.pushNamed(context, '/third');
+        Navigator.pushNamed(context, '/splash');
       }
     } else {
       changeStatus(false);
@@ -107,12 +113,18 @@ class AuthProvider extends Manage {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog(response);
+          return alertDialogLogin(response);
         },
       );
+      Navigator.pushNamed(context, '/signin');
       print(response.statusCode);
       print(response.body);
     }
     return null;
+  }
+
+  void clearForm() {
+    numberController.text = '';
+    passwordController.text = '';
   }
 }

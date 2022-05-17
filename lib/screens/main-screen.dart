@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
+import 'package:lunch_ordering/screens/loading-screen.dart';
+import 'package:lunch_ordering/screens/splash-screen.dart';
+import '../providers/auth_provider.dart';
 import '../providers/food_providers.dart';
 import '../shared_preferences.dart';
 import 'package:provider/provider.dart';
 
-int? menuIDx;
 int? selected = 0;
-bool checkBox = false;
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -18,23 +19,15 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  String value = '';
   var size, height, width;
   int selectedIndex = 0;
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  String token = '';
   late FoodProvider foodVm;
 
   @override
   void initState() {
     super.initState();
     getToken();
-    Future.delayed(Duration.zero, () {
-      foodVm = Provider.of<FoodProvider>(context, listen: true)
-          .fetchFood(context) as FoodProvider;
-      foodVm = Provider.of<FoodProvider>(context, listen: true).getMenuID()
-          as FoodProvider;
-    });
   }
 
   @override
@@ -44,67 +37,54 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   Widget build(BuildContext context) {
-    size = MediaQuery.of(context).size;
-    height = size.height;
-    width = size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     bool isSelected = false;
     final foodProvider = Provider.of<FoodProvider>(context, listen: true);
 
+    Widget build1(BuildContext context) {
+      return ListView.builder(
+          shrinkWrap: true,
+          itemCount: foodProvider.menu.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                title: Text(foodProvider.menu[index].Option!),
+                selected: index == selectedIndex,
+                onTap: () {
+                  setState(() {
+                    selectedIndex = index;
+                    selected = foodProvider.menu[index].id!;
+                  });
+                },
+                selectedTileColor: darkblue,
+                selectedColor: Colors.white,
+              ),
+            );
+          });
+    }
+
     return Scaffold(
       key: scaffoldKey,
-      drawer: Drawer(
-          child: Padding(
-        padding: const EdgeInsets.only(top: 30.0),
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          children: [
-            ListTile(
-                leading: const Icon(Icons.menu),
-                title: const Text(
-                  'Menu',
-                  style: TextStyle(fontFamily: 'Poppins'),
-                ),
-                onTap: () {}),
-            ListTile(
-                leading: const Icon(Icons.dashboard),
-                title: const Text(
-                  'Dashboard',
-                  style: TextStyle(fontFamily: 'Poppins'),
-                ),
-                onTap: () {}),
-            ListTile(
-                leading: const Icon(Icons.history),
-                title: const Text(
-                  'History',
-                  style: TextStyle(fontFamily: 'Poppins'),
-                ),
-                onTap: () {}),
-            //SizedBox(height: height * 0.55),
-            ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text(
-                  'Logout',
-                  style: TextStyle(fontFamily: 'Poppins'),
-                ),
-                onTap: () {
-                  logout();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/signin', (route) => false);
-                }),
-          ],
-        ),
-      )),
+      drawer: MainScreenDrawer(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(left: 30, right: 30, top: 30),
+          padding: EdgeInsets.only(
+              left: width * 0.05, right: width * 0.05, top: width * 0.05),
           child: Stack(children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    Image.asset('images/img.png', height: 40, width: 45),
+                    Image.asset('images/img.png',
+                        height: width * 0.1, width: width * 0.1),
                     SizedBox(width: width * 0.05),
                     Text('BSL ORDERS',
                         style: const TextStyle(
@@ -130,7 +110,7 @@ class _MenuScreenState extends State<MenuScreen> {
             ),
             SizedBox(height: height * 0.10),
             Padding(
-              padding: const EdgeInsets.only(top: 80),
+              padding: EdgeInsets.only(top: width * 0.20),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -149,8 +129,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   ],
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20.0, right: 20, bottom: 10),
+                  padding: EdgeInsets.only(
+                      left: width * 0.05,
+                      right: width * 0.05,
+                      bottom: width * 0.05),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -174,46 +156,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                     color: darkblue,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold)),
-                            FutureBuilder<List<Menu>?>(
-                                future: foodProvider.fetchFood(context),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    List<Menu>? menu = snapshot.data;
-                                    return ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: menu?.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Card(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                            ),
-                                            child: ListTile(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              title: Text(menu![index].Option!),
-                                              selected: index == selectedIndex,
-                                              onTap: () {
-                                                setState(() {
-                                                  selectedIndex = index;
-                                                  selected = menu[index].id!;
-                                                });
-                                              },
-                                              selectedTileColor: darkblue,
-                                              selectedColor: Colors.white,
-                                            ),
-                                          );
-                                        });
-                                  } else if (snapshot.hasError) {
-                                    return Text("${snapshot.error}");
-                                  }
-                                  return LinearProgressIndicator(
-                                    color: blue,
-                                  );
-                                }),
+                            build1(context),
                             SizedBox(height: height * 0.02),
                             Text('Comments',
                                 style: TextStyle(
@@ -223,71 +166,57 @@ class _MenuScreenState extends State<MenuScreen> {
                                     fontWeight: FontWeight.bold)),
                             SizedBox(height: height * 0.02),
                             Container(
-                              child: form(
-                                  focusedBorder: false,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 40),
-                                  controller: foodProvider.textFieldController,
-                                  type: TextInputType.text,
-                                  colour: darkblue),
-                            ),
+                                decoration: BoxDecoration(
+                                  color: darkblue,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                height: width * 0.3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                      cursorColor: Colors.white,
+                                      controller:
+                                          foodProvider.textFieldController,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          focusedBorder: InputBorder.none)),
+                                )),
                             SizedBox(height: height * 0.02),
                             Center(
                               child: Container(
                                 width: width * 0.5,
-                                height: height * 0.07,
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            darkblue),
-                                  ),
+                                height: height * 0.1,
+                                child: Button(
                                   onPressed: () async {
                                     foodProvider.orderFood(context);
                                   },
-                                  child: Text(
-                                    'Place Order',
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontFamily: 'Poppins',
-                                    ),
-                                  ),
+                                  isLoading: foodProvider.isloading,
+                                  text: 'Place Order',
                                 ),
                               ),
                             ),
                           ],
                         ),
+                        SizedBox(height: height * 0.02),
                       ]),
                 ),
               ),
             ),
             Positioned(
-              left: 120,
-              top: 45,
+              left: width * 0.33,
+              top: width * 0.13,
               child: Container(
-                child: Image.asset('images/img_1.png', height: 70, width: 100),
+                child: Image.asset('images/img_1.png',
+                    height: width * 0.175, width: width * 0.25),
               ),
             ),
           ]),
         ),
       ),
-    );
-  }
-}
-
-class Menu {
-  int? id;
-  String? Option;
-
-  Menu({this.id, this.Option});
-
-  factory Menu.fromJson(Map<String, dynamic> responseData) {
-    return Menu(
-      id: responseData['id'],
-      Option: responseData['name'],
     );
   }
 }

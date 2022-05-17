@@ -5,6 +5,28 @@ import 'package:http/http.dart' as http;
 
 List<String> food = <String>[];
 List<String> drink = <String>[];
+AlertDialog alertDialogLogin(http.Response response) {
+  if (response.statusCode == 401) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      title: Icon(Icons.cancel, color: Colors.red),
+      content: Center(child: Text('Invalid Login Credentials, Try Again')),
+    );
+  } else
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      title: Column(
+        children: [
+          Icon(Icons.cancel, color: Colors.red),
+          Text('Error code ' + ' ' + response.statusCode.toString()),
+        ],
+      ),
+      content: Text(response.body),
+    );
+}
+
 AlertDialog alertDialog(http.Response response) {
   return AlertDialog(
     shape: RoundedRectangleBorder(
@@ -60,7 +82,10 @@ class NavDrawer extends StatelessWidget {
                 leading: Icon(Icons.history),
                 title: const Text('History',
                     style: TextStyle(fontFamily: 'Poppins')),
-                onTap: () {}),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/adminOrders', (route) => false);
+                }),
             ListTile(
                 leading: Icon(Icons.logout),
                 title: const Text('Logout',
@@ -401,5 +426,62 @@ class _InputFieldState extends State<InputField> {
         ),
       ),
     );
+  }
+}
+
+class MainScreenDrawer extends StatelessWidget {
+  const MainScreenDrawer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+        child: Padding(
+      padding: const EdgeInsets.only(top: 30.0),
+      child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        children: [
+          ListTile(
+              leading: const Icon(Icons.menu),
+              title: const Text(
+                'Menu',
+                style: TextStyle(fontFamily: 'Poppins'),
+              ),
+              onTap: () {}),
+          ListTile(
+              leading: const Icon(Icons.dashboard),
+              title: const Text(
+                'Order Food',
+                style: TextStyle(fontFamily: 'Poppins'),
+              ),
+              onTap: () {
+                Navigator.popAndPushNamed(context, '/third');
+              }),
+          ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text(
+                'History',
+                style: TextStyle(fontFamily: 'Poppins'),
+              ),
+              onTap: () {
+                Navigator.popAndPushNamed(context, '/history');
+              }),
+          //SizedBox(height: height * 0.55),
+          ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text(
+                'Logout',
+                style: TextStyle(fontFamily: 'Poppins'),
+              ),
+              onTap: () {
+                logout();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/signin', (route) => false);
+              }),
+        ],
+      ),
+    ));
   }
 }

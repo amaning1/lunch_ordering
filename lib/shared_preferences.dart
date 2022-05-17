@@ -9,7 +9,7 @@ class UserPreferences {
     prefs.setString('phone_number', user.phone_number!);
     prefs.setInt('status', user.status!);
     prefs.setString('token', user.token!);
-    prefs.setInt('type', user.type!);
+    prefs.setString('type', user.type!);
 
     return saveUser(user);
   }
@@ -27,7 +27,7 @@ Future<User> getUser() async {
   String? phone_number = prefs.getString('phone_number');
   int? status = prefs.getInt('status');
   String? token = prefs.getString('token');
-  int? type = prefs.getInt('type');
+  String? type = prefs.getString('type');
 
   return User(
     name: name,
