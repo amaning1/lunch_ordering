@@ -27,3 +27,16 @@ const KNTSYAStyle = TextStyle(
 
 const KTextStyle3 =
     TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400, fontSize: 15);
+
+const KAlertHeader = TextStyle(
+    color: Colors.black87,
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.bold,
+    fontSize: 16);
+
+const KAlertContent = TextStyle(
+  fontFamily: 'Poppins',
+);
+
+const KAlertButton =
+    TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins');

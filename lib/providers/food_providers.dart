@@ -102,6 +102,7 @@ class FoodProvider extends Manage {
   }
 
   Future orderFood(context) async {
+    changeStatus(true);
     await getToken();
     await getMenuID();
     final response = await http.post(
@@ -118,6 +119,7 @@ class FoodProvider extends Manage {
       }),
     );
     if (response.statusCode == 202) {
+      changeStatus(false);
       print(response.body);
       showDialog(
         context: context,
@@ -130,17 +132,52 @@ class FoodProvider extends Manage {
                 const Icon(Icons.check, color: Colors.green),
               ],
             ),
-            content: const Text('Your order has been placed'),
+            content: Container(
+              height: 30,
+              child: Column(
+                children: [
+                  Text('Your order has been placed'),
+                  TextButton(
+                    child: Text('View Your Orders'),
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/history');
+                    },
+                  )
+                ],
+              ),
+            ),
           );
         },
       );
     } else {
+      changeStatus(false);
       print(response.statusCode);
       print(response.body);
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog(response);
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(const Radius.circular(10.0))),
+            title: Column(
+              children: [
+                const Icon(Icons.check, color: Colors.green),
+              ],
+            ),
+            insetPadding: EdgeInsets.symmetric(vertical: 250),
+            content: Column(
+              children: [
+                Text('You\'ve already placed an order'),
+                Button(
+                  text: 'View Your Orders',
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/history');
+                  },
+                  isLoading: false,
+                )
+              ],
+            ),
+          );
         },
       );
     }
@@ -167,27 +204,16 @@ class FoodProvider extends Manage {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-              title: Column(
-                children: [
-                  const Icon(Icons.cancel, color: Colors.red),
-                  Text('Oh no!'),
-                ],
-              ),
-              content: Text('Please Try Again Later'));
+          return alertDialog();
         },
       );
-      print(response.statusCode);
-      print(response);
     } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog(response);
+          return alertDialog();
         },
       );
-      print(response.statusCode);
-      print(response);
     }
     return list;
   }
@@ -212,11 +238,9 @@ class FoodProvider extends Manage {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog(response);
+          return alertDialog();
         },
       );
-      print(response.statusCode);
-      print(response);
     }
     return list;
   }
@@ -242,11 +266,9 @@ class FoodProvider extends Manage {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog(response);
+          return alertDialog();
         },
       );
-      print(response.statusCode);
-      print(response);
     }
     return list;
   }
@@ -275,8 +297,8 @@ class FoodProvider extends Manage {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Added Successfully'),
-            content: Text(response.body),
+            title: Text('Menu added Successfully', style: KNTSYAStyle),
+            content: Text(''),
           );
         },
       );

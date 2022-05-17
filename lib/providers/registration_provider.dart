@@ -52,21 +52,34 @@ class RegProvider extends Manage {
           builder: (BuildContext context) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              title: Column(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
+              title: Text('Thank you for registering', style: KAlertHeader),
+              insetPadding: EdgeInsets.symmetric(vertical: 240),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.check, color: Colors.green),
-                  Text('Thank You'),
+                  Text(
+                    'Our administrators will get back to you',
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: Text(
+                          'Sign in now',
+                          style: KAlertButton,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignIn()),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ],
-              ),
-              content: TextButton(
-                child: Text('Sign in now'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SignIn()),
-                  );
-                },
               ),
             );
             ;

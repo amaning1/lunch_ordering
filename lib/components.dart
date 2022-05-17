@@ -9,14 +9,14 @@ AlertDialog alertDialogLogin(http.Response response) {
   if (response.statusCode == 401) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          borderRadius: BorderRadius.all(Radius.circular(5.0))),
       title: Icon(Icons.cancel, color: Colors.red),
       content: Center(child: Text('Invalid Login Credentials, Try Again')),
     );
   } else
     return AlertDialog(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          borderRadius: BorderRadius.all(Radius.circular(5.0))),
       title: Column(
         children: [
           Icon(Icons.cancel, color: Colors.red),
@@ -27,17 +27,25 @@ AlertDialog alertDialogLogin(http.Response response) {
     );
 }
 
-AlertDialog alertDialog(http.Response response) {
+AlertDialog alertDialog() {
   return AlertDialog(
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        borderRadius: BorderRadius.all(Radius.circular(5.0))),
     title: Column(
       children: [
         Icon(Icons.cancel, color: Colors.red),
-        Text('Error code ' + ' ' + response.statusCode.toString()),
+        Text('Uh Oh', style: KNTSYAStyle),
       ],
     ),
-    content: Text(response.body),
+    content: Column(
+      children: [
+        Text('Something went wrong'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [Text('Logout', style: KNTSYAStyle)],
+        )
+      ],
+    ),
   );
 }
 
@@ -96,39 +104,6 @@ class NavDrawer extends StatelessWidget {
                       context, '/signin', (route) => false);
                 }),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class optionFood extends StatelessWidget {
-  const optionFood({Key? key, required this.controller, required this.label})
-      : super(key: key);
-
-  final TextEditingController controller;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 10, bottom: 10),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.justify,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Color(0xFFF2F2F2),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide.none),
-          labelStyle: TextStyle(fontFamily: 'Roboto', color: Color(0xFF808080)),
-          labelText: label,
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blue, width: 2.0),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
         ),
       ),
     );
@@ -359,71 +334,6 @@ class _ButtonState extends State<Button> {
                   fontFamily: 'Poppins',
                 ),
               ),
-      ),
-    );
-  }
-}
-
-class InputField extends StatefulWidget {
-  InputField(
-      {this.icon,
-      required this.label,
-      required this.parameter,
-      required this.isObscure,
-      required this.controller});
-
-  String label = '';
-  String parameter = '';
-  bool isObscure = false;
-  final Widget? icon;
-  TextEditingController controller;
-
-  @override
-  State<InputField> createState() => _InputFieldState();
-}
-
-class _InputFieldState extends State<InputField> {
-  final controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      child: TextFormField(
-        controller: widget.controller,
-        validator: (value) {
-          if (value == null || value.trim().isEmpty) {
-            return 'This field is required';
-          }
-        },
-        keyboardType: TextInputType.emailAddress,
-        textAlign: TextAlign.center,
-        obscureText: widget.isObscure,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Color(0xFFF2F2F2),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide.none),
-          suffixIcon: widget.icon,
-          labelStyle: TextStyle(fontFamily: 'Roboto', color: Color(0xFF808080)),
-          labelText: widget.label,
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blue, width: 2.0),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-        ),
       ),
     );
   }
