@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/constants.dart';
+import 'package:lunch_ordering/providers/food_providers.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import 'Domain/ChipData.dart';
 
 List<String> food = <String>[];
 List<String> drink = <String>[];
@@ -20,36 +24,73 @@ AlertDialog alertDialogLogin(http.Response response) {
       title: Column(
         children: [
           Icon(Icons.cancel, color: Colors.red),
-          Text('Error code ' + ' ' + response.statusCode.toString()),
+          Text('Something went wrong. Try Again'),
         ],
       ),
       content: Text(response.body),
     );
 }
 
-AlertDialog alertDialog() {
+AlertDialog alertDialog(BuildContext context, onPressed, String textHeader,
+    String textContent, String textButton) {
   return AlertDialog(
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-    title: Column(
-      children: [
-        Icon(Icons.cancel, color: Colors.red),
-        Text('Uh Oh', style: KNTSYAStyle),
-      ],
-    ),
-    content: Column(
-      children: [
-        Text('Something went wrong'),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [Text('Logout', style: KNTSYAStyle)],
-        )
-      ],
-    ),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+      title: Text(textHeader, style: KAlertHeader),
+      //insetPadding: EdgeInsets.symmetric(vertical: 240),
+      content: Text(textContent, style: KAlertContent),
+      actions: [
+        TextButton(
+          child: Text(
+            textButton,
+            style: KAlertButton,
+          ),
+          onPressed: onPressed,
+        ),
+      ]);
+}
+
+Widget row(String type, bool isloading, onPressed) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(type, style: menuLarge),
+      Button(text: 'ADD', isLoading: isloading, onPressed: onPressed)
+    ],
   );
 }
 
-void logout() async {
+Widget column(isEmpty, context, String type, chipType, onPressed, isloading) {
+  return Column(
+    children: [
+      isEmpty
+          ? Text('No $type Added', style: KNTSYAStyle)
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Wrap(
+                spacing: 10,
+                children: chipType
+                    .map<Widget>((chip) => Chip(
+                          label: Text(chip.name),
+                          key: ValueKey(chip.id),
+                          labelStyle: TextStyle(color: Colors.white),
+                          backgroundColor: darkblue,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 7, horizontal: 10),
+                        ))
+                    .toList(),
+              ),
+            ),
+      Button(
+        onPressed: onPressed,
+        text: 'ADD',
+        isLoading: isloading,
+      )
+    ],
+  );
+}
+
+void logout(context) async {
   final SharedPreferences sharedPreferences =
       await SharedPreferences.getInstance();
   sharedPreferences.remove('token');
@@ -57,6 +98,7 @@ void logout() async {
   sharedPreferences.remove('password');
   sharedPreferences.remove('remember_me');
   print(sharedPreferences.getBool('remember_me'));
+  Navigator.pushNamed(context, '/signin');
 }
 
 class NavDrawer extends StatelessWidget {
@@ -71,14 +113,16 @@ class NavDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             ListTile(
+                hoverColor: darkblue,
                 leading: Icon(Icons.menu),
                 title:
                     const Text('Menu', style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
                   Navigator.pushNamedAndRemoveUntil(
-                      context, '/adminAdd', (route) => false);
+                      context, '/allMenus', (route) => false);
                 }),
             ListTile(
+                hoverColor: darkblue,
                 leading: Icon(Icons.dashboard),
                 title: const Text('Dashboard',
                     style: TextStyle(fontFamily: 'Poppins')),
@@ -87,19 +131,30 @@ class NavDrawer extends StatelessWidget {
                       context, '/fourth', (route) => false);
                 }),
             ListTile(
+                hoverColor: darkblue,
                 leading: Icon(Icons.history),
-                title: const Text('History',
+                title: const Text('View Foods',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/adminOrders', (route) => false);
                 }),
             ListTile(
+                hoverColor: darkblue,
+                leading: Icon(Icons.fastfood),
+                title: const Text('View Orders',
+                    style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/adminViewOrders', (route) => false);
+                }),
+            ListTile(
+                hoverColor: darkblue,
                 leading: Icon(Icons.logout),
                 title: const Text('Logout',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
-                  logout();
+                  logout(context);
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/signin', (route) => false);
                 }),
@@ -277,21 +332,67 @@ class _formState extends State<form> {
   }
 }
 
-class User {
-  int? type;
-  String? name;
-  String? phone_number;
-  //String? token;
-  String? status;
+class numberForm extends StatefulWidget {
+  numberForm(
+      {Key? key,
+      required this.focusedBorder,
+      required this.controller,
+      this.label,
+      this.hintText,
+      required this.type,
+      this.colour,
+      this.contentPadding})
+      : super(key: key);
 
-  User({this.type, this.name, this.phone_number, this.status});
+  final TextEditingController controller;
+  final String? label;
+  final String? hintText;
+  final TextInputType type;
+  Color? colour;
+  EdgeInsets? contentPadding;
+  bool focusedBorder;
 
-  factory User.fromJson(Map<String, dynamic> responseData) {
-    return User(
-      type: responseData['type'],
-      name: responseData['name'],
-      phone_number: responseData['phone_number'],
-      status: responseData['status'],
+  @override
+  State<numberForm> createState() => _numberFormState();
+}
+
+class _numberFormState extends State<numberForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, bottom: 10),
+      child: TextFormField(
+        controller: widget.controller,
+        validator: (value) {
+          if (value!.length != 10) {
+            return 'Number is less than 10';
+          } else if (value.isEmpty) {
+            return 'This field is required';
+          }
+        },
+        keyboardType: widget.type,
+        textAlign: TextAlign.justify,
+        decoration: InputDecoration(
+            fillColor: widget.colour,
+            hintText: widget.hintText,
+            hintStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            contentPadding: widget.contentPadding,
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(width: 2.0)),
+            labelStyle:
+                TextStyle(fontFamily: 'Poppins', color: Color(0xFF808080)),
+            labelText: widget.label,
+            floatingLabelStyle: TextStyle(color: blue),
+            focusedBorder: widget.focusedBorder
+                ? OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  )
+                : null),
+      ),
     );
   }
 }
@@ -340,20 +441,17 @@ class _ButtonState extends State<Button> {
 }
 
 class MainScreenDrawer extends StatelessWidget {
-  const MainScreenDrawer({
-    Key? key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
         child: Padding(
-      padding: const EdgeInsets.only(top: 30.0),
+      padding: const EdgeInsets.only(top: 60.0),
       child: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.zero,
         children: [
           ListTile(
+              hoverColor: darkblue,
               leading: const Icon(Icons.menu),
               title: const Text(
                 'Menu',
@@ -361,6 +459,7 @@ class MainScreenDrawer extends StatelessWidget {
               ),
               onTap: () {}),
           ListTile(
+              hoverColor: Colors.white,
               leading: const Icon(Icons.dashboard),
               title: const Text(
                 'Order Food',
@@ -370,6 +469,7 @@ class MainScreenDrawer extends StatelessWidget {
                 Navigator.popAndPushNamed(context, '/third');
               }),
           ListTile(
+              hoverColor: darkblue,
               leading: const Icon(Icons.history),
               title: const Text(
                 'History',
@@ -380,13 +480,14 @@ class MainScreenDrawer extends StatelessWidget {
               }),
           //SizedBox(height: height * 0.55),
           ListTile(
+              hoverColor: darkblue,
               leading: const Icon(Icons.logout),
               title: const Text(
                 'Logout',
                 style: TextStyle(fontFamily: 'Poppins'),
               ),
               onTap: () {
-                logout();
+                logout(context);
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/signin', (route) => false);
               }),

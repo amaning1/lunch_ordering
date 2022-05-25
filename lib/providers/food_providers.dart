@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
+import 'package:flutter/services.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
+import '../Domain/ChipData.dart';
+import '../Domain/foods.dart';
+import '../Domain/menu.dart';
+import '../Domain/orders.dart';
 import '../constants.dart';
 import '../screens/main-screen.dart';
 import '../screens/view-history.dart';
@@ -21,9 +26,24 @@ class FoodProvider extends Manage {
   TextEditingController option3controller = TextEditingController();
   TextEditingController option4controller = TextEditingController();
   List<Menu> menu = [];
+  List<ChipData> FoodChips = [];
+  List<ChipData> DrinkChips = [];
+  List<int> foodIDS = [];
+  List<int> drinkIDS = [];
+
   String token = '';
 
   DateTime tomorrow = DateTime.now().add(new Duration(days: 1));
+
+  void deleteFoodChip(int id) {
+    FoodChips.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
+
+  void deleteDrinkChip(int id) {
+    DrinkChips.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
 
   Future getToken() async {
     final SharedPreferences sharedPreferences =
@@ -47,39 +67,33 @@ class FoodProvider extends Manage {
     );
   }
 
-  // Future<List<Orders>?> getOrders(context) async {
-  //   await getToken();
-  //   await getMenuID();
-  //   List<Orders>? list;
-  //   final queryParams = menuIDx;
-  //   String queryString = Uri.parse(queryParams).query;
-  //   final uri = Uri.parse(AppURL.Foods).replace(queryParameters: {
-  //     'menu_id': menuIDx,
-  //   });
-  //   final response = await http.get(
-  //     uri,
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //       HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-  //     },
-  //   );
-  //   if (response.statusCode == 200) {
-  //     String data = response.body;
-  //     print(data);
-  //     var rest = jsonDecode(data)['orders'] as List;
-  //     list = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
-  //   } else {
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return alertDialog(response);
-  //       },
-  //     );
-  //     print(response.statusCode);
-  //     print(response);
-  //   }
-  //   return list;
-  // }
+  Future<List<Orders>?> getOrders(context) async {
+    await getToken();
+    List<Orders>? list;
+    final response =
+        await http.get(Uri.parse(AppURL.allOrders), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+    });
+    if (response.statusCode == 200) {
+      String data = response.body;
+      print(data);
+      var rest = jsonDecode(data)['data'] as List;
+      list = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            Navigator.pop(context);
+          }, 'No Orders', 'where', 'Exit');
+        },
+      );
+      print(response.statusCode);
+      print(response);
+    }
+    return list;
+  }
 
   Future getMenuID() async {
     await getToken();
@@ -91,7 +105,7 @@ class FoodProvider extends Manage {
 
     if (response.statusCode == 200) {
       String data = response.body;
-      final int menu_id = jsonDecode(data)['data']['menu']['menu_id'];
+      final int menu_id = jsonDecode(data)['data']['menu_id'];
       menuIDx = menu_id;
       print('menu: $menuIDx');
     } else {
@@ -124,29 +138,10 @@ class FoodProvider extends Manage {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(const Radius.circular(10.0))),
-            title: Column(
-              children: [
-                const Icon(Icons.check, color: Colors.green),
-              ],
-            ),
-            content: Container(
-              height: 30,
-              child: Column(
-                children: [
-                  Text('Your order has been placed'),
-                  TextButton(
-                    child: Text('View Your Orders'),
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/history');
-                    },
-                  )
-                ],
-              ),
-            ),
-          );
+          return alertDialog(context, () {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/history', (route) => false);
+          }, 'Order Placed', 'Your order has been placed', 'View History');
         },
       );
     } else {
@@ -156,34 +151,55 @@ class FoodProvider extends Manage {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(const Radius.circular(10.0))),
-            title: Column(
-              children: [
-                const Icon(Icons.check, color: Colors.green),
-              ],
-            ),
-            insetPadding: EdgeInsets.symmetric(vertical: 250),
-            content: Column(
-              children: [
-                Text('You\'ve already placed an order'),
-                Button(
-                  text: 'View Your Orders',
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/history');
-                  },
-                  isLoading: false,
-                )
-              ],
-            ),
-          );
+          return alertDialog(context, () {
+            Navigator.pushNamed(context, '/history');
+          }, 'Uh Oh', 'You\'ve already placed an order', 'History');
         },
       );
     }
   }
 
   Future<List<Menu>?> fetchFood(context) async {
+    await getToken();
+    List<Menu>? list;
+    final response = await http.get(
+      Uri.parse(AppURL.getMenu),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      String data = response.body;
+      var rest = jsonDecode(data)['data']['foods'] as List;
+      print(rest);
+      menu = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
+      Navigator.pushNamed(context, '/third');
+    } else if (response.statusCode == 401) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            Navigator.pushNamed(context, '/history');
+          }, 'Please wait', 'There\'s no menu for this date yet',
+              'View History');
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            logout(context);
+          }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
+        },
+      );
+    }
+    return list;
+  }
+
+  Future<List<Menu>?> fetchPreviousMenus(context) async {
     await getToken();
     List<Menu>? list;
     final response = await http.get(
@@ -204,14 +220,17 @@ class FoodProvider extends Manage {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog();
+          return alertDialog(
+              context, null, 'Uh Oh', 'We\'ve run into a problem', '');
         },
       );
     } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog();
+          return alertDialog(context, () {
+            logout(context);
+          }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
         },
       );
     }
@@ -232,22 +251,26 @@ class FoodProvider extends Manage {
     if (response.statusCode == 200) {
       String data = response.body;
       print(data);
-      var rest = jsonDecode(data)['orders'] as List;
+      var rest = jsonDecode(data)['data'] as List;
       list = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
     } else {
+      String data = response.body;
+      print(data);
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog();
+          return alertDialog(context, () {
+            logout(context);
+          }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
         },
       );
     }
     return list;
   }
 
-  Future<List<Menu>?> fetchAllFoods(context) async {
+  Future<List<Foods>?> fetchAllFoods(context) async {
     await getToken();
-    List<Menu>? list;
+    List<Foods>? list;
     final response = await http.get(
       Uri.parse(AppURL.Foods),
       headers: <String, String>{
@@ -260,22 +283,52 @@ class FoodProvider extends Manage {
       String data = response.body;
 
       var rest = jsonDecode(data)['foods'] as List;
-      list = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
+      list = rest.map<Foods>((json) => Foods.fromJson(json)).toList();
       notifyListeners();
     } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog();
+          return alertDialog(
+              context, null, 'Uh Oh', 'We\'ve run into a problem', '');
         },
       );
     }
     return list;
   }
 
-  Future addMenu(List, context) async {
+  Future<List<Foods>?> fetchAllDrinks(context) async {
     await getToken();
-    changeStatus(true);
+    List<Foods>? list;
+    final response = await http.get(
+      Uri.parse(AppURL.Drinks),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      String data = response.body;
+
+      var rest = jsonDecode(data)['drinks'] as List;
+      list = rest.map<Foods>((json) => Foods.fromJson(json)).toList();
+      notifyListeners();
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(
+              context, null, 'Uh Oh', 'We\'ve run into a problem', '');
+        },
+      );
+    }
+    return list;
+  }
+
+  Future addMenu(foodList, drinkList, context) async {
+    await getToken();
+    changemenuStatus(true);
     final response = await http.post(
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
       headers: <String, String>{
@@ -284,15 +337,15 @@ class FoodProvider extends Manage {
       },
       body: jsonEncode(<String, dynamic>{
         "menu_date": "$tomorrow",
-        "foods": List,
-        "drinks": [1, 2, 4]
+        "foods_id": foodList,
+        "drinks_id": drinkList
       }),
     );
 
     if (response.statusCode == 201) {
       String data = response.body;
       print(response.body);
-      changeStatus(false);
+      changemenuStatus(false);
       return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -303,7 +356,7 @@ class FoodProvider extends Manage {
         },
       );
     } else {
-      changeStatus(false);
+      changemenuStatus(false);
       notifyListeners();
       print(response.statusCode);
       print(response.body);
@@ -314,34 +367,5 @@ class FoodProvider extends Manage {
         },
       );
     }
-  }
-}
-
-class Menu {
-  int? id;
-  String? Option;
-
-  Menu({this.id, this.Option});
-
-  factory Menu.fromJson(Map<String, dynamic> responseData) {
-    return Menu(
-      id: responseData['id'],
-      Option: responseData['name'],
-    );
-  }
-}
-
-class Orders {
-  int? id;
-  String? food, drink, comment;
-
-  Orders({this.id, this.food, this.drink, this.comment});
-  factory Orders.fromJson(Map<String, dynamic> responseData) {
-    return Orders(
-      id: responseData['id'],
-      food: responseData['food'],
-      drink: responseData['drink'],
-      comment: responseData['comment'],
-    );
   }
 }

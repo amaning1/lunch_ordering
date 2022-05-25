@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/components.dart';
-import '../providers/food_providers.dart';
-import '../shared_preferences.dart';
+import '../../providers/food_providers.dart';
+import '../../shared_preferences.dart';
 
 class AdminPage extends StatefulWidget {
   @override
@@ -44,7 +44,6 @@ class _AdminPageState extends State<AdminPage> {
     return Scaffold(
       key: scaffoldKey,
       drawer: NavDrawer(),
-      //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
@@ -58,18 +57,9 @@ class _AdminPageState extends State<AdminPage> {
                     children: [
                       Image.asset('images/img.png', height: 40, width: 45),
                       SizedBox(width: width * 0.03),
-                      Text('BSL',
-                          style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20)),
+                      Text('BSL', style: KMENUTextStyle),
                       SizedBox(width: width * 0.02),
-                      Text('ORDERS',
-                          style: TextStyle(
-                              color: darkblue,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20)),
+                      Text('ORDERS', style: KMENUTextStyle),
                     ],
                   ),
                   Row(
@@ -90,12 +80,7 @@ class _AdminPageState extends State<AdminPage> {
               SizedBox(height: height * 0.05),
               Row(
                 children: [
-                  Text('WELCOME CHEF',
-                      style: TextStyle(
-                          color: darkblue,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20)),
+                  Text('WELCOME CHEF', style: KMENUTextStyle),
                 ],
               ),
               SizedBox(height: height * 0.07),

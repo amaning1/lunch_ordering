@@ -97,7 +97,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             Text('Phone Number', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            form(
+                            numberForm(
                               focusedBorder: true,
                               controller: regProvider.numberController,
                               label: 'Phone Number',
@@ -119,7 +119,7 @@ class _SignUpState extends State<SignUp> {
                                   text: 'Continue',
                                   isLoading: regProvider.isloadingregister,
                                   onPressed: () async {
-                                    regProvider.register(context);
+                                    regProvider.registerImplementation(context);
                                   },
                                 ),
                               ),

@@ -5,7 +5,9 @@ import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 
-import 'main-screen.dart';
+import '../../Domain/foods.dart';
+import '../../Domain/menu.dart';
+import '../main-screen.dart';
 
 class AdminOrders extends StatefulWidget {
   const AdminOrders({Key? key}) : super(key: key);
@@ -53,18 +55,12 @@ class _AdminOrdersState extends State<AdminOrders> {
                     children: [
                       Image.asset('images/img.png', height: 40, width: 45),
                       SizedBox(width: width * 0.03),
-                      Text('BSL',
-                          style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20)),
+                      Text(
+                        'BSL',
+                        style: KMENUTextStyle,
+                      ),
                       SizedBox(width: width * 0.02),
-                      Text('ORDERS',
-                          style: TextStyle(
-                              color: darkblue,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20)),
+                      Text('ORDERS', style: KMENUTextStyle),
                     ],
                   ),
                   Row(
@@ -88,11 +84,11 @@ class _AdminOrdersState extends State<AdminOrders> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    FutureBuilder<List<Menu>?>(
+                    FutureBuilder<List<Foods>?>(
                         future: foodProvider.fetchAllFoods(context),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            List<Menu>? menu = snapshot.data;
+                            List<Foods>? menu = snapshot.data;
                             return ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: menu?.length,

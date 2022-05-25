@@ -25,6 +25,15 @@ const KNTSYAStyle = TextStyle(
     fontWeight: FontWeight.w600,
     fontSize: 24);
 
+const KForgotPassword = TextStyle(
+    color: Color(0xFF007AFF),
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w400,
+    fontSize: 15);
+
+const KMENUTextStyle =
+    TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600, fontSize: 20);
+
 const KTextStyle3 =
     TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400, fontSize: 15);
 
@@ -32,6 +41,12 @@ const KAlertHeader = TextStyle(
     color: Colors.black87,
     fontFamily: 'Poppins',
     fontWeight: FontWeight.bold,
+    fontSize: 16);
+
+const menuLarge = TextStyle(
+    color: Color(0xFF002C59),
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w600,
     fontSize: 16);
 
 const KAlertContent = TextStyle(

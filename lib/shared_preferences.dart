@@ -5,11 +5,11 @@ import 'Domain/user.dart';
 class UserPreferences {
   Future<bool> saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('name', user.name!);
-    prefs.setString('phone_number', user.phone_number!);
-    prefs.setInt('status', user.status!);
-    prefs.setString('token', user.token!);
-    prefs.setString('type', user.type!);
+    prefs.setString('name', user.name);
+    prefs.setString('phone_number', user.phone_number);
+    prefs.setString('status', user.status);
+    prefs.setString('token', user.token);
+    prefs.setString('type', user.type);
 
     return saveUser(user);
   }
@@ -25,16 +25,16 @@ Future<User> getUser() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String? name = prefs.getString('name');
   String? phone_number = prefs.getString('phone_number');
-  int? status = prefs.getInt('status');
+  String? status = prefs.getString('status');
   String? token = prefs.getString('token');
   String? type = prefs.getString('type');
 
   return User(
-    name: name,
-    phone_number: phone_number,
-    status: status,
-    token: token,
-    type: type,
+    name: name!,
+    phone_number: phone_number!,
+    status: status!,
+    token: token!,
+    type: type!,
   );
 }
 

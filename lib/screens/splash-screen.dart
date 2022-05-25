@@ -15,15 +15,14 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late FoodProvider foodVm;
-  int selectedIndex = 0;
 
   @override
   void initState() {
-    super.initState();
     Future.delayed(Duration.zero, () {
       foodVm = Provider.of<FoodProvider>(context, listen: false)
           .fetchFood(context) as FoodProvider;
     });
+    super.initState();
   }
 
   @override
@@ -43,12 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Image.asset('images/img.png',
                   height: width * 0.2, width: width * 0.2),
               const SizedBox(width: 5),
-              const Text('BSL ORDERS',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'Poppins',
-                  )),
+              const Text('BSL ORDERS', style: KMENUTextStyle),
             ],
           ),
         ),

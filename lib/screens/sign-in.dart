@@ -26,14 +26,15 @@ class _SignInState extends State<SignIn> {
   late String password = '';
   bool SwitchSelected = false;
   late AuthProvider authVm;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>(debugLabel: 'signin');
 
   @override
   void initState() {
     super.initState();
     getToken();
     Future.delayed(Duration.zero, () {
-      authVm = Provider.of<AuthProvider>(context, listen: true)
-          .autoLogIn(context) as AuthProvider;
+      // authVm = Provider.of<AuthProvider>(context, listen: true)
+      //     .autoLogIn(context) as AuthProvider;
       authVm = Provider.of<AuthProvider>(context, listen: true)
           .loadUserNumberPassword() as AuthProvider;
     });
@@ -56,7 +57,7 @@ class _SignInState extends State<SignIn> {
           child: Padding(
             padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05),
             child: Form(
-              key: authProvider.formKey2,
+              key: formKey,
               child: Padding(
                 padding: EdgeInsets.all(width * 0.02),
                 child: Column(
@@ -71,12 +72,7 @@ class _SignInState extends State<SignIn> {
                           Image.asset('images/img.png',
                               height: width * 0.1, width: width * 0.125),
                           SizedBox(width: width * 0.01),
-                          const Text('BSL ORDERS',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Poppins',
-                              )),
+                          const Text('BSL ORDERS', style: KMENUTextStyle),
                         ],
                       ),
                     ),
@@ -108,7 +104,7 @@ class _SignInState extends State<SignIn> {
                             SizedBox(height: height * 0.05),
                             Text('Phone Number', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            form(
+                            numberForm(
                               focusedBorder: true,
                               controller: authProvider.numberController,
                               label: 'Phone Number',
@@ -120,13 +116,11 @@ class _SignInState extends State<SignIn> {
                               children: [
                                 Text('Password', style: KButtonTextStyle),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    authProvider.forgotPassword(context);
+                                  },
                                   child: Text('Forgot Password ?',
-                                      style: TextStyle(
-                                          color: blue,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 15)),
+                                      style: KForgotPassword),
                                 ),
                               ],
                             ),
@@ -151,10 +145,7 @@ class _SignInState extends State<SignIn> {
                                 ),
                                 const Text(
                                   'Remember me',
-                                  style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 15),
+                                  style: KForgotPassword,
                                 ),
                               ],
                             ),
@@ -166,7 +157,11 @@ class _SignInState extends State<SignIn> {
                                   text: 'Continue',
                                   isLoading: authProvider.isloading,
                                   onPressed: () async {
-                                    authProvider.LoginImplementation(context);
+                                    if (formKey.currentState!.validate()) {
+                                      authProvider.changeStatus(true);
+                                      authProvider.login(context);
+                                      formKey.currentState?.reset();
+                                    }
                                   },
                                 ),
                               ),
@@ -182,10 +177,7 @@ class _SignInState extends State<SignIn> {
                               children: [
                                 const Text(
                                   'Don\'t have an account?',
-                                  style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 15),
+                                  style: KForgotPassword,
                                 ),
                                 TextButton(
                                   onPressed: () {
@@ -197,11 +189,7 @@ class _SignInState extends State<SignIn> {
                                   },
                                   child: Text(
                                     'Sign up now',
-                                    style: TextStyle(
-                                        color: blue,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 15),
+                                    style: KForgotPassword,
                                   ),
                                 ),
                               ],

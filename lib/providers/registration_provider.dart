@@ -17,7 +17,7 @@ class RegProvider extends Manage {
   final TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  final formKey1 = GlobalKey<FormState>();
+  final formKey1 = GlobalKey<FormState>(debugLabel: 'signup');
 
   registerImplementation(BuildContext context) async {
     if (formKey1.currentState!.validate()) {
@@ -50,39 +50,19 @@ class RegProvider extends Manage {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              title: Text('Thank you for registering', style: KAlertHeader),
-              insetPadding: EdgeInsets.symmetric(vertical: 240),
-              content: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Our administrators will get back to you',
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        child: Text(
-                          'Sign in now',
-                          style: KAlertButton,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignIn()),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-            ;
+            return alertDialog(context, () {
+              Navigator.popAndPushNamed(context, '/signin');
+            }, 'You\'ve Signed Up', "Contact your administrators", 'Sign In');
+          });
+    } else if (response.statusCode == 422) {
+      changeRegisterStatus(false);
+      notifyListeners();
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alertDialog(context, () {
+              Navigator.pop(context);
+            }, 'Invalid Details', "Please provide valid form details", 'Exit');
           });
     } else {
       changeRegisterStatus(false);

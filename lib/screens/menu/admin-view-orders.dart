@@ -1,35 +1,48 @@
-import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lunch_ordering/providers/food_providers.dart';
-import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/components.dart';
 import 'package:provider/provider.dart';
 
-import '../Domain/orders.dart';
-import 'main-screen.dart';
+import '../../Domain/orders.dart';
+import '../../components.dart';
+import '../../constants.dart';
+import '../../providers/food_providers.dart';
+import '../../shared_preferences.dart';
 
-class ViewHistory extends StatefulWidget {
-  const ViewHistory({Key? key}) : super(key: key);
+class AdminViewOrders extends StatefulWidget {
+  const AdminViewOrders({Key? key}) : super(key: key);
 
   @override
-  State<ViewHistory> createState() => _ViewHistoryState();
+  State<AdminViewOrders> createState() => _AdminViewOrdersState();
 }
 
-class _ViewHistoryState extends State<ViewHistory> {
-  var height, width;
-  bool isLoading = false;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+class _AdminViewOrdersState extends State<AdminViewOrders> {
+  late FoodProvider foodVm;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getToken();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var height, width;
+    bool isLoading = false;
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    var scaffoldKey = GlobalKey<ScaffoldState>();
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    bool isSelected = false;
     final foodProvider = Provider.of<FoodProvider>(context);
+    bool isSelected = false;
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: MainScreenDrawer(),
+      drawer: NavDrawer(),
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
@@ -44,18 +57,12 @@ class _ViewHistoryState extends State<ViewHistory> {
                     children: [
                       Image.asset('images/img.png', height: 40, width: 45),
                       SizedBox(width: width * 0.03),
-                      Text('BSL',
+                      Text('MENU',
                           style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
                               fontSize: 20)),
                       SizedBox(width: width * 0.02),
-                      Text('ORDERS',
-                          style: TextStyle(
-                              color: darkblue,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20)),
                     ],
                   ),
                   Row(
@@ -73,20 +80,8 @@ class _ViewHistoryState extends State<ViewHistory> {
                   ),
                 ],
               ),
-              SizedBox(height: height * 0.05),
-              Row(
-                children: [
-                  Text('ORDER HISTORY',
-                      style: TextStyle(
-                          color: darkblue,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20)),
-                ],
-              ),
-              SizedBox(height: height * 0.07),
               FutureBuilder<List<Orders>?>(
-                  future: foodProvider.getPreviousOrders(context),
+                  future: foodProvider.getOrders(context),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Orders>? orders = snapshot.data;
@@ -101,6 +96,8 @@ class _ViewHistoryState extends State<ViewHistory> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
+                                  // Text('Name: ' + orders![index].name?,
+                                  //     style: KCardTextStyle),
                                   SizedBox(height: height * 0.04),
                                   Text('Food: ' + orders![index].food,
                                       style: KCardTextStyle),
