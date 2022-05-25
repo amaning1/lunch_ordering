@@ -9,7 +9,8 @@ import '../providers/food_providers.dart';
 import '../shared_preferences.dart';
 import 'package:provider/provider.dart';
 
-int? selected = 0;
+int? foodSelected;
+int? drinkSelected;
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -42,7 +43,7 @@ class _MenuScreenState extends State<MenuScreen> {
     bool isSelected = false;
     final foodProvider = Provider.of<FoodProvider>(context, listen: true);
 
-    Widget build1(BuildContext context) {
+    Widget foodMenu(BuildContext context) {
       return ListView.builder(
           shrinkWrap: true,
           itemCount: foodProvider.menu.length,
@@ -60,7 +61,35 @@ class _MenuScreenState extends State<MenuScreen> {
                 onTap: () {
                   setState(() {
                     selectedIndex = index;
-                    selected = foodProvider.menu[index].id!;
+                    foodSelected = foodProvider.menu[index].id!;
+                  });
+                },
+                selectedTileColor: darkblue,
+                selectedColor: Colors.white,
+              ),
+            );
+          });
+    }
+
+    Widget drinksMenu(BuildContext context) {
+      return ListView.builder(
+          shrinkWrap: true,
+          itemCount: foodProvider.drinks.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                title: Text(foodProvider.drinks[index].Option!),
+                selected: index == selectedIndex,
+                onTap: () {
+                  setState(() {
+                    selectedIndex = index;
+                    drinkSelected = foodProvider.drinks[index].id!;
                   });
                 },
                 selectedTileColor: darkblue,
@@ -86,11 +115,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     Image.asset('images/img.png',
                         height: width * 0.1, width: width * 0.1),
                     SizedBox(width: width * 0.05),
-                    Text('BSL ORDERS',
-                        style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20)),
+                    Text('BSL ORDERS', style: KMENUTextStyle),
                   ],
                 ),
                 Row(
@@ -150,20 +175,13 @@ class _MenuScreenState extends State<MenuScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Choose Food',
-                                style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: darkblue,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold)),
-                            build1(context),
+                            Text('Choose Food', style: KButtonTextStyle),
+                            foodMenu(context),
+                            Text('Choose Drink', style: KButtonTextStyle),
                             SizedBox(height: height * 0.02),
-                            Text('Comments',
-                                style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: darkblue,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold)),
+                            drinksMenu(context),
+                            SizedBox(height: height * 0.02),
+                            Text('Comments', style: KButtonTextStyle),
                             SizedBox(height: height * 0.02),
                             Container(
                                 decoration: BoxDecoration(

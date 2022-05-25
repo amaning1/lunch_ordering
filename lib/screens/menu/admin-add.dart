@@ -21,22 +21,16 @@ class AdminAdd extends StatefulWidget {
 }
 
 class _AdminAddState extends State<AdminAdd> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var height, width;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   final List<ChipData> allChips = [];
-  TextEditingController foodcontroller = TextEditingController();
-  TextEditingController drinkcontroller = TextEditingController();
-  int selectedIndex = 0;
+  int? selectedIndex;
 
   int index = 0;
 
   @override
   void initState() {
     super.initState();
-
-    final List<ChipData> allChips = [];
-    List<int> foodIDS = [];
   }
 
   @override
@@ -45,6 +39,15 @@ class _AdminAddState extends State<AdminAdd> {
     width = MediaQuery.of(context).size.width;
     bool isSelected = false;
     final foodProvider = Provider.of<FoodProvider>(context);
+    void removeFood(id) {
+      foodProvider.foodIDS.remove(id);
+      foodProvider.deleteFoodChip(id);
+    }
+
+    void removeDrink(id) {
+      foodProvider.drinkIDS.remove(id);
+      foodProvider.deleteDrinkChip(id);
+    }
 
     return Scaffold(
       key: scaffoldKey,
@@ -52,8 +55,6 @@ class _AdminAddState extends State<AdminAdd> {
       body: Padding(
         padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,18 +63,9 @@ class _AdminAddState extends State<AdminAdd> {
                   children: [
                     Image.asset('images/img.png', height: 40, width: 45),
                     SizedBox(width: width * 0.03),
-                    Text('Add',
-                        style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20)),
+                    Text('Add', style: KMENUTextStyle),
                     SizedBox(width: width * 0.02),
-                    Text(foodProvider.type,
-                        style: TextStyle(
-                            color: darkblue,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20)),
+                    Text(foodProvider.type, style: KMENUTextStyle),
                   ],
                 ),
                 Row(
@@ -148,16 +140,21 @@ class _AdminAddState extends State<AdminAdd> {
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     title: Text(menu![index].Option!),
-                                    selected: index == selectedIndex,
+                                    selected: foodProvider.foodIDS
+                                        .contains(menu[index].id),
                                     onTap: () {
                                       setState(() {
-                                        foodProvider.FoodChips.add(ChipData(
-                                            id: menu[index].id!,
-                                            name: menu[index].Option!));
+                                        foodProvider.foodIDS
+                                                .contains(menu[index].id)
+                                            ? removeFood(menu[index].id)
+                                            : foodProvider.FoodChips.add(
+                                                ChipData(
+                                                    id: menu[index].id!,
+                                                    name: menu[index].Option!));
                                         foodProvider.foodIDS
                                             .add(menu[index].id!);
                                         selectedIndex = index;
-                                        selected = menu[index].id!;
+                                        //selected = menu[index].id!;
                                       });
                                     },
                                     selectedTileColor: darkblue,
@@ -195,16 +192,20 @@ class _AdminAddState extends State<AdminAdd> {
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     title: Text(menu![index].Option!),
-                                    selected: index == selectedIndex,
+                                    selected: foodProvider.drinkIDS
+                                        .contains(menu[index].id),
                                     onTap: () {
                                       setState(() {
-                                        foodProvider.DrinkChips.add(ChipData(
-                                            id: menu[index].id!,
-                                            name: menu[index].Option!));
+                                        foodProvider.drinkIDS
+                                                .contains(menu[index].id)
+                                            ? removeDrink(menu[index].id)
+                                            : foodProvider.DrinkChips.add(
+                                                ChipData(
+                                                    id: menu[index].id!,
+                                                    name: menu[index].Option!));
                                         foodProvider.drinkIDS
                                             .add(menu[index].id!);
                                         selectedIndex = index;
-                                        selected = menu[index].id!;
                                       });
                                     },
                                     selectedTileColor: darkblue,

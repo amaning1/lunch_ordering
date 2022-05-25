@@ -11,12 +11,14 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
 import '../Domain/ChipData.dart';
+import '../Domain/drinks.dart';
 import '../Domain/foods.dart';
 import '../Domain/menu.dart';
 import '../Domain/orders.dart';
 import '../constants.dart';
 import '../screens/main-screen.dart';
 import '../screens/view-history.dart';
+import '../shared_preferences.dart';
 import 'Manage.dart';
 
 class FoodProvider extends Manage {
@@ -26,6 +28,7 @@ class FoodProvider extends Manage {
   TextEditingController option3controller = TextEditingController();
   TextEditingController option4controller = TextEditingController();
   List<Menu> menu = [];
+  List<Drinks> drinks = [];
   List<ChipData> FoodChips = [];
   List<ChipData> DrinkChips = [];
   List<int> foodIDS = [];
@@ -43,14 +46,6 @@ class FoodProvider extends Manage {
   void deleteDrinkChip(int id) {
     DrinkChips.removeWhere((element) => element.id == id);
     notifyListeners();
-  }
-
-  Future getToken() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    var tok = sharedPreferences.getString('token');
-
-    token = tok!;
   }
 
   Future deleteFood(food_id) async {
@@ -127,8 +122,8 @@ class FoodProvider extends Manage {
       },
       body: jsonEncode(<String, dynamic>{
         'menu_id': menuIDx,
-        'food_id': selected.toString(),
-        'drink_id': "14",
+        'food_id': foodSelected.toString(),
+        'drink_id': drinkSelected.toString(),
         'comment': textFieldController.text,
       }),
     );
@@ -172,9 +167,11 @@ class FoodProvider extends Manage {
 
     if (response.statusCode == 200) {
       String data = response.body;
-      var rest = jsonDecode(data)['data']['foods'] as List;
-      print(rest);
-      menu = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
+      var foods = jsonDecode(data)['data']['foods'] as List;
+      var allDrinks = jsonDecode(data)['data']['drinks'] as List;
+      print(allDrinks);
+      menu = foods.map<Menu>((json) => Menu.fromJson(json)).toList();
+      drinks = allDrinks.map<Drinks>((json) => Drinks.fromJson(json)).toList();
       Navigator.pushNamed(context, '/third');
     } else if (response.statusCode == 401) {
       showDialog(
@@ -349,10 +346,10 @@ class FoodProvider extends Manage {
       return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Menu added Successfully', style: KNTSYAStyle),
-            content: Text(''),
-          );
+          return alertDialog(context, () {
+            Navigator.pushReplacementNamed(context, '/allMenus');
+          }, 'Menu Added', 'The menu has been added successfully',
+              'View Menus');
         },
       );
     } else {
@@ -363,7 +360,10 @@ class FoodProvider extends Manage {
       return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialogLogin(response);
+          return alertDialog(context, () {
+            Navigator.popAndPushNamed(context, '/allMenus');
+          }, 'Error ', 'There was a problem adding your menu. Try again later',
+              'View Menus');
         },
       );
     }
