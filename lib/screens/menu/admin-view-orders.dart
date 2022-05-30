@@ -114,9 +114,9 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: blue,
                       ),
                     );
                   }),

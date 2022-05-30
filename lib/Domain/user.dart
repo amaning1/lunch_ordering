@@ -5,12 +5,13 @@ class User {
   String phone_number;
   String type;
 
-  User(
-      {required this.token,
-      required this.status,
-      required this.name,
-      required this.phone_number,
-      required this.type});
+  User({
+    required this.token,
+    required this.status,
+    required this.name,
+    required this.phone_number,
+    required this.type,
+  });
 
   factory User.fromJson(Map<String, dynamic> responseData) {
     return User(

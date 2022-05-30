@@ -21,7 +21,9 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   var size, height, width;
-  int selectedIndex = 0;
+  int? selectedFoodIndex;
+  int? selectedDrinkIndex;
+
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late FoodProvider foodVm;
 
@@ -57,10 +59,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 title: Text(foodProvider.menu[index].Option!),
-                selected: index == selectedIndex,
+                selected: index == selectedFoodIndex,
                 onTap: () {
                   setState(() {
-                    selectedIndex = index;
+                    selectedFoodIndex = index;
                     foodSelected = foodProvider.menu[index].id!;
                   });
                 },
@@ -85,10 +87,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 title: Text(foodProvider.drinks[index].Option!),
-                selected: index == selectedIndex,
+                selected: index == selectedDrinkIndex,
                 onTap: () {
                   setState(() {
-                    selectedIndex = index;
+                    selectedDrinkIndex = index;
                     drinkSelected = foodProvider.drinks[index].id!;
                   });
                 },
@@ -177,12 +179,12 @@ class _MenuScreenState extends State<MenuScreen> {
                           children: [
                             Text('Choose Food', style: KButtonTextStyle),
                             foodMenu(context),
+                            SizedBox(height: height * 0.04),
                             Text('Choose Drink', style: KButtonTextStyle),
-                            SizedBox(height: height * 0.02),
                             drinksMenu(context),
-                            SizedBox(height: height * 0.02),
+                            SizedBox(height: height * 0.04),
                             Text('Comments', style: KButtonTextStyle),
-                            SizedBox(height: height * 0.02),
+                            SizedBox(height: height * 0.04),
                             Container(
                                 decoration: BoxDecoration(
                                   color: darkblue,

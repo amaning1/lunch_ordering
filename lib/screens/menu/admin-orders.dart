@@ -121,8 +121,10 @@ class _AdminOrdersState extends State<AdminOrders> {
                           } else if (snapshot.hasError) {
                             return Text("${snapshot.error}");
                           }
-                          return CircularProgressIndicator(
-                            color: blue,
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: blue,
+                            ),
                           );
                         }),
                   ],

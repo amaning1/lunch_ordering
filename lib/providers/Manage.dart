@@ -12,7 +12,6 @@ class Manage extends ChangeNotifier {
 
   bool get isloadingmenu => _isloadingmenu;
   bool _rememberMe = false;
-  late int _menuIDx;
 
   String _type = '';
 
@@ -35,12 +34,6 @@ class Manage extends ChangeNotifier {
   // void deleteChip(Chips){
   //     Chips.removeWhere((element) => element.id == id);
   // }
-
-  int get menuIDx => _menuIDx;
-
-  set menuIDx(int value) {
-    _menuIDx = value;
-  }
 
   bool get isloading {
     return _isloading;

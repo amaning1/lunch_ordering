@@ -57,11 +57,7 @@ class _AllMenusState extends State<AllMenus> {
                     children: [
                       Image.asset('images/img.png', height: 40, width: 45),
                       SizedBox(width: width * 0.03),
-                      Text('MENU',
-                          style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20)),
+                      Text('MENU', style: KMENUTextStyle),
                       SizedBox(width: width * 0.02),
                     ],
                   ),

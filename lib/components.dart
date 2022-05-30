@@ -64,7 +64,16 @@ Widget column(isEmpty, context, String type, chipType, onPressed, isloading) {
   return Column(
     children: [
       isEmpty
-          ? Text('No $type Added', style: KNTSYAStyle)
+          ? Column(
+              children: [
+                Text('No $type Added', style: KNTSYAStyle),
+                Button(
+                  onPressed: onPressed,
+                  text: 'ADD',
+                  isLoading: isloading,
+                ),
+              ],
+            )
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: Wrap(
@@ -81,11 +90,6 @@ Widget column(isEmpty, context, String type, chipType, onPressed, isloading) {
                     .toList(),
               ),
             ),
-      Button(
-        onPressed: onPressed,
-        text: 'ADD',
-        isLoading: isloading,
-      )
     ],
   );
 }
@@ -129,6 +133,24 @@ class NavDrawer extends StatelessWidget {
                 onTap: () {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/fourth', (route) => false);
+                }),
+            ListTile(
+                hoverColor: darkblue,
+                leading: Icon(Icons.approval),
+                title: const Text('Approvals',
+                    style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/adminApprovalRequests', (route) => false);
+                }),
+            ListTile(
+                hoverColor: darkblue,
+                leading: Icon(Icons.add),
+                title: const Text('Add User',
+                    style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/adminAddUser', (route) => false);
                 }),
             ListTile(
                 hoverColor: darkblue,

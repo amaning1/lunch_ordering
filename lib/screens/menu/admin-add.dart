@@ -39,15 +39,6 @@ class _AdminAddState extends State<AdminAdd> {
     width = MediaQuery.of(context).size.width;
     bool isSelected = false;
     final foodProvider = Provider.of<FoodProvider>(context);
-    void removeFood(id) {
-      foodProvider.foodIDS.remove(id);
-      foodProvider.deleteFoodChip(id);
-    }
-
-    void removeDrink(id) {
-      foodProvider.drinkIDS.remove(id);
-      foodProvider.deleteDrinkChip(id);
-    }
 
     return Scaffold(
       key: scaffoldKey,
@@ -146,14 +137,11 @@ class _AdminAddState extends State<AdminAdd> {
                                       setState(() {
                                         foodProvider.foodIDS
                                                 .contains(menu[index].id)
-                                            ? removeFood(menu[index].id)
-                                            : foodProvider.FoodChips.add(
-                                                ChipData(
-                                                    id: menu[index].id!,
-                                                    name: menu[index].Option!));
-                                        foodProvider.foodIDS
-                                            .add(menu[index].id!);
-                                        selectedIndex = index;
+                                            ? foodProvider
+                                                .removeFood(menu[index].id)
+                                            : foodProvider.addFood(
+                                                menu, index, selectedIndex);
+                                        print(foodProvider.foodIDS);
                                         //selected = menu[index].id!;
                                       });
                                     },
@@ -198,14 +186,10 @@ class _AdminAddState extends State<AdminAdd> {
                                       setState(() {
                                         foodProvider.drinkIDS
                                                 .contains(menu[index].id)
-                                            ? removeDrink(menu[index].id)
-                                            : foodProvider.DrinkChips.add(
-                                                ChipData(
-                                                    id: menu[index].id!,
-                                                    name: menu[index].Option!));
-                                        foodProvider.drinkIDS
-                                            .add(menu[index].id!);
-                                        selectedIndex = index;
+                                            ? foodProvider
+                                                .removeDrink(menu[index].id)
+                                            : foodProvider.addDrink(
+                                                menu, index, selectedIndex);
                                       });
                                     },
                                     selectedTileColor: darkblue,

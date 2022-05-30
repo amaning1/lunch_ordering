@@ -19,6 +19,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
+      // foodVm = Provider.of<FoodProvider>(context, listen: true).getMenuID()
+      //     as FoodProvider;
       foodVm = Provider.of<FoodProvider>(context, listen: false)
           .fetchFood(context) as FoodProvider;
     });
