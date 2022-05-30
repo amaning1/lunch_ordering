@@ -41,6 +41,30 @@ class FoodProvider extends Manage {
   String token = '';
 
   var tomorrow = DateTime.now().add(new Duration(days: 1));
+  var time2 = DateTime.now();
+  var newHour = 7;
+  var chefHour = 14;
+  var minute = 00;
+  var second = 00;
+  void date() {
+    DateTime time = new DateTime(time2.year, time2.month, time2.day, newHour,
+        minute, second, time2.millisecond, time2.microsecond);
+    if (time2.isBefore(time)) {
+      tomorrow = DateTime.now();
+    } else {
+      tomorrow = tomorrow;
+    }
+  }
+
+  void dateChef() {
+    DateTime time = new DateTime(time2.year, time2.month, time2.day, newHour,
+        minute, second, time2.millisecond, time2.microsecond);
+    if (time2.isBefore(time)) {
+      tomorrow = DateTime.now();
+    } else {
+      tomorrow = tomorrow;
+    }
+  }
 
   void deleteFoodChip(int id) {
     FoodChips.removeWhere((element) => element.id == id);
@@ -116,12 +140,16 @@ class FoodProvider extends Manage {
 
   Future<List<Orders>?> getOrders(context) async {
     await getToken();
+    dateChef();
+    String formatDate = DateFormat("yyyy-MM-dd").format(tomorrow);
+    print(formatDate);
     List<Orders>? list;
-    final response =
-        await http.get(Uri.parse(AppURL.allOrders), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-    });
+    final response = await http.get(
+        Uri.parse(AppURL.allOrders + '?menu_date=$formatDate'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        });
     if (response.statusCode == 200) {
       String data = response.body;
       print(data);
@@ -177,7 +205,7 @@ class FoodProvider extends Manage {
         builder: (BuildContext context) {
           return alertDialog(context, () {
             Navigator.pushNamed(context, '/history');
-          }, 'Uh Oh', 'You\'ve already placed an order', 'History');
+          }, 'Uh Oh', 'You\'ve already placed an order', 'Update');
         },
       );
     }
@@ -185,10 +213,10 @@ class FoodProvider extends Manage {
 
   Future<List<Menu>?> fetchFood(context) async {
     await getToken();
-    print(tomorrow);
+    date();
     String formatDate = DateFormat("yyyy-MM-dd").format(tomorrow);
-    print(formatDate);
     List<Menu>? list;
+
     final response = await http.get(
       Uri.parse(AppURL.getMenu + '?menu_date=$formatDate'),
       headers: <String, String>{
@@ -200,32 +228,27 @@ class FoodProvider extends Manage {
     if (response.statusCode == 200) {
       String data = response.body;
       menuIDx = jsonDecode(data)['data']['menu_id'];
-
+      changeMenu(true);
       var foods = jsonDecode(data)['data']['foods'] as List;
       var allDrinks = jsonDecode(data)['data']['drinks'] as List;
       print(allDrinks);
       menu = foods.map<Menu>((json) => Menu.fromJson(json)).toList();
       drinks = allDrinks.map<Drinks>((json) => Drinks.fromJson(json)).toList();
-      Navigator.pushNamed(context, '/third');
+      Navigator.pushNamed(context, '/User');
     } else if (response.statusCode == 401) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            Navigator.pushNamed(context, '/history');
-          }, 'Please wait', 'There\'s no menu for this date yet',
-              'View History');
-        },
-      );
+      changeMenu(false);
+      Navigator.pushNamed(context, '/User');
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            logout(context);
-          }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
-        },
-      );
+      changeMenu(false);
+
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return alertDialog(context, () {
+      //       logout(context);
+      //     }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
+      //   },
+      // );
     }
     return list;
   }

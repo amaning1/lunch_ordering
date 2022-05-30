@@ -88,8 +88,7 @@ class _AdminAddState extends State<AdminAdd> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 7, horizontal: 10),
                             deleteIconColor: Colors.red,
-                            onDeleted: () =>
-                                foodProvider.deleteFoodChip(chip.id),
+                            onDeleted: () => foodProvider.removeDrink(chip.id),
                           )).toList(),
                     ),
                   )
@@ -105,8 +104,7 @@ class _AdminAddState extends State<AdminAdd> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 7, horizontal: 10),
                             deleteIconColor: Colors.red,
-                            onDeleted: () =>
-                                foodProvider.deleteDrinkChip(chip.id),
+                            onDeleted: () => foodProvider.removeDrink(chip.id),
                           )).toList(),
                     ),
                   ),

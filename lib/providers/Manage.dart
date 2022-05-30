@@ -8,6 +8,7 @@ class Manage extends ChangeNotifier {
   bool _isloadingregister = false;
   bool _isloadingmenu = false;
   bool _menuloading = false;
+  bool _isMenu = false;
   List<ChipData> Chips = [];
 
   bool get isloadingmenu => _isloadingmenu;
@@ -39,6 +40,10 @@ class Manage extends ChangeNotifier {
     return _isloading;
   }
 
+  bool get isMenu {
+    return _isMenu;
+  }
+
   bool get menuloading {
     return _menuloading;
   }
@@ -49,6 +54,11 @@ class Manage extends ChangeNotifier {
 
   bool get rememberMe {
     return _rememberMe;
+  }
+
+  void changeMenu(bool isMenu) {
+    _isMenu = isMenu;
+    notifyListeners();
   }
 
   void changemenuStatus(bool isLoading) {

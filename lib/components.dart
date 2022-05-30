@@ -54,7 +54,7 @@ Widget row(String type, bool isloading, onPressed) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(type, style: menuLarge),
+      Text(type, style: KMENUTextStyle),
       Button(text: 'ADD', isLoading: isloading, onPressed: onPressed)
     ],
   );

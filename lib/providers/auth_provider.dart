@@ -17,7 +17,7 @@ class AuthProvider extends Manage {
   final TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  late User user;
   Future loadUserNumberPassword() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -103,7 +103,7 @@ class AuthProvider extends Manage {
       changeStatus(false);
 
       var rest = jsonDecode(data)['data'];
-      User user = User.fromJson(rest);
+      user = User.fromJson(rest);
       saveToken(user.token);
       saveUserDetails(user.phone_number, passwordController.text);
       print(user.phone_number);
@@ -113,7 +113,7 @@ class AuthProvider extends Manage {
 
       if (user.type == "chef" || user.type == "admin") {
         saveToken(user.token);
-        Navigator.pushNamed(context, '/fourth');
+        Navigator.pushNamed(context, '/allMenus');
       } else {
         saveToken(user.token);
         Navigator.pushNamed(context, '/splash');

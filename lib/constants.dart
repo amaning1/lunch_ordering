@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 Color blue = Color(0xFF007AFF);
 Color darkblue = Color(0xFF002C59);
 Color grayish = Color(0xFFE4EBF2);
+Color container = Color(0xFF80E4EBF2);
 
 bool state = false;
 bool SwitchSelected = false;

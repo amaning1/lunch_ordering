@@ -77,6 +77,11 @@ class _AdminAddUserState extends State<AdminAddUser> {
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.2),

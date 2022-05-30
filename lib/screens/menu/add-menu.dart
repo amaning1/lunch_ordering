@@ -48,6 +48,7 @@ class _AddMenuState extends State<AddMenu> {
           padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -131,11 +132,5 @@ class _AddMenuState extends State<AddMenu> {
         ),
       ),
     );
-  }
-
-  void _deleteChip(int id) {
-    setState(() {
-      allChips.removeWhere((element) => element.id == id);
-    });
   }
 }

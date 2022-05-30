@@ -33,7 +33,7 @@ class _ViewHistoryState extends State<ViewHistory> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-              top: height * 0.04, left: height * 0.02, right: height * 0.04),
+              top: height * 0.04, left: height * 0.04, right: height * 0.04),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
