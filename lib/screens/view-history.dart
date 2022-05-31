@@ -6,6 +6,7 @@ import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:provider/provider.dart';
+import '../Domain/oldOrders.dart';
 import '../Domain/orders.dart';
 
 class ViewHistory extends StatefulWidget {
@@ -71,51 +72,35 @@ class _ViewHistoryState extends State<ViewHistory> {
                 ],
               ),
               SizedBox(height: height * 0.02),
-              FutureBuilder<List<Orders>?>(
-                  future: foodProvider.getPreviousOrders(context),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Orders>? orders = snapshot.data;
+              ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: foodProvider.list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var formatDate =
+                        DateTime.tryParse(foodProvider.list[index].time);
+                    String Date = DateFormat("yyyy-MM-dd").format(formatDate!);
 
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: orders?.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var formatDate =
-                                DateTime.tryParse(orders![index].time);
-                            String Date =
-                                DateFormat("yyyy-MM-dd").format(formatDate!);
-
-                            return Card(
-                                child: Padding(
-                              padding: EdgeInsets.fromLTRB(height * 0.04,
-                                  height * 0.02, height * 0.04, height * 0.02),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('Date: ' + Date, style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Food: ' + orders[index].food,
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Drink: ' + orders[index].drink,
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Comment: ' + orders[index].comment!,
-                                      style: KTextStyle3),
-                                ],
-                              ),
-                            ));
-                          });
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: blue,
+                    return Card(
+                        child: Padding(
+                      padding: EdgeInsets.fromLTRB(height * 0.04, height * 0.02,
+                          height * 0.04, height * 0.02),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('Date: ' + Date, style: KTextStyle3),
+                          SizedBox(height: height * 0.04),
+                          Text('Food: ' + foodProvider.list[index].food,
+                              style: KTextStyle3),
+                          SizedBox(height: height * 0.04),
+                          Text('Drink: ' + foodProvider.list[index].drink,
+                              style: KTextStyle3),
+                          SizedBox(height: height * 0.04),
+                          Text('Comment: ' + foodProvider.list[index].comment!,
+                              style: KTextStyle3),
+                        ],
                       ),
-                    );
-                  }),
+                    ));
+                  })
             ],
           ),
         ),

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/providers/food_providers.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'Domain/ChipData.dart';
-
-List<String> food = <String>[];
-List<String> drink = <String>[];
 AlertDialog alertDialogLogin(http.Response response) {
   if (response.statusCode == 401) {
-    return AlertDialog(
+    return const AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
       title: Icon(Icons.cancel, color: Colors.red),
@@ -420,11 +415,16 @@ class _numberFormState extends State<numberForm> {
 }
 
 class Button extends StatefulWidget {
-  Button({this.onPressed, required this.text, required this.isLoading});
+  Button(
+      {this.onPressed,
+      required this.text,
+      required this.isLoading,
+      this.color});
 
   final String text;
   Function()? onPressed;
   bool isLoading = false;
+  Color? color;
 
   @override
   State<Button> createState() => _ButtonState();
@@ -436,12 +436,17 @@ class _ButtonState extends State<Button> {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(darkblue),
-        ),
+        style: widget.color != null
+            ? ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(widget.color!),
+              )
+            : ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(darkblue),
+              ),
         onPressed: widget.onPressed,
         child: widget.isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 width: 15.0,
                 height: 15.0,
                 child: CircularProgressIndicator(
@@ -451,7 +456,7 @@ class _ButtonState extends State<Button> {
               )
             : Text(
                 widget.text,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   fontFamily: 'Poppins',
@@ -516,5 +521,58 @@ class MainScreenDrawer extends StatelessWidget {
         ],
       ),
     ));
+  }
+}
+
+class CustomWidget extends StatefulWidget {
+  const CustomWidget({
+    Key? key,
+    required this.food,
+    required this.drink,
+    required this.date,
+  }) : super(key: key);
+  final String food, drink, date;
+  @override
+  State<CustomWidget> createState() => _CustomWidgetState();
+}
+
+class _CustomWidgetState extends State<CustomWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+        scrollable: true,
+        content: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              const Text('You already placed an order for', style: KTextStyle3),
+              Text(widget.food, style: KTextStyle3),
+              Text('and ${widget.drink} on', style: KTextStyle3),
+              Text(' ${widget.date} ', style: KTextStyle3),
+              const Text('Do you want to replace order?', style: KTextStyle3),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Button(
+                      text: 'Yes',
+                      isLoading: false,
+                      onPressed: () {
+                        Navigator.pushNamed(context, '');
+                      },
+                      color: Colors.green,
+                    ),
+                    Button(
+                      text: 'No',
+                      isLoading: false,
+                      onPressed: () {
+                        Navigator.pushNamed(context, '');
+                      },
+                      color: Colors.red,
+                    ),
+                  ])
+            ],
+          ),
+        ));
   }
 }

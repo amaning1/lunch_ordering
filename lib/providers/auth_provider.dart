@@ -4,13 +4,11 @@ import 'dart:core';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/Manage.dart';
-import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
 import '../Domain/user.dart';
 import '../components.dart';
-import '../constants.dart';
 
 class AuthProvider extends Manage {
   bool isAuthenticating = false;
@@ -18,16 +16,13 @@ class AuthProvider extends Manage {
   TextEditingController numberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   late User user;
+
   Future loadUserNumberPassword() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var phone_number = prefs.getString('phone_number');
       var password = prefs.getString('password');
       var rememberMe = prefs.getBool("remember_me");
-
-      print(rememberMe);
-      print(phone_number);
-      print(password);
 
       if (rememberMe == true) {
         numberController.text = phone_number!;
@@ -41,10 +36,7 @@ class AuthProvider extends Manage {
   Future autoLogIn(context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      print('1');
       var phoneNumber = prefs.getString('phone_number');
-      print(phoneNumber);
-      print('2');
       var password = prefs.getString('password');
       notifyListeners();
 
@@ -56,9 +48,7 @@ class AuthProvider extends Manage {
       } else {
         Navigator.pushReplacementNamed(context, '/signin');
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   Future forgotPassword(context) async {
@@ -99,16 +89,12 @@ class AuthProvider extends Manage {
     );
     if (response.statusCode == 202) {
       String data = response.body;
-      print(data);
       changeStatus(false);
 
       var rest = jsonDecode(data)['data'];
       user = User.fromJson(rest);
       saveToken(user.token);
       saveUserDetails(user.phone_number, passwordController.text);
-      print(user.phone_number);
-      print('100');
-      print(passwordController.text);
       clearForm();
 
       if (user.type == "chef" || user.type == "admin") {
@@ -131,9 +117,6 @@ class AuthProvider extends Manage {
               Navigator.pop(context);
             }, 'Invalid Login', message.toString(), 'Exit');
           });
-
-      print(response.statusCode);
-      print(response.body);
     }
     return null;
   }

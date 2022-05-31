@@ -9,7 +9,6 @@ import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
 import '../Domain/ChipData.dart';
@@ -17,6 +16,7 @@ import '../Domain/drinks.dart';
 import '../Domain/foods.dart';
 import '../Domain/menu.dart';
 import '../Domain/new-user.dart';
+import '../Domain/oldOrders.dart';
 import '../Domain/orders.dart';
 import '../constants.dart';
 import '../screens/main-screen.dart';
@@ -31,23 +31,25 @@ class FoodProvider extends Manage {
   TextEditingController option3controller = TextEditingController();
   TextEditingController option4controller = TextEditingController();
   List<Menu> menu = [];
+  List<OldOrders> list = [];
   List<Drinks> drinks = [];
   List<ChipData> FoodChips = [];
   List<ChipData> DrinkChips = [];
   List<int> foodIDS = [];
   List<int> drinkIDS = [];
   int menuIDx = 0;
+  late OldOrders oldOrders;
 
   String token = '';
 
-  var tomorrow = DateTime.now().add(new Duration(days: 1));
+  var tomorrow = DateTime.now().add(Duration(days: 1));
   var time2 = DateTime.now();
   var newHour = 7;
   var chefHour = 14;
   var minute = 00;
   var second = 00;
   void date() {
-    DateTime time = new DateTime(time2.year, time2.month, time2.day, newHour,
+    DateTime time = DateTime(time2.year, time2.month, time2.day, newHour,
         minute, second, time2.millisecond, time2.microsecond);
     if (time2.isBefore(time)) {
       tomorrow = DateTime.now();
@@ -57,7 +59,7 @@ class FoodProvider extends Manage {
   }
 
   void dateChef() {
-    DateTime time = new DateTime(time2.year, time2.month, time2.day, newHour,
+    DateTime time = DateTime(time2.year, time2.month, time2.day, newHour,
         minute, second, time2.millisecond, time2.microsecond);
     if (time2.isBefore(time)) {
       tomorrow = DateTime.now();
@@ -106,7 +108,7 @@ class FoodProvider extends Manage {
     token = tok!;
   }
 
-  Future deleteFood(food_id) async {
+  Future deleteFood(foodId) async {
     await getToken();
     final response = await http.delete(
       Uri.parse(AppURL.Foods),
@@ -115,12 +117,12 @@ class FoodProvider extends Manage {
         HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
       },
       body: jsonEncode(<String, int>{
-        'food_id': food_id,
+        'food_id': foodId,
       }),
     );
   }
 
-  Future approveUser(user_id) async {
+  Future approveUser(userId) async {
     changemenuStatus(true);
     await getToken();
     final response = await http.put(
@@ -130,7 +132,7 @@ class FoodProvider extends Manage {
         HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
       },
       body: jsonEncode(<String, int>{
-        'user_id': user_id,
+        'user_id': userId,
       }),
     );
     if (response.statusCode == 200) {
@@ -164,8 +166,6 @@ class FoodProvider extends Manage {
           }, 'No Orders', 'where', 'Exit');
         },
       );
-      print(response.statusCode);
-      print(response);
     }
     return list;
   }
@@ -177,7 +177,7 @@ class FoodProvider extends Manage {
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/order'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
       body: jsonEncode(<String, dynamic>{
         'menu_id': menuIDx,
@@ -186,9 +186,9 @@ class FoodProvider extends Manage {
         'comment': textFieldController.text,
       }),
     );
+    getPreviousOrders(context);
     if (response.statusCode == 202) {
       changeStatus(false);
-      print(response.body);
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -203,9 +203,11 @@ class FoodProvider extends Manage {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertDialog(context, () {
-            Navigator.pushNamed(context, '/history');
-          }, 'Uh Oh', 'You\'ve already placed an order', 'Update');
+          return CustomWidget(
+            food: oldOrders.food,
+            drink: oldOrders.drink,
+            date: oldOrders.time,
+          );
         },
       );
     }
@@ -215,13 +217,14 @@ class FoodProvider extends Manage {
     await getToken();
     date();
     String formatDate = DateFormat("yyyy-MM-dd").format(tomorrow);
+    getPreviousOrders(context);
     List<Menu>? list;
 
     final response = await http.get(
       Uri.parse(AppURL.getMenu + '?menu_date=$formatDate'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " + token,
       },
     );
 
@@ -240,6 +243,8 @@ class FoodProvider extends Manage {
       Navigator.pushNamed(context, '/User');
     } else {
       changeMenu(false);
+      print(response);
+      print(response.statusCode);
 
       // showDialog(
       //   context: context,
@@ -291,9 +296,8 @@ class FoodProvider extends Manage {
     return list;
   }
 
-  Future<List<Orders>?> getPreviousOrders(context) async {
-    await getToken();
-    List<Orders>? list;
+  Future<List<OldOrders>?> getPreviousOrders(context) async {
+    // await getToken();
     final response = await http.get(
       Uri.parse(AppURL.orderMenu),
       headers: <String, String>{
@@ -304,9 +308,12 @@ class FoodProvider extends Manage {
 
     if (response.statusCode == 200) {
       String data = response.body;
-      print(data);
       var rest = jsonDecode(data)['data'] as List;
-      list = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
+      oldOrders = OldOrders.fromJson(rest.last);
+      print(oldOrders);
+
+      list = rest.map<OldOrders>((json) => OldOrders.fromJson(json)).toList();
+      print(list);
     } else {
       String data = response.body;
       print(data);
