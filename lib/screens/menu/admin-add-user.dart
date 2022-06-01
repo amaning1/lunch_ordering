@@ -54,7 +54,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                               style: KMENUTextStyle,
                             ),
                             SizedBox(width: width * 0.02),
-                            Text('ORDERS', style: KMENUTextStyle),
+                            Text('ORDERS', style: KCardTextStyle),
                           ],
                         ),
                         Row(
@@ -166,7 +166,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                                 height: height * 0.1,
                                 child: Button(
                                   text: 'Add User',
-                                  isLoading: regProvider.isloadingregister,
+                                  isLoading: regProvider.isLoadingRegister,
                                   onPressed: () async {
                                     regProvider.addUser(context);
                                   },

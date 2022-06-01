@@ -32,12 +32,12 @@ class _SignInState extends State<SignIn> {
   void initState() {
     super.initState();
     getToken();
-    Future.delayed(Duration.zero, () {
-      // authVm = Provider.of<AuthProvider>(context, listen: true)
-      //     .autoLogIn(context) as AuthProvider;
-      authVm = Provider.of<AuthProvider>(context, listen: true)
-          .loadUserNumberPassword() as AuthProvider;
-    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    Provider.of<AuthProvider>(context, listen: true).loadUserNumberPassword();
+    super.didChangeDependencies();
   }
 
   @override
@@ -155,7 +155,7 @@ class _SignInState extends State<SignIn> {
                                 height: height * 0.1,
                                 child: Button(
                                   text: 'Continue',
-                                  isLoading: authProvider.isloading,
+                                  isLoading: authProvider.isLoading,
                                   onPressed: () async {
                                     if (formKey.currentState!.validate()) {
                                       authProvider.changeStatus(true);

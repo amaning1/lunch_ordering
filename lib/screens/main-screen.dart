@@ -127,7 +127,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     Image.asset('images/img.png',
                         height: width * 0.1, width: width * 0.1),
                     SizedBox(width: width * 0.05),
-                    Text('BSL ORDERS', style: KMENUTextStyle),
+                    Text('BSL ORDERS', style: KCardTextStyle),
                   ],
                 ),
                 Row(
@@ -224,10 +224,15 @@ class _MenuScreenState extends State<MenuScreen> {
                                       height: height * 0.1,
                                       child: Button(
                                         onPressed: () async {
-                                          foodProvider.orderFood(context);
+                                          foodProvider.updateOrder
+                                              ? foodProvider
+                                                  .updateFoodOrder(context)
+                                              : foodProvider.orderFood(context);
                                         },
-                                        isLoading: foodProvider.isloading,
-                                        text: 'Place Order',
+                                        isLoading: foodProvider.isLoading,
+                                        text: foodProvider.updateOrder
+                                            ? 'Update Order'
+                                            : 'Order Food',
                                       ),
                                     ),
                                   ),

@@ -44,7 +44,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                       SizedBox(width: width * 0.03),
                       Text('BSL', style: KMENUTextStyle),
                       SizedBox(width: width * 0.02),
-                      Text('ORDERS', style: KMENUTextStyle),
+                      Text('ORDERS', style: KCardTextStyle),
                     ],
                   ),
                   Row(
@@ -102,7 +102,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                                     children: [
                                       Button(
                                         text: 'Approve',
-                                        isLoading: foodProvider.isloadingmenu,
+                                        isLoading: foodProvider.menuLoading,
                                         onPressed: () {
                                           foodProvider.approveUser(
                                               users[index].user_id);
@@ -111,7 +111,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                                       SizedBox(width: height * 0.01),
                                       Button(
                                         text: 'Deny',
-                                        isLoading: foodProvider.isloadingmenu,
+                                        isLoading: foodProvider.menuLoading,
                                         onPressed: () {},
                                       ),
                                     ],

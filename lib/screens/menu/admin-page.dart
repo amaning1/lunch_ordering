@@ -61,7 +61,7 @@ class _AdminPageState extends State<AdminPage> {
                       SizedBox(width: width * 0.03),
                       Text('BSL', style: KMENUTextStyle),
                       SizedBox(width: width * 0.02),
-                      Text('ORDERS', style: KMENUTextStyle),
+                      Text('ORDERS', style: KCardTextStyle),
                     ],
                   ),
                   Row(
@@ -82,7 +82,7 @@ class _AdminPageState extends State<AdminPage> {
               SizedBox(height: height * 0.05),
               Row(
                 children: [
-                  Text('WELCOME CHEF', style: KMENUTextStyle),
+                  Text('WELCOME', style: KMENUTextStyle),
                 ],
               ),
               SizedBox(height: height * 0.02),

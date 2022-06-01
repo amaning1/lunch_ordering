@@ -57,7 +57,7 @@ class _AllMenusState extends State<AllMenus> {
                     children: [
                       Image.asset('images/img.png', height: 40, width: 45),
                       SizedBox(width: width * 0.03),
-                      Text('MENU', style: KMENUTextStyle),
+                      Text('MENU', style: KCardTextStyle),
                       SizedBox(width: width * 0.02),
                     ],
                   ),
@@ -116,11 +116,12 @@ class _AllMenusState extends State<AllMenus> {
               //         ),
               //       );
               //     }),
+              SizedBox(height: width * 0.5),
               Button(
                 onPressed: () {
                   Navigator.pushNamed(context, '/addMenu');
                 },
-                isLoading: foodProvider.isloading,
+                isLoading: foodProvider.isLoading,
                 text: 'Add Menu',
               )
             ],

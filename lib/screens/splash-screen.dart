@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:provider/provider.dart';
-
 import '../constants.dart';
 import 'main-screen.dart';
 
@@ -18,11 +17,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
-      foodVm = Provider.of<FoodProvider>(context, listen: false)
-          .fetchFood(context) as FoodProvider;
-    });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    Provider.of<FoodProvider>(context, listen: false).fetchFood(context);
+    super.didChangeDependencies();
   }
 
   @override

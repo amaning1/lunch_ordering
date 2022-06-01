@@ -19,11 +19,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
-      authVm = Provider.of<AuthProvider>(context, listen: false)
-          .autoLogIn(context) as AuthProvider;
-    });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    Provider.of<AuthProvider>(context, listen: false).autoLogIn(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -43,7 +45,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               Image.asset('images/img.png',
                   height: width * 0.2, width: width * 0.2),
               const SizedBox(width: 5),
-              const Text('BSL ORDERS', style: KMENUTextStyle),
+              const Text('BSL ORDERS', style: KCardTextStyle),
             ],
           ),
         ),

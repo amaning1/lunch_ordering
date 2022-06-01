@@ -60,7 +60,7 @@ class _AdminOrdersState extends State<AdminOrders> {
                         style: KMENUTextStyle,
                       ),
                       SizedBox(width: width * 0.02),
-                      Text('ORDERS', style: KMENUTextStyle),
+                      Text('ORDERS', style: KCardTextStyle),
                     ],
                   ),
                   Row(

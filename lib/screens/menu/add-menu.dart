@@ -59,7 +59,7 @@ class _AddMenuState extends State<AddMenu> {
                       SizedBox(width: width * 0.03),
                       Text('ADD', style: KMENUTextStyle),
                       SizedBox(width: width * 0.02),
-                      Text('MENU', style: KMENUTextStyle),
+                      Text('MENU', style: KCardTextStyle),
                     ],
                   ),
                   Row(
@@ -78,7 +78,7 @@ class _AddMenuState extends State<AddMenu> {
                 ],
               ),
               SizedBox(height: height * 0.05),
-              row('Food', foodProvider.isloading, () {
+              row('Food', foodProvider.isLoading, () {
                 foodProvider.typeFood();
                 Navigator.pushNamed(context, '/adminAdd');
               }),
@@ -93,11 +93,11 @@ class _AddMenuState extends State<AddMenu> {
                       foodProvider.FoodChips, () {
                     foodProvider.typeFood();
                     Navigator.pushNamed(context, '/adminAdd');
-                  }, foodProvider.isloading),
+                  }, foodProvider.isLoading),
                 ),
               ),
               SizedBox(height: height * 0.03),
-              row('Drink', foodProvider.isloading, () {
+              row('Drink', foodProvider.isLoading, () {
                 foodProvider.typeDrink();
                 Navigator.pushNamed(context, '/adminAdd');
               }),
@@ -112,21 +112,23 @@ class _AddMenuState extends State<AddMenu> {
                       'Drink', foodProvider.DrinkChips, () {
                     foodProvider.typeDrink();
                     Navigator.pushNamed(context, '/adminAdd');
-                  }, foodProvider.isloading),
+                  }, foodProvider.isLoading),
                 ),
               ),
+              foodProvider.DrinkChips.isEmpty
+                  ? SizedBox(height: height * 0.5)
+                  : SizedBox(),
               Container(
                 width: width * 0.4,
                 child: Button(
                   text: 'Add to Menu',
-                  isLoading: foodProvider.isloading,
+                  isLoading: foodProvider.menuLoading,
                   onPressed: () {
                     foodProvider.addMenu(
                         foodProvider.foodIDS, foodProvider.drinkIDS, context);
                   },
                 ),
               ),
-              SizedBox(height: height * 0.05),
             ],
           ),
         ),

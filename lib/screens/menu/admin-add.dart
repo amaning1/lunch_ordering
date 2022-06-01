@@ -56,7 +56,7 @@ class _AdminAddState extends State<AdminAdd> {
                     SizedBox(width: width * 0.03),
                     Text('Add', style: KMENUTextStyle),
                     SizedBox(width: width * 0.02),
-                    Text(foodProvider.type, style: KMENUTextStyle),
+                    Text(foodProvider.type, style: KCardTextStyle),
                   ],
                 ),
                 Row(
@@ -210,7 +210,7 @@ class _AdminAddState extends State<AdminAdd> {
               width: width * 0.4,
               child: Button(
                 text: 'Add to Menu',
-                isLoading: foodProvider.menuloading,
+                isLoading: foodProvider.menuLoading,
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/addMenu', (route) => false);

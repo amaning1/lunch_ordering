@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lunch_ordering/constants.dart';
+import 'package:lunch_ordering/providers/food_providers.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -539,12 +541,13 @@ class CustomWidget extends StatefulWidget {
 class _CustomWidgetState extends State<CustomWidget> {
   @override
   Widget build(BuildContext context) {
+    final foodProvider = Provider.of<FoodProvider>(context, listen: true);
+
     return AlertDialog(
         scrollable: true,
         content: Padding(
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               const Text('You already placed an order for', style: KTextStyle3),
               Text(widget.food, style: KTextStyle3),
@@ -558,7 +561,7 @@ class _CustomWidgetState extends State<CustomWidget> {
                       text: 'Yes',
                       isLoading: false,
                       onPressed: () {
-                        Navigator.pushNamed(context, '');
+                        foodProvider.changeUpdateOrder(true);
                       },
                       color: Colors.green,
                     ),
@@ -566,7 +569,7 @@ class _CustomWidgetState extends State<CustomWidget> {
                       text: 'No',
                       isLoading: false,
                       onPressed: () {
-                        Navigator.pushNamed(context, '');
+                        foodProvider.changeUpdateOrder(false);
                       },
                       color: Colors.red,
                     ),

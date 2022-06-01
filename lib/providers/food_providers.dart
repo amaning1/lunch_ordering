@@ -40,7 +40,7 @@ class FoodProvider extends Manage {
   int menuIDx = 0;
   late OldOrders oldOrders;
 
-  String token = '';
+  late String token;
 
   var tomorrow = DateTime.now().add(Duration(days: 1));
   var time2 = DateTime.now();
@@ -122,8 +122,53 @@ class FoodProvider extends Manage {
     );
   }
 
+  Future updateFoodOrder(context) async {
+    changeStatus(true);
+    // await getToken();
+    final response = await http.post(
+      Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/order'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
+      },
+      body: jsonEncode(<String, dynamic>{
+        'order_id': '',
+        'menu_id': menuIDx,
+        'food_id': foodSelected.toString(),
+        'drink_id': drinkSelected.toString(),
+        'comment': textFieldController.text,
+      }),
+    );
+    getPreviousOrders(context);
+    if (response.statusCode == 202) {
+      changeStatus(false);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/history', (route) => false);
+          }, 'Order Placed', 'Your order has been placed', 'View History');
+        },
+      );
+    } else {
+      String formatDate = DateFormat("yyyy-MM-dd").format(oldOrders.time);
+      changeStatus(false);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomWidget(
+            food: oldOrders.food,
+            drink: oldOrders.drink,
+            date: formatDate,
+          );
+        },
+      );
+    }
+  }
+
   Future approveUser(userId) async {
-    changemenuStatus(true);
+    changeMenuStatus(true);
     await getToken();
     final response = await http.put(
       Uri.parse(AppURL.approveUser),
@@ -136,7 +181,7 @@ class FoodProvider extends Manage {
       }),
     );
     if (response.statusCode == 200) {
-      changemenuStatus(false);
+      changeMenuStatus(false);
     }
   }
 
@@ -199,6 +244,7 @@ class FoodProvider extends Manage {
         },
       );
     } else {
+      String formatDate = DateFormat("yyyy-MM-dd").format(oldOrders.time);
       changeStatus(false);
       showDialog(
         context: context,
@@ -206,7 +252,7 @@ class FoodProvider extends Manage {
           return CustomWidget(
             food: oldOrders.food,
             drink: oldOrders.drink,
-            date: oldOrders.time,
+            date: formatDate,
           );
         },
       );
@@ -389,7 +435,7 @@ class FoodProvider extends Manage {
 
   Future addMenu(foodList, drinkList, context) async {
     await getToken();
-    changemenuStatus(true);
+    changeMenuStatus(true);
     final response = await http.post(
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
       headers: <String, String>{
@@ -406,7 +452,7 @@ class FoodProvider extends Manage {
     if (response.statusCode == 201) {
       String data = response.body;
       print(response.body);
-      changemenuStatus(false);
+      changeMenuStatus(false);
       return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -417,7 +463,7 @@ class FoodProvider extends Manage {
         },
       );
     } else {
-      changemenuStatus(false);
+      changeMenuStatus(false);
       notifyListeners();
       print(response.statusCode);
       print(response.body);
