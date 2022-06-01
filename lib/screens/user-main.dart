@@ -51,33 +51,7 @@ class _UserMainState extends State<UserMain> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset('images/img.png',
-                            height: width * 0.1, width: width * 0.1),
-                        SizedBox(width: width * 0.05),
-                        Text('BSL ORDERS', style: KMENUTextStyle),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Switch(
-                            value: isSelected,
-                            onChanged: (bool value) {
-                              isSelected = value;
-                            }),
-                        IconButton(
-                          icon: const Icon(Icons.menu),
-                          onPressed: () =>
-                              scaffoldKey.currentState?.openDrawer(),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
                 SizedBox(height: height * 0.06),
                 Text(
                   'Welcome ${authProvider.user.name},',

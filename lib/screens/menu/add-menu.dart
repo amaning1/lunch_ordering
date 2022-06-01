@@ -62,18 +62,9 @@ class _AddMenuState extends State<AddMenu> {
                       Text('MENU', style: KCardTextStyle),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Switch(
-                          value: isSelected,
-                          onChanged: (bool value) {
-                            isSelected = value;
-                          }),
-                      IconButton(
-                        icon: const Icon(Icons.menu),
-                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                      ),
-                    ],
+                  IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () => scaffoldKey.currentState?.openDrawer(),
                   ),
                 ],
               ),
@@ -89,8 +80,8 @@ class _AddMenuState extends State<AddMenu> {
                     foodProvider.typeFood();
                     Navigator.pushNamed(context, '/adminAdd');
                   },
-                  child: column(foodProvider.FoodChips.isEmpty, context, 'Food',
-                      foodProvider.FoodChips, () {
+                  child: column(foodProvider.foodChips.isEmpty, context, 'Food',
+                      foodProvider.foodChips, () {
                     foodProvider.typeFood();
                     Navigator.pushNamed(context, '/adminAdd');
                   }, foodProvider.isLoading),
@@ -108,14 +99,14 @@ class _AddMenuState extends State<AddMenu> {
                     foodProvider.typeDrink();
                     Navigator.pushNamed(context, '/adminAdd');
                   },
-                  child: column(foodProvider.DrinkChips.isEmpty, context,
-                      'Drink', foodProvider.DrinkChips, () {
+                  child: column(foodProvider.drinkChips.isEmpty, context,
+                      'Drink', foodProvider.drinkChips, () {
                     foodProvider.typeDrink();
                     Navigator.pushNamed(context, '/adminAdd');
                   }, foodProvider.isLoading),
                 ),
               ),
-              foodProvider.DrinkChips.isEmpty
+              foodProvider.drinkChips.isEmpty
                   ? SizedBox(height: height * 0.5)
                   : SizedBox(),
               Container(

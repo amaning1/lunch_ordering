@@ -35,33 +35,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset('images/img.png', height: 40, width: 45),
-                      SizedBox(width: width * 0.03),
-                      Text('BSL', style: KMENUTextStyle),
-                      SizedBox(width: width * 0.02),
-                      Text('ORDERS', style: KCardTextStyle),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Switch(
-                          value: isSelected,
-                          onChanged: (bool value) {
-                            isSelected = value;
-                          }),
-                      IconButton(
-                        icon: const Icon(Icons.menu),
-                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
               SizedBox(height: height * 0.05),
               Row(
                 children: [

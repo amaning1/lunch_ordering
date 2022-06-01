@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/screens/loading-screen.dart';
 import 'package:lunch_ordering/screens/splash-screen.dart';
+import 'package:lunch_ordering/screens/loading-screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/food_providers.dart';
 import '../shared_preferences.dart';
@@ -58,12 +58,12 @@ class _MenuScreenState extends State<MenuScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                title: Text(foodProvider.menu[index].Option!),
+                title: Text(foodProvider.menu[index].food_name!),
                 selected: index == selectedFoodIndex,
                 onTap: () {
                   setState(() {
                     selectedFoodIndex = index;
-                    foodSelected = foodProvider.menu[index].id!;
+                    foodSelected = foodProvider.menu[index].food_id!;
                   });
                 },
                 selectedTileColor: darkblue,
@@ -109,42 +109,7 @@ class _MenuScreenState extends State<MenuScreen> {
           padding: EdgeInsets.only(
               left: width * 0.05, right: width * 0.05, top: width * 0.05),
           child: Stack(children: <Widget>[
-            foodProvider.isMenu
-                ? Positioned(
-                    left: width * 0.33,
-                    top: width * 0.13,
-                    child: Container(
-                      child: Image.asset('images/img_1.png',
-                          height: width * 0.175, width: width * 0.25),
-                    ),
-                  )
-                : SizedBox(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Image.asset('images/img.png',
-                        height: width * 0.1, width: width * 0.1),
-                    SizedBox(width: width * 0.05),
-                    Text('BSL ORDERS', style: KCardTextStyle),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Switch(
-                        value: isSelected,
-                        onChanged: (bool value) {
-                          isSelected = value;
-                        }),
-                    IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
             SizedBox(height: height * 0.10),
             foodProvider.isMenu
                 ? Padding(
@@ -261,6 +226,16 @@ class _MenuScreenState extends State<MenuScreen> {
                               Text('No Menu for Today', style: KCardTextStyle)),
                     ),
                   ),
+            foodProvider.isMenu
+                ? Positioned(
+                    left: width * 0.33,
+                    top: width * 0.13,
+                    child: Container(
+                      child: Image.asset('images/img_1.png',
+                          height: width * 0.175, width: width * 0.25),
+                    ),
+                  )
+                : SizedBox(),
           ]),
         ),
       ),

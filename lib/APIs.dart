@@ -10,4 +10,5 @@ class AppURL {
   static const String allOrders = baseURL + '/order/daily';
   static const String approvalRequests = baseURL + '/allapprovalrequests';
   static const String approveUser = baseURL + '/user/approve';
+  static const String allMenu = baseURL + '/menu/all';
 }

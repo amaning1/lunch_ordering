@@ -50,32 +50,7 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset('images/img.png', height: 40, width: 45),
-                      SizedBox(width: width * 0.03),
-                      Text('MENU', style: KCardTextStyle),
-                      SizedBox(width: width * 0.02),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Switch(
-                          value: isSelected,
-                          onChanged: (bool value) {
-                            isSelected = value;
-                          }),
-                      IconButton(
-                        icon: const Icon(Icons.menu),
-                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
               FutureBuilder<List<Orders>?>(
                   future: foodProvider.getOrders(context),
                   builder: (context, snapshot) {

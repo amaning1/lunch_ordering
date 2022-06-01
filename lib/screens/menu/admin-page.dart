@@ -25,9 +25,7 @@ class _AdminPageState extends State<AdminPage> {
   @override
   void initState() {
     super.initState();
-    // Future.delayed(Duration.zero, (){
-    //   foodVm = Provider.of<FoodProvider>(context).getOrders(menu_id, context)
-    // });
+
     getToken();
   }
 
@@ -52,33 +50,7 @@ class _AdminPageState extends State<AdminPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset('images/img.png', height: 40, width: 45),
-                      SizedBox(width: width * 0.03),
-                      Text('BSL', style: KMENUTextStyle),
-                      SizedBox(width: width * 0.02),
-                      Text('ORDERS', style: KCardTextStyle),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Switch(
-                          value: isSelected,
-                          onChanged: (bool value) {
-                            isSelected = value;
-                          }),
-                      IconButton(
-                        icon: const Icon(Icons.menu),
-                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
               SizedBox(height: height * 0.05),
               Row(
                 children: [
@@ -96,31 +68,39 @@ class _AdminPageState extends State<AdminPage> {
                               shrinkWrap: true,
                               itemCount: menu?.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        height * 0.04,
-                                        height * 0.02,
-                                        height * 0.04,
-                                        height * 0.02),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text('Name: ${menu![index].name!}',
-                                            style: KTextStyle3),
-                                        Text(
-                                          'Food: ${menu[index].food}',
-                                          style: KTextStyle3,
-                                        ),
-                                        Text('Drink: ${menu[index].drink}',
-                                            style: KTextStyle3),
-                                        Text('Comment: ${menu[index].comment!}',
-                                            style: KTextStyle3)
-                                      ],
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      isTapped = false;
+                                    });
+                                  },
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                          height * 0.04,
+                                          height * 0.02,
+                                          height * 0.04,
+                                          height * 0.02),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text('Name: ${menu![index].name!}',
+                                              style: KTextStyle3),
+                                          Text(
+                                            'Food: ${menu[index].food}',
+                                            style: KTextStyle3,
+                                          ),
+                                          Text('Drink: ${menu[index].drink}',
+                                              style: KTextStyle3),
+                                          Text(
+                                              'Comment: ${menu[index].comment!}',
+                                              style: KTextStyle3)
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );

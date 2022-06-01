@@ -1,13 +1,13 @@
 class Menu {
-  int? id;
-  String? Option;
+  int? food_id;
+  String? food_name;
 
-  Menu({this.id, this.Option});
+  Menu({this.food_id, this.food_name});
 
   factory Menu.fromJson(Map<String, dynamic> responseData) {
     return Menu(
-      id: responseData['food_id'],
-      Option: responseData['food_name'],
+      food_id: responseData['food_id'],
+      food_name: responseData['food_name'],
     );
   }
 }

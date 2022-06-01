@@ -2,11 +2,8 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:lunch_ordering/Domain/user.dart';
 import 'package:lunch_ordering/components.dart';
-import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,15 +23,11 @@ import 'Manage.dart';
 
 class FoodProvider extends Manage {
   TextEditingController textFieldController = TextEditingController();
-  TextEditingController option1controller = TextEditingController();
-  TextEditingController option2controller = TextEditingController();
-  TextEditingController option3controller = TextEditingController();
-  TextEditingController option4controller = TextEditingController();
   List<Menu> menu = [];
   List<OldOrders> list = [];
   List<Drinks> drinks = [];
-  List<ChipData> FoodChips = [];
-  List<ChipData> DrinkChips = [];
+  List<ChipData> foodChips = [];
+  List<ChipData> drinkChips = [];
   List<int> foodIDS = [];
   List<int> drinkIDS = [];
   int menuIDx = 0;
@@ -42,39 +35,39 @@ class FoodProvider extends Manage {
 
   late String token;
 
-  var tomorrow = DateTime.now().add(Duration(days: 1));
-  var time2 = DateTime.now();
+  var time = DateTime.now().add(const Duration(days: 1));
+  var currentTime = DateTime.now();
   var newHour = 7;
   var chefHour = 14;
-  var minute = 00;
-  var second = 00;
+
   void date() {
-    DateTime time = DateTime(time2.year, time2.month, time2.day, newHour,
-        minute, second, time2.millisecond, time2.microsecond);
-    if (time2.isBefore(time)) {
-      tomorrow = DateTime.now();
+    DateTime time =
+        DateTime(currentTime.year, currentTime.month, currentTime.day, newHour);
+
+    if (currentTime.isBefore(time)) {
+      time = DateTime.now();
     } else {
-      tomorrow = tomorrow;
+      time = time;
     }
   }
 
   void dateChef() {
-    DateTime time = DateTime(time2.year, time2.month, time2.day, newHour,
-        minute, second, time2.millisecond, time2.microsecond);
-    if (time2.isBefore(time)) {
-      tomorrow = DateTime.now();
+    DateTime time =
+        DateTime(currentTime.year, currentTime.month, currentTime.day, newHour);
+    if (currentTime.isBefore(time)) {
+      time = DateTime.now();
     } else {
-      tomorrow = tomorrow;
+      time = time;
     }
   }
 
   void deleteFoodChip(int id) {
-    FoodChips.removeWhere((element) => element.id == id);
+    foodChips.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 
   void deleteDrinkChip(int id) {
-    DrinkChips.removeWhere((element) => element.id == id);
+    drinkChips.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 
@@ -89,13 +82,13 @@ class FoodProvider extends Manage {
   }
 
   void addFood(menu, index, selectedIndex) {
-    FoodChips.add(ChipData(id: menu[index].id!, name: menu[index].Option!));
+    foodChips.add(ChipData(id: menu[index].id!, name: menu[index].Option!));
     foodIDS.add(menu[index].id!);
     selectedIndex = index;
   }
 
   void addDrink(menu, index, selectedIndex) {
-    DrinkChips.add(ChipData(id: menu[index].id!, name: menu[index].Option!));
+    drinkChips.add(ChipData(id: menu[index].id!, name: menu[index].Option!));
     drinkIDS.add(menu[index].id!);
     selectedIndex = index;
   }
@@ -188,7 +181,7 @@ class FoodProvider extends Manage {
   Future<List<Orders>?> getOrders(context) async {
     await getToken();
     dateChef();
-    String formatDate = DateFormat("yyyy-MM-dd").format(tomorrow);
+    String formatDate = DateFormat("yyyy-MM-dd").format(time);
     print(formatDate);
     List<Orders>? list;
     final response = await http.get(
@@ -262,12 +255,12 @@ class FoodProvider extends Manage {
   Future<List<Menu>?> fetchFood(context) async {
     await getToken();
     date();
-    String formatDate = DateFormat("yyyy-MM-dd").format(tomorrow);
+    String formatDate = DateFormat("yyyy-MM-dd").format(time);
     getPreviousOrders(context);
     List<Menu>? list;
 
     final response = await http.get(
-      Uri.parse(AppURL.getMenu + '?menu_date=$formatDate'),
+      Uri.parse(AppURL.getMenu + '?menu_date=2022-05-30'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         HttpHeaders.authorizationHeader: "Bearer" " " + token,
@@ -280,7 +273,6 @@ class FoodProvider extends Manage {
       changeMenu(true);
       var foods = jsonDecode(data)['data']['foods'] as List;
       var allDrinks = jsonDecode(data)['data']['drinks'] as List;
-      print(allDrinks);
       menu = foods.map<Menu>((json) => Menu.fromJson(json)).toList();
       drinks = allDrinks.map<Drinks>((json) => Drinks.fromJson(json)).toList();
       Navigator.pushNamed(context, '/User');
@@ -291,15 +283,14 @@ class FoodProvider extends Manage {
       changeMenu(false);
       print(response);
       print(response.statusCode);
-
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return alertDialog(context, () {
-      //       logout(context);
-      //     }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
-      //   },
-      // );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            logout(context);
+          }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
+        },
+      );
     }
     return list;
   }
@@ -308,7 +299,7 @@ class FoodProvider extends Manage {
     await getToken();
     List<Menu>? list;
     final response = await http.get(
-      Uri.parse(AppURL.getMenu),
+      Uri.parse(AppURL.allMenu),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
@@ -317,10 +308,9 @@ class FoodProvider extends Manage {
 
     if (response.statusCode == 200) {
       String data = response.body;
-      var rest = jsonDecode(data)['data']['menu']['foods'] as List;
+      var rest = jsonDecode(data)['data'] as List;
       print(rest);
       menu = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
-      Navigator.pushNamed(context, '/third');
     } else if (response.statusCode == 401) {
       showDialog(
         context: context,
@@ -443,7 +433,7 @@ class FoodProvider extends Manage {
         HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
       },
       body: jsonEncode(<String, dynamic>{
-        "menu_date": "$tomorrow",
+        "menu_date": "$time",
         "foods_id": foodList,
         "drinks_id": drinkList
       }),
@@ -501,7 +491,7 @@ class FoodProvider extends Manage {
         context: context,
         builder: (BuildContext context) {
           return alertDialog(context, () {
-            Navigator.pop(context);
+            Navigator.popAndPushNamed(context, '/addMenu');
           }, 'Error', message, 'Exit');
         },
       );

@@ -56,3 +56,71 @@ const KAlertContent = TextStyle(
 
 const KAlertButton =
     TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins');
+
+class bslOrdersRow extends StatelessWidget {
+  const bslOrdersRow({
+    Key? key,
+    required this.width,
+    required this.scaffoldKey,
+  }) : super(key: key);
+
+  final width;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Image.asset('images/img.png', height: 40, width: 45),
+            SizedBox(width: width * 0.03),
+            Text(
+              'BSL',
+              style: KMENUTextStyle,
+            ),
+            SizedBox(width: width * 0.02),
+            Text('ORDERS', style: KCardTextStyle),
+          ],
+        ),
+        IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => scaffoldKey.currentState?.openDrawer(),
+        ),
+      ],
+    );
+  }
+}
+
+class bslMenu extends StatelessWidget {
+  const bslMenu({
+    Key? key,
+    required this.width,
+    required this.scaffoldKey,
+  }) : super(key: key);
+
+  final width;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Image.asset('images/img.png', height: 40, width: 45),
+            SizedBox(width: width * 0.03),
+            Text('MENU', style: KCardTextStyle),
+            SizedBox(width: width * 0.02),
+          ],
+        ),
+        IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => scaffoldKey.currentState?.openDrawer(),
+        ),
+      ],
+    );
+  }
+}

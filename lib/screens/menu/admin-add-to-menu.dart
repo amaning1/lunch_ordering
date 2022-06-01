@@ -80,32 +80,39 @@ class _AdminAddState extends State<AdminAdd> {
                     padding: const EdgeInsets.all(8.0),
                     child: Wrap(
                       spacing: 10,
-                      children: foodProvider.FoodChips.map((chip) => Chip(
-                            key: ValueKey(chip.id),
-                            label: Text(chip.name),
-                            labelStyle: TextStyle(color: Colors.white),
-                            backgroundColor: darkblue,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 7, horizontal: 10),
-                            deleteIconColor: Colors.red,
-                            onDeleted: () => foodProvider.removeDrink(chip.id),
-                          )).toList(),
+                      children: foodProvider.foodChips
+                          .map((chip) => Chip(
+                                key: ValueKey(chip.id),
+                                label: Text(chip.name),
+                                labelStyle: TextStyle(color: Colors.white),
+                                backgroundColor: darkblue,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 7, horizontal: 10),
+                                deleteIconColor: Colors.red,
+                                onDeleted: () =>
+                                    foodProvider.removeDrink(chip.id),
+                              ))
+                          .toList(),
                     ),
                   )
                 : Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Wrap(
                       spacing: 10,
-                      children: foodProvider.DrinkChips.map((chip) => Chip(
-                            key: ValueKey(chip.id),
-                            label: Text(chip.name),
-                            labelStyle: TextStyle(color: Colors.white),
-                            backgroundColor: darkblue,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 7, horizontal: 10),
-                            deleteIconColor: Colors.red,
-                            onDeleted: () => foodProvider.removeDrink(chip.id),
-                          )).toList(),
+                      children: foodProvider.drinkChips
+                          .map((chip) => Chip(
+                                key: ValueKey(chip.id),
+                                label: Text(chip.name),
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                backgroundColor: darkblue,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 7, horizontal: 10),
+                                deleteIconColor: Colors.red,
+                                onDeleted: () =>
+                                    foodProvider.removeDrink(chip.id),
+                              ))
+                          .toList(),
                     ),
                   ),
             foodProvider.type == 'Food'

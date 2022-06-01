@@ -41,38 +41,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: height * 0.050),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset('images/img.png',
-                                height: 40, width: 45),
-                            SizedBox(width: width * 0.03),
-                            Text(
-                              'BSL',
-                              style: KMENUTextStyle,
-                            ),
-                            SizedBox(width: width * 0.02),
-                            Text('ORDERS', style: KCardTextStyle),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Switch(
-                                value: isSelected,
-                                onChanged: (bool value) {
-                                  isSelected = value;
-                                }),
-                            IconButton(
-                              icon: const Icon(Icons.menu),
-                              onPressed: () =>
-                                  scaffoldKey.currentState?.openDrawer(),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
                     SizedBox(height: height * 0.035),
                     Container(
                       decoration: BoxDecoration(
@@ -132,32 +101,36 @@ class _AdminAddUserState extends State<AdminAddUser> {
                             Text('User', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
                             Container(
-                              height: height * 0.1,
+                              height: height * 0.07,
                               decoration:
                                   BoxDecoration(border: Border.all(width: 0.1)),
-                              child: DropdownButton<String>(
-                                isExpanded: true,
-                                value: regProvider.dropDownValue,
-                                items: <String>[
-                                  'chef',
-                                  'admin',
-                                  'user'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          color: Color(0xFF808080)),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    regProvider.dropDownValue = newValue!;
-                                  });
-                                },
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  value: regProvider.dropDownValue,
+                                  items: <String>['chef', 'admin', 'user']
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      regProvider.dropDownValue = newValue!;
+                                    });
+                                  },
+                                ),
                               ),
                             ),
                             Center(

@@ -25,11 +25,13 @@ class _AdminOrdersState extends State<AdminOrders> {
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
-      foodVm = Provider.of<FoodProvider>(context, listen: true)
-          .fetchAllFoods(context) as FoodProvider;
-    });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    Provider.of<FoodProvider>(context, listen: true).fetchAllFoods(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -40,7 +42,7 @@ class _AdminOrdersState extends State<AdminOrders> {
     bool isSelected = false;
     return Scaffold(
       key: scaffoldKey,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
@@ -48,37 +50,8 @@ class _AdminOrdersState extends State<AdminOrders> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset('images/img.png', height: 40, width: 45),
-                      SizedBox(width: width * 0.03),
-                      Text(
-                        'BSL',
-                        style: KMENUTextStyle,
-                      ),
-                      SizedBox(width: width * 0.02),
-                      Text('ORDERS', style: KCardTextStyle),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Switch(
-                          value: isSelected,
-                          onChanged: (bool value) {
-                            isSelected = value;
-                          }),
-                      IconButton(
-                        icon: const Icon(Icons.menu),
-                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: height * 0.05),
+              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+              SizedBox(height: height * 0.02),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -133,6 +106,12 @@ class _AdminOrdersState extends State<AdminOrders> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        backgroundColor: darkblue,
+        label: Text('Add Food'),
+        icon: const Icon(Icons.add),
       ),
     );
   }
