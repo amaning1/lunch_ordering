@@ -16,7 +16,6 @@ class AdminAddUser extends StatefulWidget {
 class _AdminAddUserState extends State<AdminAddUser> {
   bool isLoading = false;
   var scaffoldKey = GlobalKey<ScaffoldState>();
-
   var height, width;
   String dropDownValue = 'user';
 
@@ -134,7 +133,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                               ),
                             ),
                             Center(
-                              child: Container(
+                              child: SizedBox(
                                 width: width,
                                 height: height * 0.1,
                                 child: Button(

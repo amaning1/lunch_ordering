@@ -6,12 +6,14 @@ import 'package:intl/intl.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:lunch_ordering/screens/menu/all-menus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
 import '../Domain/ChipData.dart';
 import '../Domain/drinks.dart';
 import '../Domain/foods.dart';
 import '../Domain/menu.dart';
+import '../Domain/allMenus.dart';
 import '../Domain/new-user.dart';
 import '../Domain/oldOrders.dart';
 import '../Domain/orders.dart';
@@ -24,6 +26,7 @@ import 'Manage.dart';
 class FoodProvider extends Manage {
   TextEditingController textFieldController = TextEditingController();
   List<Menu> menu = [];
+  List<AllMenus> allMenu = [];
   List<OldOrders> list = [];
   List<Drinks> drinks = [];
   List<ChipData> foodChips = [];
@@ -32,8 +35,7 @@ class FoodProvider extends Manage {
   List<int> drinkIDS = [];
   int menuIDx = 0;
   late OldOrders oldOrders;
-
-  late String token;
+  //bool isUser = false;
 
   var time = DateTime.now().add(const Duration(days: 1));
   var currentTime = DateTime.now();
@@ -93,21 +95,13 @@ class FoodProvider extends Manage {
     selectedIndex = index;
   }
 
-  Future getToken() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    var tok = sharedPreferences.getString('token');
-
-    token = tok!;
-  }
-
   Future deleteFood(foodId) async {
     await getToken();
     final response = await http.delete(
       Uri.parse(AppURL.Foods),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" + " " + token!,
       },
       body: jsonEncode(<String, int>{
         'food_id': foodId,
@@ -145,7 +139,8 @@ class FoodProvider extends Manage {
         },
       );
     } else {
-      String formatDate = DateFormat("yyyy-MM-dd").format(oldOrders.time);
+      var formatDate = DateTime.tryParse(oldOrders.time!);
+      String Date = DateFormat("yyyy-MM-dd").format(formatDate!);
       changeStatus(false);
       showDialog(
         context: context,
@@ -153,28 +148,10 @@ class FoodProvider extends Manage {
           return CustomWidget(
             food: oldOrders.food,
             drink: oldOrders.drink,
-            date: formatDate,
+            date: Date,
           );
         },
       );
-    }
-  }
-
-  Future approveUser(userId) async {
-    changeMenuStatus(true);
-    await getToken();
-    final response = await http.put(
-      Uri.parse(AppURL.approveUser),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-      },
-      body: jsonEncode(<String, int>{
-        'user_id': userId,
-      }),
-    );
-    if (response.statusCode == 200) {
-      changeMenuStatus(false);
     }
   }
 
@@ -237,7 +214,9 @@ class FoodProvider extends Manage {
         },
       );
     } else {
-      String formatDate = DateFormat("yyyy-MM-dd").format(oldOrders.time);
+      var formatDate = DateTime.tryParse(oldOrders.time!);
+      String Date = DateFormat("yyyy-MM-dd").format(formatDate!);
+
       changeStatus(false);
       showDialog(
         context: context,
@@ -245,7 +224,7 @@ class FoodProvider extends Manage {
           return CustomWidget(
             food: oldOrders.food,
             drink: oldOrders.drink,
-            date: formatDate,
+            date: Date,
           );
         },
       );
@@ -260,10 +239,10 @@ class FoodProvider extends Manage {
     List<Menu>? list;
 
     final response = await http.get(
-      Uri.parse(AppURL.getMenu + '?menu_date=2022-05-30'),
+      Uri.parse(AppURL.getMenu + '?menu_date=$formatDate'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" " " + token,
+        HttpHeaders.authorizationHeader: "Bearer" " " + token!,
       },
     );
 
@@ -283,43 +262,6 @@ class FoodProvider extends Manage {
       changeMenu(false);
       print(response);
       print(response.statusCode);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            logout(context);
-          }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
-        },
-      );
-    }
-    return list;
-  }
-
-  Future<List<Menu>?> fetchPreviousMenus(context) async {
-    await getToken();
-    List<Menu>? list;
-    final response = await http.get(
-      Uri.parse(AppURL.allMenu),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-      },
-    );
-
-    if (response.statusCode == 200) {
-      String data = response.body;
-      var rest = jsonDecode(data)['data'] as List;
-      print(rest);
-      menu = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
-    } else if (response.statusCode == 401) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(
-              context, null, 'Uh Oh', 'We\'ve run into a problem', '');
-        },
-      );
-    } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -419,84 +361,6 @@ class FoodProvider extends Manage {
               context, null, 'Uh Oh', 'We\'ve run into a problem', '');
         },
       );
-    }
-    return list;
-  }
-
-  Future addMenu(foodList, drinkList, context) async {
-    await getToken();
-    changeMenuStatus(true);
-    final response = await http.post(
-      Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-      },
-      body: jsonEncode(<String, dynamic>{
-        "menu_date": "$time",
-        "foods_id": foodList,
-        "drinks_id": drinkList
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      String data = response.body;
-      print(response.body);
-      changeMenuStatus(false);
-      return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            Navigator.pushReplacementNamed(context, '/allMenus');
-          }, 'Menu Added', 'The menu has been added successfully',
-              'View Menus');
-        },
-      );
-    } else {
-      changeMenuStatus(false);
-      notifyListeners();
-      print(response.statusCode);
-      print(response.body);
-      return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            Navigator.popAndPushNamed(context, '/allMenus');
-          }, 'Error ', 'There was a problem adding your menu. Try again later',
-              'View Menus');
-        },
-      );
-    }
-  }
-
-  Future<List<NewUser>?> getAllApprovalRequests(context) async {
-    await getToken();
-    List<NewUser>? list;
-    final response = await http
-        .get(Uri.parse(AppURL.approvalRequests), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
-    });
-    String data = response.body;
-
-    if (response.statusCode == 200) {
-      print(data);
-      var rest = jsonDecode(data)['data'] as List;
-
-      list = rest.map<NewUser>((json) => NewUser.fromJson(json)).toList();
-    } else {
-      var message = jsonDecode(data)['message'];
-
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            Navigator.popAndPushNamed(context, '/addMenu');
-          }, 'Error', message, 'Exit');
-        },
-      );
-      print(response.statusCode);
-      print(response);
     }
     return list;
   }

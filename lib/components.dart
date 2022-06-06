@@ -80,7 +80,7 @@ Widget column(isEmpty, context, String type, chipType, onPressed, isloading) {
                           label: Text(chip.name),
                           key: ValueKey(chip.id),
                           labelStyle: TextStyle(color: Colors.white),
-                          backgroundColor: darkblue,
+                          backgroundColor: darkBlue,
                           padding: const EdgeInsets.symmetric(
                               vertical: 7, horizontal: 10),
                         ))
@@ -114,7 +114,7 @@ class NavDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             ListTile(
-                hoverColor: darkblue,
+                hoverColor: darkBlue,
                 leading: Icon(Icons.menu),
                 title:
                     const Text('Menu', style: TextStyle(fontFamily: 'Poppins')),
@@ -123,7 +123,7 @@ class NavDrawer extends StatelessWidget {
                       context, '/allMenus', (route) => false);
                 }),
             ListTile(
-                hoverColor: darkblue,
+                hoverColor: darkBlue,
                 leading: Icon(Icons.dashboard),
                 title: const Text('Dashboard',
                     style: TextStyle(fontFamily: 'Poppins')),
@@ -132,7 +132,7 @@ class NavDrawer extends StatelessWidget {
                       context, '/fourth', (route) => false);
                 }),
             ListTile(
-                hoverColor: darkblue,
+                hoverColor: darkBlue,
                 leading: Icon(Icons.approval),
                 title: const Text('Approvals',
                     style: TextStyle(fontFamily: 'Poppins')),
@@ -141,7 +141,7 @@ class NavDrawer extends StatelessWidget {
                       context, '/adminApprovalRequests', (route) => false);
                 }),
             ListTile(
-                hoverColor: darkblue,
+                hoverColor: darkBlue,
                 leading: Icon(Icons.add),
                 title: const Text('Add User',
                     style: TextStyle(fontFamily: 'Poppins')),
@@ -150,7 +150,7 @@ class NavDrawer extends StatelessWidget {
                       context, '/adminAddUser', (route) => false);
                 }),
             ListTile(
-                hoverColor: darkblue,
+                hoverColor: darkBlue,
                 leading: Icon(Icons.history),
                 title: const Text('View Foods',
                     style: TextStyle(fontFamily: 'Poppins')),
@@ -159,7 +159,7 @@ class NavDrawer extends StatelessWidget {
                       context, '/adminOrders', (route) => false);
                 }),
             ListTile(
-                hoverColor: darkblue,
+                hoverColor: darkBlue,
                 leading: Icon(Icons.fastfood),
                 title: const Text('View Orders',
                     style: TextStyle(fontFamily: 'Poppins')),
@@ -168,7 +168,7 @@ class NavDrawer extends StatelessWidget {
                       context, '/adminViewOrders', (route) => false);
                 }),
             ListTile(
-                hoverColor: darkblue,
+                hoverColor: darkBlue,
                 leading: Icon(Icons.logout),
                 title: const Text('Logout',
                     style: TextStyle(fontFamily: 'Poppins')),
@@ -266,18 +266,18 @@ class ChefCards extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(icon, size: height * 0.05, color: darkblue),
+                Icon(icon, size: height * 0.05, color: darkBlue),
                 SizedBox(height: height * 0.04),
                 Text(text,
                     style: TextStyle(
-                        color: darkblue,
+                        color: darkBlue,
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w500,
                         fontSize: 20)),
                 SizedBox(height: height * 0.04),
                 Text(number,
                     style: TextStyle(
-                        color: darkblue,
+                        color: darkBlue,
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
                         fontSize: 20)),
@@ -444,7 +444,7 @@ class _ButtonState extends State<Button> {
                     MaterialStateProperty.all<Color>(widget.color!),
               )
             : ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(darkblue),
+                backgroundColor: MaterialStateProperty.all<Color>(darkBlue),
               ),
         onPressed: widget.onPressed,
         child: widget.isLoading
@@ -480,7 +480,7 @@ class MainScreenDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           ListTile(
-              hoverColor: darkblue,
+              hoverColor: darkBlue,
               leading: const Icon(Icons.menu),
               title: const Text(
                 'Menu',
@@ -498,7 +498,7 @@ class MainScreenDrawer extends StatelessWidget {
                 Navigator.popAndPushNamed(context, '/third');
               }),
           ListTile(
-              hoverColor: darkblue,
+              hoverColor: darkBlue,
               leading: const Icon(Icons.history),
               title: const Text(
                 'History',
@@ -509,7 +509,7 @@ class MainScreenDrawer extends StatelessWidget {
               }),
           //SizedBox(height: height * 0.55),
           ListTile(
-              hoverColor: darkblue,
+              hoverColor: darkBlue,
               leading: const Icon(Icons.logout),
               title: const Text(
                 'Logout',
@@ -562,6 +562,7 @@ class _CustomWidgetState extends State<CustomWidget> {
                       isLoading: false,
                       onPressed: () {
                         foodProvider.changeUpdateOrder(true);
+                        Navigator.pop(context);
                       },
                       color: Colors.green,
                     ),
@@ -570,6 +571,7 @@ class _CustomWidgetState extends State<CustomWidget> {
                       isLoading: false,
                       onPressed: () {
                         foodProvider.changeUpdateOrder(false);
+                        Navigator.pop(context);
                       },
                       color: Colors.red,
                     ),

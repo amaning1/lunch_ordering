@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+String? token;
 saveUserDetails(numberController, passwordController) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('phone_number', numberController);
@@ -17,9 +18,9 @@ Future<bool?> getRememberMe() async {
 Future getToken() async {
   final SharedPreferences sharedPreferences =
       await SharedPreferences.getInstance();
-  var tok = sharedPreferences.getString('token');
+  token = sharedPreferences.getString('token');
 
-  return tok;
+  return token;
 }
 
 Future saveToken(token) async {

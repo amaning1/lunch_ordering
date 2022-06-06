@@ -3,7 +3,7 @@ class OldOrders {
   String? name;
   String food, drink;
   String? comment;
-  var time;
+  String? time;
 
   OldOrders(
       {required this.id,

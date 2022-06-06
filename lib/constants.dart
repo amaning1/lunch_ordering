@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-Color blue = Color(0xFF007AFF);
-Color darkblue = Color(0xFF002C59);
-Color grayish = Color(0xFFE4EBF2);
-Color container = Color(0xFF80E4EBF2);
+Color blue = const Color(0xFF007AFF);
+Color darkBlue = const Color(0xFF002C59);
+Color grayish = const Color(0xFFE4EBF2);
 
 bool state = false;
-bool SwitchSelected = false;
+bool switchSelected = false;
 bool isObscure = true;
+DateTime selectedDate = DateTime.now();
 
 const KButtonTextStyle = TextStyle(
     color: Color(0xFF002C59),
@@ -76,12 +76,12 @@ class bslOrdersRow extends StatelessWidget {
           children: [
             Image.asset('images/img.png', height: 40, width: 45),
             SizedBox(width: width * 0.03),
-            Text(
+            const Text(
               'BSL',
               style: KMENUTextStyle,
             ),
             SizedBox(width: width * 0.02),
-            Text('ORDERS', style: KCardTextStyle),
+            const Text('ORDERS', style: KCardTextStyle),
           ],
         ),
         IconButton(

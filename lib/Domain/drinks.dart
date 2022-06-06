@@ -11,3 +11,17 @@ class Drinks {
     );
   }
 }
+
+class DrinksMenu {
+  List<Drinks>? drinks;
+
+  DrinksMenu({this.drinks});
+
+  factory DrinksMenu.fromJson(Map<String, dynamic> responseData) {
+    var foods = responseData['foods'] as List;
+    print(foods.runtimeType);
+    List<Drinks> foodList = foods.map((i) => Drinks.fromJson(i)).toList();
+
+    return DrinksMenu(drinks: responseData['drinks']);
+  }
+}

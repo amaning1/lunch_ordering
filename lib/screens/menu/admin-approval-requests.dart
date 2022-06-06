@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lunch_ordering/providers/approval_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../Domain/new-user.dart';
@@ -23,7 +24,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     bool isSelected = false;
-    final foodProvider = Provider.of<FoodProvider>(context);
+    final approvalProvider = Provider.of<ApprovalProvider>(context);
 
     return Scaffold(
       key: scaffoldKey,
@@ -44,7 +45,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
               ),
               SizedBox(height: height * 0.02),
               FutureBuilder<List<NewUser>?>(
-                  future: foodProvider.getAllApprovalRequests(context),
+                  future: approvalProvider.getAllApprovalRequests(context),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<NewUser>? users = snapshot.data;
@@ -76,17 +77,19 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                                     children: [
                                       Button(
                                         text: 'Approve',
-                                        isLoading: foodProvider.menuLoading,
+                                        isLoading: approvalProvider.menuLoading,
                                         onPressed: () {
-                                          foodProvider.approveUser(
+                                          approvalProvider.approveUser(
                                               users[index].user_id);
                                         },
+                                        color: darkBlue,
                                       ),
                                       SizedBox(width: height * 0.01),
                                       Button(
                                         text: 'Deny',
-                                        isLoading: foodProvider.menuLoading,
+                                        isLoading: approvalProvider.menuLoading,
                                         onPressed: () {},
+                                        color: Colors.red,
                                       ),
                                     ],
                                   )

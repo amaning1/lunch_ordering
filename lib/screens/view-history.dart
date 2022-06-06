@@ -51,7 +51,7 @@ class _ViewHistoryState extends State<ViewHistory> {
                   itemCount: foodProvider.list.length,
                   itemBuilder: (BuildContext context, int index) {
                     var formatDate =
-                        DateTime.tryParse(foodProvider.list[index].time);
+                        DateTime.tryParse(foodProvider.list[index].time!);
                     String Date = DateFormat("yyyy-MM-dd").format(formatDate!);
 
                     return Card(

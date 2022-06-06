@@ -44,9 +44,10 @@ class _AdminAddState extends State<AdminAdd> {
       key: scaffoldKey,
       drawer: NavDrawer(),
       body: Padding(
-        padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
+        padding: EdgeInsets.all(width * 0.05),
         child: Column(
           children: [
+            SizedBox(height: height * 0.050),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -54,7 +55,7 @@ class _AdminAddState extends State<AdminAdd> {
                   children: [
                     Image.asset('images/img.png', height: 40, width: 45),
                     SizedBox(width: width * 0.03),
-                    Text('Add', style: KMENUTextStyle),
+                    Text('ADD', style: KMENUTextStyle),
                     SizedBox(width: width * 0.02),
                     Text(foodProvider.type, style: KCardTextStyle),
                   ],
@@ -85,12 +86,12 @@ class _AdminAddState extends State<AdminAdd> {
                                 key: ValueKey(chip.id),
                                 label: Text(chip.name),
                                 labelStyle: TextStyle(color: Colors.white),
-                                backgroundColor: darkblue,
+                                backgroundColor: darkBlue,
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 7, horizontal: 10),
                                 deleteIconColor: Colors.red,
                                 onDeleted: () =>
-                                    foodProvider.removeDrink(chip.id),
+                                    foodProvider.removeFood(chip.id),
                               ))
                           .toList(),
                     ),
@@ -105,7 +106,7 @@ class _AdminAddState extends State<AdminAdd> {
                                 label: Text(chip.name),
                                 labelStyle:
                                     const TextStyle(color: Colors.white),
-                                backgroundColor: darkblue,
+                                backgroundColor: darkBlue,
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 7, horizontal: 10),
                                 deleteIconColor: Colors.red,
@@ -150,7 +151,7 @@ class _AdminAddState extends State<AdminAdd> {
                                         //selected = menu[index].id!;
                                       });
                                     },
-                                    selectedTileColor: darkblue,
+                                    selectedTileColor: darkBlue,
                                     selectedColor: Colors.white,
                                   ),
                                 );
@@ -197,7 +198,7 @@ class _AdminAddState extends State<AdminAdd> {
                                                 menu, index, selectedIndex);
                                       });
                                     },
-                                    selectedTileColor: darkblue,
+                                    selectedTileColor: darkBlue,
                                     selectedColor: Colors.white,
                                   ),
                                 );

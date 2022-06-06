@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/Domain/ChipData.dart';
+import 'package:lunch_ordering/providers/menu_provider.dart';
 import 'package:provider/provider.dart';
 import '../../Domain/menu.dart';
 import '../../providers/food_providers.dart';
@@ -38,17 +39,18 @@ class _AddMenuState extends State<AddMenu> {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     bool isSelected = false;
-    final foodProvider = Provider.of<FoodProvider>(context);
+    final menuProvider = Provider.of<MenuProvider>(context);
 
     return Scaffold(
       key: scaffoldKey,
       drawer: NavDrawer(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
+          padding: EdgeInsets.only(
+              top: width * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,55 +70,65 @@ class _AddMenuState extends State<AddMenu> {
                   ),
                 ],
               ),
-              SizedBox(height: height * 0.05),
-              row('Food', foodProvider.isLoading, () {
-                foodProvider.typeFood();
+              SizedBox(height: height * 0.03),
+              SizedBox(
+                width: width,
+                child: Button(
+                  text: "${selectedDate.toLocal()}".split(' ')[0],
+                  isLoading: false,
+                  onPressed: () {
+                    selectDate(context);
+                  },
+                ),
+              ),
+              row('Food', menuProvider.isLoading, () {
+                menuProvider.typeFood();
                 Navigator.pushNamed(context, '/adminAdd');
               }),
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: GestureDetector(
                   onTap: () {
-                    foodProvider.typeFood();
+                    menuProvider.typeFood();
                     Navigator.pushNamed(context, '/adminAdd');
                   },
-                  child: column(foodProvider.foodChips.isEmpty, context, 'Food',
-                      foodProvider.foodChips, () {
-                    foodProvider.typeFood();
+                  child: column(menuProvider.foodChips.isEmpty, context, 'Food',
+                      menuProvider.foodChips, () {
+                    menuProvider.typeFood();
                     Navigator.pushNamed(context, '/adminAdd');
-                  }, foodProvider.isLoading),
+                  }, menuProvider.isLoading),
                 ),
               ),
               SizedBox(height: height * 0.03),
-              row('Drink', foodProvider.isLoading, () {
-                foodProvider.typeDrink();
+              row('Drink', menuProvider.isLoading, () {
+                menuProvider.typeDrink();
                 Navigator.pushNamed(context, '/adminAdd');
               }),
               Padding(
                 padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 child: GestureDetector(
                   onTap: () {
-                    foodProvider.typeDrink();
+                    menuProvider.typeDrink();
                     Navigator.pushNamed(context, '/adminAdd');
                   },
-                  child: column(foodProvider.drinkChips.isEmpty, context,
-                      'Drink', foodProvider.drinkChips, () {
-                    foodProvider.typeDrink();
+                  child: column(menuProvider.drinkChips.isEmpty, context,
+                      'Drink', menuProvider.drinkChips, () {
+                    menuProvider.typeDrink();
                     Navigator.pushNamed(context, '/adminAdd');
-                  }, foodProvider.isLoading),
+                  }, menuProvider.isLoading),
                 ),
               ),
-              foodProvider.drinkChips.isEmpty
-                  ? SizedBox(height: height * 0.5)
+              menuProvider.drinkChips.isEmpty
+                  ? SizedBox(height: height * 0.05)
                   : SizedBox(),
-              Container(
-                width: width * 0.4,
+              SizedBox(
+                width: width,
                 child: Button(
                   text: 'Add to Menu',
-                  isLoading: foodProvider.menuLoading,
+                  isLoading: menuProvider.menuLoading,
                   onPressed: () {
-                    foodProvider.addMenu(
-                        foodProvider.foodIDS, foodProvider.drinkIDS, context);
+                    menuProvider.addMenu(
+                        menuProvider.foodIDS, menuProvider.drinkIDS, context);
                   },
                 ),
               ),
@@ -125,5 +137,19 @@ class _AddMenuState extends State<AddMenu> {
         ),
       ),
     );
+  }
+
+  void selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate.add(Duration(days: 1)),
+      firstDate: DateTime(2022),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
   }
 }

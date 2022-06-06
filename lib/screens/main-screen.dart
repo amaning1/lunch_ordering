@@ -66,7 +66,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     foodSelected = foodProvider.menu[index].food_id!;
                   });
                 },
-                selectedTileColor: darkblue,
+                selectedTileColor: darkBlue,
                 selectedColor: Colors.white,
               ),
             );
@@ -94,7 +94,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     drinkSelected = foodProvider.drinks[index].id!;
                   });
                 },
-                selectedTileColor: darkblue,
+                selectedTileColor: darkBlue,
                 selectedColor: Colors.white,
               ),
             );
@@ -145,7 +145,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 child: Text('Bon Appétit',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
-                                        color: darkblue,
+                                        color: darkBlue,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 20)),
                               ),
@@ -163,7 +163,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                   SizedBox(height: height * 0.04),
                                   Container(
                                       decoration: BoxDecoration(
-                                        color: darkblue,
+                                        color: darkBlue,
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10)),
                                       ),
