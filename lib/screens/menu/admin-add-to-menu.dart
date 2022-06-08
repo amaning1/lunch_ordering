@@ -218,7 +218,7 @@ class _AdminAddState extends State<AdminAdd> {
               width: width * 0.4,
               child: Button(
                 text: 'Add to Menu',
-                isLoading: foodProvider.menuLoading,
+                isLoading: foodProvider.isLoading,
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/addMenu', (route) => false);

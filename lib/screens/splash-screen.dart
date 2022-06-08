@@ -25,6 +25,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void didChangeDependencies() {
     Provider.of<AuthProvider>(context, listen: false).autoLogIn(context);
+
     super.didChangeDependencies();
   }
 

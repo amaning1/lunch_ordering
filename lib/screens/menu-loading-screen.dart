@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
-import '../providers/Manage.dart';
+import '../providers/menu_provider.dart';
 import 'main-screen.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+class MenuLoadingScreen extends StatefulWidget {
+  const MenuLoadingScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<MenuLoadingScreen> createState() => _MenuLoadingScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _MenuLoadingScreenState extends State<MenuLoadingScreen> {
   late FoodProvider foodVm;
 
   @override
@@ -23,7 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void didChangeDependencies() {
-    Provider.of<FoodProvider>(context, listen: false).fetchFood(context);
+    Provider.of<MenuProvider>(context, listen: false)
+        .fetchPreviousMenus(context);
+    Provider.of<FoodProvider>(context, listen: false).getOrders(context);
     super.didChangeDependencies();
   }
 

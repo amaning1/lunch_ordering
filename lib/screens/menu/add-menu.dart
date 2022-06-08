@@ -125,7 +125,7 @@ class _AddMenuState extends State<AddMenu> {
                 width: width,
                 child: Button(
                   text: 'Add to Menu',
-                  isLoading: menuProvider.menuLoading,
+                  isLoading: menuProvider.isLoading,
                   onPressed: () {
                     menuProvider.addMenu(
                         menuProvider.foodIDS, menuProvider.drinkIDS, context);

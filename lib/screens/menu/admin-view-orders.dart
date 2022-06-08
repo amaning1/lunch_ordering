@@ -32,13 +32,10 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
   @override
   Widget build(BuildContext context) {
     var height, width;
-    bool isLoading = false;
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
     var scaffoldKey = GlobalKey<ScaffoldState>();
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     final foodProvider = Provider.of<FoodProvider>(context);
-    bool isSelected = false;
 
     return Scaffold(
       key: scaffoldKey,
@@ -46,55 +43,68 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
+          padding: EdgeInsets.only(
+              top: width * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              FutureBuilder<List<Orders>?>(
-                  future: foodProvider.getOrders(context),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Orders>? orders = snapshot.data;
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: orders?.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Card(
-                                child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(30, 20, 20, 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  // Text('Name: ' + orders![index].name?,
-                                  //     style: KCardTextStyle),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Food: ' + orders![index].food,
-                                      style: KCardTextStyle),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Drink: ' + orders[index].drink,
-                                      style: KCardTextStyle),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Comment: ' + orders[index].comment!,
-                                      style: KCardTextStyle),
-                                ],
-                              ),
-                            ));
-                          });
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: blue,
-                      ),
-                    );
-                  }),
+              SizedBox(height: height * 0.2),
+              foodProvider.listOrders.isEmpty
+                  ? ChefCards(
+                      height: height,
+                      width: width,
+                      number: '0',
+                      text: 'Orders',
+                      icon: Icons.fastfood)
+                  : ordersWidget(
+                      orders: foodProvider.listOrders,
+                      height: height,
+                      width: width)
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class ordersWidget extends StatelessWidget {
+  ordersWidget({
+    Key? key,
+    required this.orders,
+    required this.height,
+    required this.width,
+  }) : super(key: key);
+
+  final List<Orders>? orders;
+  var height;
+  var width;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: orders?.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+              child: Padding(
+            padding: EdgeInsets.only(
+                top: width * 0.05, left: width * 0.05, right: width * 0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Name: ' + orders![index].name!, style: KCardTextStyle),
+                SizedBox(height: height * 0.04),
+                Text('Food: ' + orders![index].food, style: KCardTextStyle),
+                SizedBox(height: height * 0.04),
+                Text('Drink: ' + orders![index].drink, style: KCardTextStyle),
+                SizedBox(height: height * 0.04),
+                Text('Comment: ' + orders![index].comment!,
+                    style: KCardTextStyle),
+              ],
+            ),
+          ));
+        });
   }
 }

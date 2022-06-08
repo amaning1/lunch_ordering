@@ -117,7 +117,7 @@ class _SignUpState extends State<SignUp> {
                                 height: height * 0.1,
                                 child: Button(
                                   text: 'Continue',
-                                  isLoading: regProvider.isLoadingRegister,
+                                  isLoading: regProvider.isLoading,
                                   onPressed: () async {
                                     regProvider.registerImplementation(context);
                                   },

@@ -5,42 +5,31 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'package:intl/intl.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import 'package:lunch_ordering/screens/menu/all-menus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
 import '../Domain/ChipData.dart';
-import '../Domain/drinks.dart';
-import '../Domain/foods.dart';
-import '../Domain/menu.dart';
 import '../Domain/allMenus.dart';
-import '../Domain/new-user.dart';
 import '../Domain/oldOrders.dart';
-import '../Domain/orders.dart';
 import '../constants.dart';
-import '../screens/main-screen.dart';
-import '../screens/view-history.dart';
 import '../shared_preferences.dart';
-import 'Manage.dart';
 
 class MenuProvider extends Manage {
-  List<Menu> menu = [];
-  List<AllMenus> allMenu = [];
+  List<Food> menu = [];
+  List<Datum> allMenu = [];
   List<OldOrders> list = [];
-  List<Drinks> drinks = [];
+  List<Drink> drinks = [];
   List<ChipData> foodChips = [];
   List<ChipData> drinkChips = [];
   List<int> foodIDS = [];
   List<int> drinkIDS = [];
   int menuIDx = 0;
   late OldOrders oldOrders;
+  var food;
 
-  Future<List<Menu>?> fetchPreviousMenus(context) async {
+  Future<List<Datum>?> fetchPreviousMenus(context) async {
     await getToken();
-    List<Menu>? list;
+    List<Datum>? list;
 
     final response = await http.get(
       Uri.parse(AppURL.allMenu),
@@ -53,8 +42,23 @@ class MenuProvider extends Manage {
     if (response.statusCode == 200) {
       String data = response.body;
       var rest = jsonDecode(data)['data'] as List;
+
       print(rest);
-      menu = rest.map<Menu>((json) => Menu.fromJson(json)).toList();
+      final allMenus = allMenusFromJson(data);
+      allMenu = allMenus.data;
+      print(allMenu);
+      // getFoods();
+      // for (int i = 0; i < allMenu.length; i++) {
+      //   menu = allMenu[i].foods;
+      //   for (int i = 0; i < menu.length; i++) {
+      //     food = menu[i].foodName;
+      //     print(food);
+      //   }
+      //   //print(food);
+      //   print('------------------------------------------');
+      // }
+
+      Navigator.pushNamed(context, '/allMenus');
     } else if (response.statusCode == 401) {
       showDialog(
         context: context,
@@ -76,9 +80,19 @@ class MenuProvider extends Manage {
     return list;
   }
 
+  List<String> getFoods() {
+    for (int i = 0; i < allMenu.length; i++) {
+      menu = allMenu[i].foods;
+      for (int i = 0; i < menu.length; i++) {
+        food.add(menu[i].foodName);
+      }
+    }
+    return food;
+  }
+
   Future addMenu(foodList, drinkList, context) async {
     await getToken();
-    changeMenuStatus(true);
+    changeStatus(true);
     final response = await http.post(
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
       headers: <String, String>{
@@ -95,7 +109,7 @@ class MenuProvider extends Manage {
     if (response.statusCode == 201) {
       String data = response.body;
       print(response.body);
-      changeMenuStatus(false);
+      changeStatus(false);
       return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -106,7 +120,7 @@ class MenuProvider extends Manage {
         },
       );
     } else {
-      changeMenuStatus(false);
+      changeStatus(false);
       notifyListeners();
       print(response.statusCode);
       print(response.body);

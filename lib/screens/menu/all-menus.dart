@@ -1,12 +1,11 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lunch_ordering/providers/menu_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/components.dart';
-import '../../Domain/menu.dart';
-import '../../Domain/orders.dart';
 import '../../providers/food_providers.dart';
 import '../../shared_preferences.dart';
 
@@ -38,8 +37,101 @@ class _AllMenusState extends State<AllMenus> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    final foodProvider = Provider.of<FoodProvider>(context);
-    bool isSelected = false;
+    final menuProvider = Provider.of<MenuProvider>(context);
+
+    // Widget foodMenu(BuildContext context) {
+    //   return ListView.builder(
+    //       shrinkWrap: true,
+    //       itemCount: menuProvider.allMenu.length,
+    //       itemBuilder: (BuildContext context, int index) {
+    //         return Card(
+    //             shape: RoundedRectangleBorder(
+    //               borderRadius: BorderRadius.circular(10.0),
+    //             ),
+    //             child: Column(
+    //               children: [
+    //                 ListTile(
+    //                   shape: RoundedRectangleBorder(
+    //                     borderRadius: BorderRadius.circular(10.0),
+    //                   ),
+    //                   title:
+    //                       Text(menuProvider.allMenu[index].menuId.toString()),
+    //                 ),
+    //                 for (int i = 0; i < menuProvider.allMenu.length; i++)
+    //                   menuProvider.menu = menuProvider.allMenu[index].foods,
+    //                 for (int i = 0; i < menu.length; i++)
+    //                   // food = menu[i].foodName;
+    //                   ListView.builder(
+    //                       shrinkWrap: true,
+    //                       itemCount: menuProvider.menu.length,
+    //                       itemBuilder: (BuildContext context, int index) {
+    //                         return Column(
+    //                           children: [
+    //                             ListTile(
+    //                               title:
+    //                                   Text(menuProvider.menu[index].foodName),
+    //                             ),
+    //                           ],
+    //                         );
+    //                       }),
+    //
+    //                 //print(food);
+    //
+    //                 // for (var i in menuProvider.allMenu)
+    //                 //   //menu = menuProvider.allMenu.cast<Food>(),
+    //               ],
+    //             ));
+    //       });
+    // }
+
+    var foodList = ListView.builder(
+        shrinkWrap: true,
+        itemCount: menuProvider.allMenu.length,
+        itemBuilder: (context, index) {
+          var foodMenus = menuProvider.allMenu[index];
+          return SizedBox(
+            child: Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 13.0, top: 5.0),
+                    child: Text(
+                      foodMenus.menuId.toString(),
+                      style: KTextStyle3,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: foodMenus.drinks.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(foodMenus.drinks[index].drinkName),
+                            );
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: foodMenus.foods.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(foodMenus.foods[index].foodName),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
 
     return Scaffold(
       key: scaffoldKey,
@@ -52,46 +144,18 @@ class _AllMenusState extends State<AllMenus> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               bslMenu(width: width, scaffoldKey: scaffoldKey),
-              // FutureBuilder<List<Menu>?>(
-              //     future: foodProvider.fetchPreviousMenus(context),
-              //     builder: (context, snapshot) {
-              //       if (snapshot.hasData) {
-              //         List<Menu>? menus = snapshot.data;
-              //         return ListView.builder(
-              //             shrinkWrap: true,
-              //             itemCount: menus?.length,
-              //             itemBuilder: (BuildContext context, int index) {
-              //               return Padding(
-              //                 padding:
-              //                     const EdgeInsets.fromLTRB(30, 20, 20, 20),
-              //                 child: Card(
-              //                   child: Column(
-              //                     crossAxisAlignment: CrossAxisAlignment.start,
-              //                     children: <Widget>[
-              //                       SizedBox(height: height * 0.04),
-              //                       Text('Food: ' + menus![index].food_name!,
-              //                           style: KCardTextStyle),
-              //                       SizedBox(height: height * 0.04),
-              //                       Text('Drink: ' + menus[index].drink_name!,
-              //                           style: KCardTextStyle),
-              //                     ],
-              //                   ),
-              //                 ),
-              //               );
-              //             });
-              //       } else if (snapshot.hasError) {
-              //         return Text("${snapshot.error}");
-              //       }
-              //       return Center(child: CircularProgressIndicator());
-              //     }),
-              SizedBox(height: width * 0.5),
-              Button(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/addMenu');
-                },
-                isLoading: foodProvider.isLoading,
-                text: 'Add Menu',
-              )
+              //SizedBox(height: width * 0.5),
+              foodList,
+              SizedBox(
+                width: width,
+                child: Button(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/addMenu');
+                  },
+                  isLoading: menuProvider.isLoading,
+                  text: 'Add Menu',
+                ),
+              ),
             ],
           ),
         ),

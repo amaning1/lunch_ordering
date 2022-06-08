@@ -5,11 +5,8 @@ import '../Domain/ChipData.dart';
 class Manage extends ChangeNotifier {
   bool _isLoading = false;
   bool _updateOrder = false;
-  bool _isLoadingRegister = false;
-  bool _menuLoading = false;
   bool _isMenu = false;
-  List<ChipData> Chips = [];
-
+  bool _isUser = false;
   bool _rememberMe = false;
 
   String _type = '';
@@ -30,6 +27,10 @@ class Manage extends ChangeNotifier {
     return type;
   }
 
+  bool get isUser {
+    return _isUser;
+  }
+
   bool get isLoading {
     return _isLoading;
   }
@@ -38,16 +39,13 @@ class Manage extends ChangeNotifier {
     return _isMenu;
   }
 
-  bool get menuLoading {
-    return _menuLoading;
-  }
-
-  bool get isLoadingRegister {
-    return _isLoadingRegister;
-  }
-
   bool get rememberMe {
     return _rememberMe;
+  }
+
+  void changeUser(bool changeUser) {
+    _isUser = changeUser;
+    notifyListeners();
   }
 
   void changeUpdateOrder(bool updateOrder) {
@@ -60,18 +58,8 @@ class Manage extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeMenuStatus(bool isLoading) {
-    _menuLoading = isLoading;
-    notifyListeners();
-  }
-
   void changeStatus(bool isLoading) {
     _isLoading = isLoading;
-    notifyListeners();
-  }
-
-  void changeRegisterStatus(bool isLoadingRegister) {
-    _isLoadingRegister = isLoadingRegister;
     notifyListeners();
   }
 

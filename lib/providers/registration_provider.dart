@@ -24,14 +24,14 @@ class RegProvider extends Manage {
   String dropDownValue = 'user';
   registerImplementation(BuildContext context) async {
     if (formKey1.currentState!.validate()) {
-      changeRegisterStatus(true);
+      changeStatus(true);
       notifyListeners();
       register(context);
     }
   }
 
   Future addUser(context) async {
-    changeRegisterStatus(true);
+    changeStatus(true);
     final String token;
     final response = await http.post(
       Uri.parse(AppURL.Register),
@@ -48,7 +48,7 @@ class RegProvider extends Manage {
 
     if (response.statusCode == 201) {
       String data = response.body;
-      changeRegisterStatus(false);
+      changeStatus(false);
       notifyListeners();
       showDialog(
           context: context,
@@ -58,7 +58,7 @@ class RegProvider extends Manage {
             }, 'You\'ve Signed Up', "User has been added", 'Exit');
           });
     } else if (response.statusCode == 422) {
-      changeRegisterStatus(false);
+      changeStatus(false);
       notifyListeners();
       showDialog(
           context: context,
@@ -68,7 +68,7 @@ class RegProvider extends Manage {
             }, 'Invalid Details', "Please provide valid form details", 'Exit');
           });
     } else {
-      changeRegisterStatus(false);
+      changeStatus(false);
       print(response.statusCode);
       print(response.body);
     }
@@ -76,7 +76,7 @@ class RegProvider extends Manage {
   }
 
   Future register(context) async {
-    changeRegisterStatus(true);
+    changeStatus(true);
     final String token;
     final response = await http.post(
       Uri.parse(AppURL.Register),
@@ -93,7 +93,7 @@ class RegProvider extends Manage {
 
     if (response.statusCode == 201) {
       String data = response.body;
-      changeRegisterStatus(false);
+      changeStatus(false);
       notifyListeners();
       showDialog(
           context: context,
@@ -103,7 +103,7 @@ class RegProvider extends Manage {
             }, 'You\'ve Signed Up', "Contact your administrators", 'Sign In');
           });
     } else if (response.statusCode == 422) {
-      changeRegisterStatus(false);
+      changeStatus(false);
       notifyListeners();
       showDialog(
           context: context,
@@ -113,7 +113,7 @@ class RegProvider extends Manage {
             }, 'Invalid Details', "Please provide valid form details", 'Exit');
           });
     } else {
-      changeRegisterStatus(false);
+      changeStatus(false);
       print(response.statusCode);
       print(response.body);
     }

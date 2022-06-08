@@ -60,7 +60,7 @@ class ApprovalProvider extends Manage {
   }
 
   Future approveUser(userId) async {
-    changeMenuStatus(true);
+    changeStatus(true);
     await getToken();
     final response = await http.put(
       Uri.parse(AppURL.approveUser),
@@ -73,7 +73,7 @@ class ApprovalProvider extends Manage {
       }),
     );
     if (response.statusCode == 200) {
-      changeMenuStatus(false);
+      changeStatus(false);
     }
   }
 }

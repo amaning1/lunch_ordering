@@ -138,7 +138,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                                 height: height * 0.1,
                                 child: Button(
                                   text: 'Add User',
-                                  isLoading: regProvider.isLoadingRegister,
+                                  isLoading: regProvider.isLoading,
                                   onPressed: () async {
                                     regProvider.addUser(context);
                                   },

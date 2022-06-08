@@ -77,7 +77,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                                     children: [
                                       Button(
                                         text: 'Approve',
-                                        isLoading: approvalProvider.menuLoading,
+                                        isLoading: approvalProvider.isLoading,
                                         onPressed: () {
                                           approvalProvider.approveUser(
                                               users[index].user_id);
@@ -87,7 +87,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                                       SizedBox(width: height * 0.01),
                                       Button(
                                         text: 'Deny',
-                                        isLoading: approvalProvider.menuLoading,
+                                        isLoading: approvalProvider.isLoading,
                                         onPressed: () {},
                                         color: Colors.red,
                                       ),

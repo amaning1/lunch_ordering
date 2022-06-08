@@ -99,7 +99,7 @@ class AuthProvider extends Manage {
 
       if (user.type == "chef" || user.type == "admin") {
         saveToken(user.token);
-        Navigator.pushNamed(context, '/allMenus');
+        Navigator.pushNamed(context, '/menuLoading');
       } else {
         saveToken(user.token);
         Navigator.pushNamed(context, '/splash');

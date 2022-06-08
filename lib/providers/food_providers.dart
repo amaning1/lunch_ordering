@@ -26,40 +26,41 @@ import 'Manage.dart';
 class FoodProvider extends Manage {
   TextEditingController textFieldController = TextEditingController();
   List<Menu> menu = [];
-  List<AllMenus> allMenu = [];
   List<OldOrders> list = [];
+  List<Orders> listOrders = [];
   List<Drinks> drinks = [];
   List<ChipData> foodChips = [];
   List<ChipData> drinkChips = [];
   List<int> foodIDS = [];
   List<int> drinkIDS = [];
   int menuIDx = 0;
+  List allOrders = [];
   late OldOrders oldOrders;
-  //bool isUser = false;
 
   var time = DateTime.now().add(const Duration(days: 1));
-  var currentTime = DateTime.now();
   var newHour = 7;
   var chefHour = 14;
 
   void date() {
-    DateTime time =
+    var currentTime = DateTime.now();
+    DateTime userTime =
         DateTime(currentTime.year, currentTime.month, currentTime.day, newHour);
+    print(isUser);
+    DateTime chefTime = DateTime(
+        currentTime.year, currentTime.month, currentTime.day, chefHour);
 
-    if (currentTime.isBefore(time)) {
-      time = DateTime.now();
+    if (isUser) {
+      if (currentTime.isBefore(userTime)) {
+        time = DateTime.now();
+      } else {
+        time = time;
+      }
     } else {
-      time = time;
-    }
-  }
-
-  void dateChef() {
-    DateTime time =
-        DateTime(currentTime.year, currentTime.month, currentTime.day, newHour);
-    if (currentTime.isBefore(time)) {
-      time = DateTime.now();
-    } else {
-      time = time;
+      if (currentTime.isBefore(chefTime)) {
+        time = DateTime.now();
+      } else {
+        time = time;
+      }
     }
   }
 
@@ -112,22 +113,24 @@ class FoodProvider extends Manage {
   Future updateFoodOrder(context) async {
     changeStatus(true);
     // await getToken();
-    final response = await http.post(
+    final response = await http.put(
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/order'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
       body: jsonEncode(<String, dynamic>{
-        'order_id': '',
+        'order_id': oldOrders.id,
+        'user_id': oldOrders.id,
         'menu_id': menuIDx,
         'food_id': foodSelected.toString(),
         'drink_id': drinkSelected.toString(),
-        'comment': textFieldController.text,
+        'comment':
+            textFieldController.text.isEmpty ? ' ' : textFieldController.text,
       }),
     );
     getPreviousOrders(context);
-    if (response.statusCode == 202) {
+    if (response.statusCode == 200) {
       changeStatus(false);
       showDialog(
         context: context,
@@ -139,6 +142,8 @@ class FoodProvider extends Manage {
         },
       );
     } else {
+      print(response.body);
+
       var formatDate = DateTime.tryParse(oldOrders.time!);
       String Date = DateFormat("yyyy-MM-dd").format(formatDate!);
       changeStatus(false);
@@ -157,7 +162,7 @@ class FoodProvider extends Manage {
 
   Future<List<Orders>?> getOrders(context) async {
     await getToken();
-    dateChef();
+    date();
     String formatDate = DateFormat("yyyy-MM-dd").format(time);
     print(formatDate);
     List<Orders>? list;
@@ -171,16 +176,9 @@ class FoodProvider extends Manage {
       String data = response.body;
       print(data);
       var rest = jsonDecode(data)['data'] as List;
-      list = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
+      listOrders = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            Navigator.pop(context);
-          }, 'No Orders', 'where', 'Exit');
-        },
-      );
+      listOrders = [];
     }
     return list;
   }
@@ -233,8 +231,11 @@ class FoodProvider extends Manage {
 
   Future<List<Menu>?> fetchFood(context) async {
     await getToken();
+    changeUser(true);
+    notifyListeners();
     date();
     String formatDate = DateFormat("yyyy-MM-dd").format(time);
+    print(formatDate);
     getPreviousOrders(context);
     List<Menu>? list;
 

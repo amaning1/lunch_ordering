@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:lunch_ordering/providers/approval_provider.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
+import 'package:lunch_ordering/providers/menu_provider.dart';
 import 'package:lunch_ordering/providers/registration_provider.dart';
 import 'package:lunch_ordering/providers/auth_provider.dart';
+import 'package:lunch_ordering/screens/menu-loading-screen.dart';
 import 'package:lunch_ordering/screens/menu/add-menu.dart';
 import 'package:lunch_ordering/screens/menu/admin-add-user.dart';
 import 'package:lunch_ordering/screens/menu/admin-add-to-menu.dart';
 import 'package:lunch_ordering/screens/menu/admin-approval-requests.dart';
 import 'package:lunch_ordering/screens/menu/admin-view-foods.dart';
-import 'package:lunch_ordering/screens/menu/admin-page.dart';
 import 'package:lunch_ordering/screens/main-screen.dart';
 import 'package:lunch_ordering/screens/menu/admin-view-orders.dart';
 import 'package:lunch_ordering/screens/menu/all-menus.dart';
@@ -34,7 +36,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: Manage()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => FoodProvider()),
-        ChangeNotifierProvider(create: (_) => RegProvider())
+        ChangeNotifierProvider(create: (_) => RegProvider()),
+        ChangeNotifierProvider(create: (_) => ApprovalProvider()),
+        ChangeNotifierProvider(create: (_) => MenuProvider())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -45,7 +49,6 @@ class MyApp extends StatelessWidget {
           '/signin': (context) => SignIn(),
           '/signup': (context) => SignUp(),
           '/third': (context) => MenuScreen(),
-          '/fourth': (context) => AdminPage(),
           '/adminAdd': (context) => AdminAdd(),
           '/adminOrders': (context) => AdminOrders(),
           '/history': (context) => ViewHistory(),
@@ -56,6 +59,7 @@ class MyApp extends StatelessWidget {
           '/adminAddUser': (context) => AdminAddUser(),
           '/adminApprovalRequests': (context) => AdminApprovalRequests(),
           '/User': (context) => UserMain(),
+          '/menuLoading': (context) => MenuLoadingScreen(),
         },
       ),
     );
