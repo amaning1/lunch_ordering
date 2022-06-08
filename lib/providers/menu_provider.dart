@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../Domain/menu.dart';
 import 'Manage.dart';
 import 'dart:io';
 import 'dart:async';
@@ -47,16 +46,6 @@ class MenuProvider extends Manage {
       final allMenus = allMenusFromJson(data);
       allMenu = allMenus.data;
       print(allMenu);
-      // getFoods();
-      // for (int i = 0; i < allMenu.length; i++) {
-      //   menu = allMenu[i].foods;
-      //   for (int i = 0; i < menu.length; i++) {
-      //     food = menu[i].foodName;
-      //     print(food);
-      //   }
-      //   //print(food);
-      //   print('------------------------------------------');
-      // }
 
       Navigator.pushNamed(context, '/allMenus');
     } else if (response.statusCode == 401) {
@@ -78,16 +67,6 @@ class MenuProvider extends Manage {
       );
     }
     return list;
-  }
-
-  List<String> getFoods() {
-    for (int i = 0; i < allMenu.length; i++) {
-      menu = allMenu[i].foods;
-      for (int i = 0; i < menu.length; i++) {
-        food.add(menu[i].foodName);
-      }
-    }
-    return food;
   }
 
   Future addMenu(foodList, drinkList, context) async {

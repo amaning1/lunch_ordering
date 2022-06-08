@@ -133,6 +133,15 @@ class NavDrawer extends StatelessWidget {
                 }),
             ListTile(
                 hoverColor: darkBlue,
+                leading: Icon(Icons.remove_red_eye),
+                title: const Text('View All Users',
+                    style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/allUsers', (route) => false);
+                }),
+            ListTile(
+                hoverColor: darkBlue,
                 leading: Icon(Icons.approval),
                 title: const Text('Approvals',
                     style: TextStyle(fontFamily: 'Poppins')),

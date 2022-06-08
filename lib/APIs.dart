@@ -11,4 +11,6 @@ class AppURL {
   static const String approvalRequests = baseURL + '/allapprovalrequests';
   static const String approveUser = baseURL + '/user/approve';
   static const String allMenu = baseURL + '/menu/all';
+  static const String allUsers = baseURL + '/allusers';
+  static const String denyUser = baseURL + '/approvalrequest/deny';
 }

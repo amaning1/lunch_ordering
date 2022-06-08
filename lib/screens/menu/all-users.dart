@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lunch_ordering/providers/approval_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -9,14 +10,14 @@ import '../../components.dart';
 import '../../constants.dart';
 import '../../providers/food_providers.dart';
 
-class AdminApprovalRequests extends StatefulWidget {
-  const AdminApprovalRequests({Key? key}) : super(key: key);
+class EveryUser extends StatefulWidget {
+  const EveryUser({Key? key}) : super(key: key);
 
   @override
-  State<AdminApprovalRequests> createState() => _AdminApprovalRequestsState();
+  State<EveryUser> createState() => _EveryUserState();
 }
 
-class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
+class _EveryUserState extends State<EveryUser> {
   var height, width;
   bool isLoading = false;
   var scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,19 +41,24 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
               SizedBox(height: height * 0.05),
               Row(
                 children: [
-                  Text('APPROVALS', style: KMENUTextStyle),
+                  Text('ALL USERS', style: KMENUTextStyle),
                 ],
               ),
               SizedBox(height: height * 0.02),
-              FutureBuilder<List<NewUser>?>(
-                  future: approvalProvider.getAllApprovalRequests(context),
+              FutureBuilder<List<AllUsers>?>(
+                  future: approvalProvider.getAllUsers(context),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<NewUser>? users = snapshot.data;
+                      List<AllUsers>? users = snapshot.data;
                       return ListView.builder(
                           shrinkWrap: true,
                           itemCount: users?.length,
                           itemBuilder: (BuildContext context, int index) {
+                            var formatDate =
+                                DateTime.tryParse(users![index].created_at);
+                            String Date =
+                                DateFormat("yyyy-MM-dd").format(formatDate!);
+
                             return Card(
                                 child: Padding(
                               padding: EdgeInsets.fromLTRB(height * 0.04,
@@ -61,38 +67,23 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   SizedBox(height: height * 0.02),
-                                  Text('Name: ' + users![index].name,
+                                  Text('Id: ' + users[index].id.toString(),
                                       style: KTextStyle3),
                                   SizedBox(height: height * 0.04),
-                                  Text('Phone: ' + users[index].phone_number,
+                                  Text('Name: ' + users[index].name,
                                       style: KTextStyle3),
                                   SizedBox(height: height * 0.04),
-                                  Text('Status: ' + users[index].status,
+                                  Text(
+                                      'Phone Number: ' +
+                                          users[index].phone_number,
                                       style: KTextStyle3),
                                   SizedBox(height: height * 0.04),
                                   Text('Type: ' + users[index].type,
                                       style: KTextStyle3),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Button(
-                                        text: 'Approve',
-                                        isLoading: approvalProvider.isLoading,
-                                        onPressed: () {
-                                          approvalProvider.approveUser(
-                                              users[index].user_id);
-                                        },
-                                        color: darkBlue,
-                                      ),
-                                      SizedBox(width: height * 0.01),
-                                      Button(
-                                        text: 'Deny',
-                                        isLoading: approvalProvider.isLoading,
-                                        onPressed: () {},
-                                        color: Colors.red,
-                                      ),
-                                    ],
-                                  )
+                                  SizedBox(height: height * 0.04),
+                                  Text('Status: ' + users[index].status,
+                                      style: KTextStyle3),
+                                  Text('Date: ' + Date, style: KTextStyle3),
                                 ],
                               ),
                             ));

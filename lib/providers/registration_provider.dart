@@ -1,19 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/Manage.dart';
-import 'package:lunch_ordering/providers/food_providers.dart';
-import 'package:lunch_ordering/screens/sign-in.dart';
-
-import 'package:lunch_ordering/shared_preferences.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
-import '../Domain/user.dart';
 import '../components.dart';
-import '../constants.dart';
 
 class RegProvider extends Manage {
   final TextEditingController nameController = TextEditingController();

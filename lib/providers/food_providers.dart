@@ -7,7 +7,6 @@ import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/screens/menu/all-menus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
 import '../Domain/ChipData.dart';
 import '../Domain/drinks.dart';
@@ -237,7 +236,6 @@ class FoodProvider extends Manage {
     String formatDate = DateFormat("yyyy-MM-dd").format(time);
     print(formatDate);
     getPreviousOrders(context);
-    List<Menu>? list;
 
     final response = await http.get(
       Uri.parse(AppURL.getMenu + '?menu_date=$formatDate'),
@@ -272,7 +270,7 @@ class FoodProvider extends Manage {
         },
       );
     }
-    return list;
+    return null;
   }
 
   Future<List<OldOrders>?> getPreviousOrders(context) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../Domain/allUsers.dart';
 import '../Domain/menu.dart';
 import 'Manage.dart';
 import 'dart:io';
@@ -12,21 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:lunch_ordering/screens/menu/all-menus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
-import '../Domain/ChipData.dart';
-import '../Domain/drinks.dart';
-import '../Domain/foods.dart';
-import '../Domain/menu.dart';
-import '../Domain/allMenus.dart';
 import '../Domain/new-user.dart';
-import '../Domain/oldOrders.dart';
-import '../Domain/orders.dart';
-import '../constants.dart';
-import '../screens/main-screen.dart';
-import '../screens/view-history.dart';
 import '../shared_preferences.dart';
 import 'Manage.dart';
 
 class ApprovalProvider extends Manage {
+  List<AllUsers> allUsers = [];
+
   Future<List<NewUser>?> getAllApprovalRequests(context) async {
     await getToken();
     List<NewUser>? list;
@@ -75,5 +68,53 @@ class ApprovalProvider extends Manage {
     if (response.statusCode == 200) {
       changeStatus(false);
     }
+  }
+
+  Future denyUser(userId) async {
+    changeStatus(true);
+    await getToken();
+    final response = await http.put(
+      Uri.parse(AppURL.denyUser + '?user_id=' + userId),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+      },
+    );
+    if (response.statusCode == 200) {
+      changeStatus(false);
+    }
+  }
+
+  Future<List<AllUsers>?> getAllUsers(context) async {
+    await getToken();
+    final response = await http.get(
+      Uri.parse(AppURL.allUsers),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" " " + token!,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      String data = response.body;
+      changeMenu(true);
+      var users = jsonDecode(data)['data'] as List;
+      allUsers =
+          users.map<AllUsers>((json) => AllUsers.fromJson(json)).toList();
+    } else if (response.statusCode == 401) {
+    } else {
+      changeMenu(false);
+      print(response);
+      print(response.statusCode);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            logout(context);
+          }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
+        },
+      );
+    }
+    return allUsers;
   }
 }

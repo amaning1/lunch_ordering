@@ -39,51 +39,6 @@ class _AllMenusState extends State<AllMenus> {
     width = MediaQuery.of(context).size.width;
     final menuProvider = Provider.of<MenuProvider>(context);
 
-    // Widget foodMenu(BuildContext context) {
-    //   return ListView.builder(
-    //       shrinkWrap: true,
-    //       itemCount: menuProvider.allMenu.length,
-    //       itemBuilder: (BuildContext context, int index) {
-    //         return Card(
-    //             shape: RoundedRectangleBorder(
-    //               borderRadius: BorderRadius.circular(10.0),
-    //             ),
-    //             child: Column(
-    //               children: [
-    //                 ListTile(
-    //                   shape: RoundedRectangleBorder(
-    //                     borderRadius: BorderRadius.circular(10.0),
-    //                   ),
-    //                   title:
-    //                       Text(menuProvider.allMenu[index].menuId.toString()),
-    //                 ),
-    //                 for (int i = 0; i < menuProvider.allMenu.length; i++)
-    //                   menuProvider.menu = menuProvider.allMenu[index].foods,
-    //                 for (int i = 0; i < menu.length; i++)
-    //                   // food = menu[i].foodName;
-    //                   ListView.builder(
-    //                       shrinkWrap: true,
-    //                       itemCount: menuProvider.menu.length,
-    //                       itemBuilder: (BuildContext context, int index) {
-    //                         return Column(
-    //                           children: [
-    //                             ListTile(
-    //                               title:
-    //                                   Text(menuProvider.menu[index].foodName),
-    //                             ),
-    //                           ],
-    //                         );
-    //                       }),
-    //
-    //                 //print(food);
-    //
-    //                 // for (var i in menuProvider.allMenu)
-    //                 //   //menu = menuProvider.allMenu.cast<Food>(),
-    //               ],
-    //             ));
-    //       });
-    // }
-
     var foodList = ListView.builder(
         shrinkWrap: true,
         itemCount: menuProvider.allMenu.length,
