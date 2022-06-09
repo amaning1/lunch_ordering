@@ -52,7 +52,7 @@ class _AddMenuState extends State<AddMenu> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(height: height * 0.050),
+              SizedBox(height: height * 0.030),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -71,6 +71,7 @@ class _AddMenuState extends State<AddMenu> {
                   ),
                 ],
               ),
+              SizedBox(height: height * 0.030),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -88,71 +89,73 @@ class _AddMenuState extends State<AddMenu> {
                     ),
                   ],
                 ),
-                child: Column(
-                  children: [
-                    SizedBox(height: height * 0.02),
-                    SizedBox(
-                      width: width,
-                      child: Button(
-                        text: "${selectedDate.toLocal()}".split(' ')[0],
-                        isLoading: false,
-                        onPressed: () {
-                          selectDate(context);
-                        },
+                child: Padding(
+                  padding: EdgeInsets.all(height * 0.05),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: width,
+                        child: Button(
+                          text: "${selectedDate.toLocal()}".split(' ')[0],
+                          isLoading: false,
+                          onPressed: () {
+                            selectDate(context);
+                          },
+                        ),
                       ),
-                    ),
-                    row('Food', menuProvider.isLoading, () {
-                      menuProvider.typeFood();
-                      Navigator.pushNamed(context, '/adminAdd');
-                    }),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      child: GestureDetector(
-                        onTap: () {
-                          menuProvider.typeFood();
-                          Navigator.pushNamed(context, '/adminAdd');
-                        },
-                        child: column(menuProvider.foodChips.isEmpty, context,
-                            'Food', menuProvider.foodChips, () {
-                          menuProvider.typeFood();
-                          Navigator.pushNamed(context, '/adminAdd');
-                        }, menuProvider.isLoading),
+                      row('Food', menuProvider.isLoading, () {
+                        menuProvider.typeFood();
+                        Navigator.pushNamed(context, '/adminAdd');
+                      }),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        child: GestureDetector(
+                          onTap: () {
+                            menuProvider.typeFood();
+                            Navigator.pushNamed(context, '/adminAdd');
+                          },
+                          child: column(menuProvider.foodChips.isEmpty, context,
+                              'Food', menuProvider.foodChips, () {
+                            menuProvider.typeFood();
+                            Navigator.pushNamed(context, '/adminAdd');
+                          }, menuProvider.isLoading),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: height * 0.03),
-                    row('Drink', menuProvider.isLoading, () {
-                      menuProvider.typeDrink();
-                      Navigator.pushNamed(context, '/adminAdd');
-                    }),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          menuProvider.typeDrink();
-                          Navigator.pushNamed(context, '/adminAdd');
-                        },
-                        child: column(menuProvider.drinkChips.isEmpty, context,
-                            'Drink', menuProvider.drinkChips, () {
-                          menuProvider.typeDrink();
-                          Navigator.pushNamed(context, '/adminAdd');
-                        }, menuProvider.isLoading),
+                      SizedBox(height: height * 0.03),
+                      row('Drink', menuProvider.isLoading, () {
+                        menuProvider.typeDrink();
+                        Navigator.pushNamed(context, '/adminAdd');
+                      }),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            menuProvider.typeDrink();
+                            Navigator.pushNamed(context, '/adminAdd');
+                          },
+                          child: column(menuProvider.drinkChips.isEmpty,
+                              context, 'Drink', menuProvider.drinkChips, () {
+                            menuProvider.typeDrink();
+                            Navigator.pushNamed(context, '/adminAdd');
+                          }, menuProvider.isLoading),
+                        ),
                       ),
-                    ),
-                    menuProvider.drinkChips.isEmpty
-                        ? SizedBox(height: height * 0.02)
-                        : SizedBox(),
-                    SizedBox(
-                      width: width,
-                      child: Button(
-                        text: 'Add to Menu',
-                        isLoading: menuProvider.isLoading,
-                        onPressed: () {
-                          menuProvider.addMenu(menuProvider.foodIDS,
-                              menuProvider.drinkIDS, context);
-                        },
+                      menuProvider.drinkChips.isEmpty
+                          ? SizedBox(height: height * 0.02)
+                          : SizedBox(),
+                      SizedBox(
+                        width: width,
+                        child: Button(
+                          text: 'Add to Menu',
+                          isLoading: menuProvider.isLoading,
+                          onPressed: () {
+                            menuProvider.addMenu(menuProvider.foodIDS,
+                                menuProvider.drinkIDS, context);
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

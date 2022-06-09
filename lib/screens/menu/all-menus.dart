@@ -54,7 +54,7 @@ class _AllMenusState extends State<AllMenus> {
               child: Padding(
                 padding: EdgeInsets.only(
                     left: height * 0.04,
-                    top: height * 0.02,
+                    top: height * 0.03,
                     bottom: height * 0.02),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +66,7 @@ class _AllMenusState extends State<AllMenus> {
                             children: const [
                           TextSpan(text: '  ' 'Menu Id', style: KTextStyle2)
                         ])),
+                    SizedBox(height: height * 0.02),
                     RichText(
                         text: TextSpan(
                             text: date + ' ,',
@@ -73,6 +74,7 @@ class _AllMenusState extends State<AllMenus> {
                             children: const [
                           TextSpan(text: '  ' 'Menu date', style: KTextStyle2)
                         ])),
+                    SizedBox(height: height * 0.02),
                     Row(
                       children: [
                         Expanded(
