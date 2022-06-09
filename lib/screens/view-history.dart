@@ -41,39 +41,67 @@ class _ViewHistoryState extends State<ViewHistory> {
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
               SizedBox(height: height * 0.05),
               Row(
-                children: [
+                children: const [
                   Text('ORDER HISTORY', style: KMENUTextStyle),
                 ],
               ),
               SizedBox(height: height * 0.02),
               ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
+                  reverse: true,
                   itemCount: foodProvider.list.length,
                   itemBuilder: (BuildContext context, int index) {
                     var formatDate =
                         DateTime.tryParse(foodProvider.list[index].time!);
-                    String Date = DateFormat("yyyy-MM-dd").format(formatDate!);
+                    String date = DateFormat("yyyy-MM-dd").format(formatDate!);
 
                     return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                         child: Padding(
-                      padding: EdgeInsets.fromLTRB(height * 0.04, height * 0.02,
-                          height * 0.04, height * 0.02),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Date: ' + Date, style: KTextStyle3),
-                          SizedBox(height: height * 0.04),
-                          Text('Food: ' + foodProvider.list[index].food,
-                              style: KTextStyle3),
-                          SizedBox(height: height * 0.04),
-                          Text('Drink: ' + foodProvider.list[index].drink,
-                              style: KTextStyle3),
-                          SizedBox(height: height * 0.04),
-                          Text('Comment: ' + foodProvider.list[index].comment!,
-                              style: KTextStyle3),
-                        ],
-                      ),
-                    ));
+                          padding: EdgeInsets.fromLTRB(height * 0.04,
+                              height * 0.02, height * 0.04, height * 0.02),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(height: height * 0.03),
+                              RichText(
+                                  text: TextSpan(
+                                      text:
+                                          foodProvider.list[index].food + ' ,',
+                                      style: KTextStyle1,
+                                      children: const [
+                                    TextSpan(
+                                        text: '  ' 'Food', style: KTextStyle2)
+                                  ])),
+                              SizedBox(height: height * 0.02),
+                              RichText(
+                                  text: TextSpan(
+                                      text:
+                                          foodProvider.list[index].drink + ' ,',
+                                      style: KTextStyle1,
+                                      children: const [
+                                    TextSpan(
+                                        text: '  ' 'Drink', style: KTextStyle2)
+                                  ])),
+                              SizedBox(height: height * 0.03),
+                              const Text(
+                                'Comments',
+                                style: KTextStyle2,
+                              ),
+                              Text(foodProvider.list[index].comment!,
+                                  style: KTextStyle4),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text('Date: ' + date, style: KTextStyle3),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ));
                   })
             ],
           ),

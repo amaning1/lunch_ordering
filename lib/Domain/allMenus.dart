@@ -29,19 +29,23 @@ class Datum {
     required this.menuId,
     required this.foods,
     required this.drinks,
+    required this.createdAt,
   });
 
   int menuId;
   List<Food> foods;
   List<Drink> drinks;
+  String createdAt;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         menuId: json["menu_id"],
+        createdAt: json["menu_date"],
         foods: List<Food>.from(json["foods"].map((x) => Food.fromJson(x))),
         drinks: List<Drink>.from(json["drinks"].map((x) => Drink.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
+        "created_at": createdAt,
         "menu_id": menuId,
         "foods": List<dynamic>.from(foods.map((x) => x.toJson())),
         "drinks": List<dynamic>.from(drinks.map((x) => x.toJson())),

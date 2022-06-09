@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lunch_ordering/providers/menu_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,49 +41,66 @@ class _AllMenusState extends State<AllMenus> {
     final menuProvider = Provider.of<MenuProvider>(context);
 
     var foodList = ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        reverse: true,
         itemCount: menuProvider.allMenu.length,
         itemBuilder: (context, index) {
           var foodMenus = menuProvider.allMenu[index];
+          var formatDate = DateTime.tryParse(foodMenus.createdAt);
+          String date = DateFormat("yyyy-MM-dd").format(formatDate!);
           return SizedBox(
             child: Card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 13.0, top: 5.0),
-                    child: Text(
-                      foodMenus.menuId.toString(),
-                      style: KTextStyle3,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: height * 0.04,
+                    top: height * 0.02,
+                    bottom: height * 0.02),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                        text: TextSpan(
+                            text: foodMenus.menuId.toString() + ' ,',
+                            style: KTextStyle1,
+                            children: const [
+                          TextSpan(text: '  ' 'Menu Id', style: KTextStyle2)
+                        ])),
+                    RichText(
+                        text: TextSpan(
+                            text: date + ' ,',
+                            style: KTextStyle1,
+                            children: const [
+                          TextSpan(text: '  ' 'Menu date', style: KTextStyle2)
+                        ])),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: foodMenus.foods.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(foodMenus.foods[index].foodName),
+                              );
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: foodMenus.drinks.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(foodMenus.drinks[index].drinkName),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: foodMenus.drinks.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(foodMenus.drinks[index].drinkName),
-                            );
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: foodMenus.foods.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(foodMenus.foods[index].foodName),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

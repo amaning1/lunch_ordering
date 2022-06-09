@@ -32,11 +32,14 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
+          padding: EdgeInsets.only(
+              top: width * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(height: height * 0.050),
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+              SizedBox(height: height * 0.035),
               SizedBox(height: height * 0.05),
               Row(
                 children: [

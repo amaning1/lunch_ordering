@@ -3,11 +3,30 @@ import 'package:flutter/material.dart';
 Color blue = const Color(0xFF007AFF);
 Color darkBlue = const Color(0xFF002C59);
 Color grayish = const Color(0xFFE4EBF2);
+Color gray = const Color(0xff4d002c59);
 
 bool state = false;
 bool switchSelected = false;
 bool isObscure = true;
 DateTime selectedDate = DateTime.now();
+
+const KTextStyle1 = TextStyle(
+    color: Color(0xFF002C59),
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w500,
+    fontSize: 16);
+
+const KTextStyle2 = TextStyle(
+    color: Color(0xff4d002c59),
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w400,
+    fontSize: 14);
+
+const KTextStyle4 = TextStyle(
+    color: Color(0xFF002C59),
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w400,
+    fontSize: 14);
 
 const KButtonTextStyle = TextStyle(
     color: Color(0xFF002C59),

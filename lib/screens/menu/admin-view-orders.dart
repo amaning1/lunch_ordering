@@ -49,7 +49,7 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              SizedBox(height: height * 0.2),
+              SizedBox(height: height * 0.02),
               foodProvider.listOrders.isEmpty
                   ? ChefCards(
                       height: height,
@@ -87,24 +87,54 @@ class ordersWidget extends StatelessWidget {
         shrinkWrap: true,
         itemCount: orders?.length,
         itemBuilder: (BuildContext context, int index) {
+          var foodCount = orders![index].food.length;
+          var drinkCount = orders![index].drink.length;
+          var commentCount = orders![index].comment?.length;
+          print(foodCount);
+          print(drinkCount);
+          print(commentCount);
           return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
               child: Padding(
-            padding: EdgeInsets.only(
-                top: width * 0.05, left: width * 0.05, right: width * 0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('Name: ' + orders![index].name!, style: KCardTextStyle),
-                SizedBox(height: height * 0.04),
-                Text('Food: ' + orders![index].food, style: KCardTextStyle),
-                SizedBox(height: height * 0.04),
-                Text('Drink: ' + orders![index].drink, style: KCardTextStyle),
-                SizedBox(height: height * 0.04),
-                Text('Comment: ' + orders![index].comment!,
-                    style: KCardTextStyle),
-              ],
-            ),
-          ));
+                padding: EdgeInsets.only(
+                    top: width * 0.05, left: width * 0.05, right: width * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    RichText(
+                        text: TextSpan(
+                            text: orders![index].name! + ' ,',
+                            style: KTextStyle1,
+                            children: const [
+                          TextSpan(text: '  ' 'Name', style: KTextStyle2)
+                        ])),
+                    SizedBox(height: height * 0.02),
+                    RichText(
+                        text: TextSpan(
+                            text: orders![index].food + ' ,',
+                            style: KTextStyle1,
+                            children: const [
+                          TextSpan(text: '  ' 'Food', style: KTextStyle2)
+                        ])),
+                    SizedBox(height: height * 0.02),
+                    RichText(
+                        text: TextSpan(
+                            text: orders![index].drink + ' ,',
+                            style: KTextStyle1,
+                            children: const [
+                          TextSpan(text: '  ' 'Drink', style: KTextStyle2)
+                        ])),
+                    SizedBox(height: height * 0.04),
+                    const Text(
+                      'Comments',
+                      style: KTextStyle2,
+                    ),
+                    Text(orders![index].comment!, style: KTextStyle4),
+                  ],
+                ),
+              ));
         });
   }
 }

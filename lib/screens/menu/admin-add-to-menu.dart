@@ -54,9 +54,9 @@ class _AdminAddState extends State<AdminAdd> {
                 Row(
                   children: [
                     Image.asset('images/img.png', height: 40, width: 45),
-                    SizedBox(width: width * 0.03),
+                    SizedBox(width: width * 0.05),
                     Text('ADD', style: KMENUTextStyle),
-                    SizedBox(width: width * 0.02),
+                    SizedBox(width: width * 0.05),
                     Text(foodProvider.type, style: KCardTextStyle),
                   ],
                 ),
