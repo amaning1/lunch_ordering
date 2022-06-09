@@ -57,10 +57,17 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
                       number: '0',
                       text: 'Orders',
                       icon: Icons.fastfood)
-                  : ordersWidget(
-                      orders: foodProvider.listOrders,
-                      height: height,
-                      width: width)
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        foodProvider.getOrders(context);
+                        return Future<void>.delayed(
+                            const Duration(seconds: 10));
+                      },
+                      child: ordersWidget(
+                          orders: foodProvider.listOrders,
+                          height: height,
+                          width: width),
+                    )
             ],
           ),
         ),

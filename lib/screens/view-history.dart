@@ -46,63 +46,71 @@ class _ViewHistoryState extends State<ViewHistory> {
                 ],
               ),
               SizedBox(height: height * 0.02),
-              ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  reverse: true,
-                  itemCount: foodProvider.list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var formatDate =
-                        DateTime.tryParse(foodProvider.list[index].time!);
-                    String date = DateFormat("yyyy-MM-dd").format(formatDate!);
+              RefreshIndicator(
+                onRefresh: () async {
+                  foodProvider.getPreviousOrders(context);
+                  return Future<void>.delayed(const Duration(seconds: 10));
+                },
+                child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    reverse: true,
+                    itemCount: foodProvider.list.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var formatDate =
+                          DateTime.tryParse(foodProvider.list[index].time!);
+                      String date =
+                          DateFormat("yyyy-MM-dd").format(formatDate!);
 
-                    return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(height * 0.04,
-                              height * 0.02, height * 0.04, height * 0.02),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(height: height * 0.03),
-                              RichText(
-                                  text: TextSpan(
-                                      text:
-                                          foodProvider.list[index].food + ' ,',
-                                      style: KTextStyle1,
-                                      children: const [
-                                    TextSpan(
-                                        text: '  ' 'Food', style: KTextStyle2)
-                                  ])),
-                              SizedBox(height: height * 0.02),
-                              RichText(
-                                  text: TextSpan(
-                                      text:
-                                          foodProvider.list[index].drink + ' ,',
-                                      style: KTextStyle1,
-                                      children: const [
-                                    TextSpan(
-                                        text: '  ' 'Drink', style: KTextStyle2)
-                                  ])),
-                              SizedBox(height: height * 0.03),
-                              const Text(
-                                'Comments',
-                                style: KTextStyle2,
-                              ),
-                              Text(foodProvider.list[index].comment!,
-                                  style: KTextStyle4),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text('Date: ' + date, style: KTextStyle3),
-                                ],
-                              ),
-                            ],
+                      return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                        ));
-                  })
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(height * 0.04,
+                                height * 0.02, height * 0.04, height * 0.02),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(height: height * 0.03),
+                                RichText(
+                                    text: TextSpan(
+                                        text: foodProvider.list[index].food +
+                                            ' ,',
+                                        style: KTextStyle1,
+                                        children: const [
+                                      TextSpan(
+                                          text: '  ' 'Food', style: KTextStyle2)
+                                    ])),
+                                SizedBox(height: height * 0.02),
+                                RichText(
+                                    text: TextSpan(
+                                        text: foodProvider.list[index].drink +
+                                            ' ,',
+                                        style: KTextStyle1,
+                                        children: const [
+                                      TextSpan(
+                                          text: '  ' 'Drink',
+                                          style: KTextStyle2)
+                                    ])),
+                                SizedBox(height: height * 0.03),
+                                const Text(
+                                  'Comments',
+                                  style: KTextStyle2,
+                                ),
+                                Text(foodProvider.list[index].comment!,
+                                    style: KTextStyle4),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text('Date: ' + date, style: KTextStyle3),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ));
+                    }),
+              )
             ],
           ),
         ),

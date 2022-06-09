@@ -52,54 +52,62 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<NewUser>? users = snapshot.data;
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: users?.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Card(
-                                child: Padding(
-                              padding: EdgeInsets.fromLTRB(height * 0.04,
-                                  height * 0.02, height * 0.04, height * 0.02),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: height * 0.02),
-                                  Text('Name: ' + users![index].name,
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Phone: ' + users[index].phone_number,
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Status: ' + users[index].status,
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Type: ' + users[index].type,
-                                      style: KTextStyle3),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Button(
-                                        text: 'Approve',
-                                        isLoading: approvalProvider.isLoading,
-                                        onPressed: () {
-                                          approvalProvider.approveUser(
-                                              users[index].user_id);
-                                        },
-                                        color: darkBlue,
-                                      ),
-                                      SizedBox(width: height * 0.01),
-                                      Button(
-                                        text: 'Deny',
-                                        isLoading: approvalProvider.isLoading,
-                                        onPressed: () {},
-                                        color: Colors.red,
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ));
-                          });
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          approvalProvider.getAllApprovalRequests(context);
+                        },
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: users?.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Card(
+                                  child: Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    height * 0.04,
+                                    height * 0.02,
+                                    height * 0.04,
+                                    height * 0.02),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(height: height * 0.02),
+                                    Text('Name: ' + users![index].name,
+                                        style: KTextStyle3),
+                                    SizedBox(height: height * 0.04),
+                                    Text('Phone: ' + users[index].phone_number,
+                                        style: KTextStyle3),
+                                    SizedBox(height: height * 0.04),
+                                    Text('Status: ' + users[index].status,
+                                        style: KTextStyle3),
+                                    SizedBox(height: height * 0.04),
+                                    Text('Type: ' + users[index].type,
+                                        style: KTextStyle3),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Button(
+                                          text: 'Approve',
+                                          isLoading: approvalProvider.isLoading,
+                                          onPressed: () {
+                                            approvalProvider.approveUser(
+                                                users[index].user_id);
+                                          },
+                                          color: darkBlue,
+                                        ),
+                                        SizedBox(width: height * 0.01),
+                                        Button(
+                                          text: 'Deny',
+                                          isLoading: approvalProvider.isLoading,
+                                          onPressed: () {},
+                                          color: Colors.red,
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ));
+                            }),
+                      );
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }

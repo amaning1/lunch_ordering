@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/auth_provider.dart';
@@ -5,7 +6,9 @@ import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:lunch_ordering/screens/sign-in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../components.dart';
 import '../constants.dart';
+import 'dart:io';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({Key? key}) : super(key: key);
@@ -23,8 +26,24 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    Provider.of<AuthProvider>(context, listen: false).autoLogIn(context);
+  Future<void> didChangeDependencies() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        Provider.of<AuthProvider>(context, listen: false).autoLogIn(context);
+      }
+    } on SocketException catch (_) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alertDialog(context, () {
+              SystemNavigator.pop();
+            },
+                'No internet connection',
+                'This application requires an internet connection to proceed',
+                'Exit');
+          });
+    }
 
     super.didChangeDependencies();
   }

@@ -9,6 +9,7 @@ import 'package:lunch_ordering/screens/menu/add-menu.dart';
 import 'package:lunch_ordering/screens/menu/admin-add-user.dart';
 import 'package:lunch_ordering/screens/menu/admin-add-to-menu.dart';
 import 'package:lunch_ordering/screens/menu/admin-approval-requests.dart';
+import 'package:lunch_ordering/screens/menu/admin-view-drinks.dart';
 import 'package:lunch_ordering/screens/menu/admin-view-foods.dart';
 import 'package:lunch_ordering/screens/main-screen.dart';
 import 'package:lunch_ordering/screens/menu/admin-view-orders.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
           '/User': (context) => UserMain(),
           '/menuLoading': (context) => MenuLoadingScreen(),
           '/allUsers': (context) => EveryUser(),
+          '/allDrinks': (context) => ViewDrinks(),
         },
       ),
     );

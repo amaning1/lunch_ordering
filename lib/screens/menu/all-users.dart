@@ -60,33 +60,83 @@ class _EveryUserState extends State<EveryUser> {
                                 DateFormat("yyyy-MM-dd").format(formatDate!);
 
                             return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
                                 child: Padding(
-                              padding: EdgeInsets.fromLTRB(height * 0.04,
-                                  height * 0.02, height * 0.04, height * 0.02),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: height * 0.02),
-                                  Text('Id: ' + users[index].id.toString(),
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Name: ' + users[index].name,
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text(
-                                      'Phone Number: ' +
-                                          users[index].phone_number,
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Type: ' + users[index].type,
-                                      style: KTextStyle3),
-                                  SizedBox(height: height * 0.04),
-                                  Text('Status: ' + users[index].status,
-                                      style: KTextStyle3),
-                                  Text('Date: ' + Date, style: KTextStyle3),
-                                ],
-                              ),
-                            ));
+                                  padding: EdgeInsets.fromLTRB(
+                                      height * 0.04,
+                                      height * 0.02,
+                                      height * 0.04,
+                                      height * 0.02),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(height: height * 0.02),
+                                      RichText(
+                                          text: TextSpan(
+                                              text: users[index].id.toString() +
+                                                  ' ,',
+                                              style: KTextStyle1,
+                                              children: const [
+                                            TextSpan(
+                                                text: '  ' 'Id',
+                                                style: KTextStyle2)
+                                          ])),
+                                      SizedBox(height: height * 0.02),
+                                      RichText(
+                                          text: TextSpan(
+                                              text: users[index].name + ' ,',
+                                              style: KTextStyle1,
+                                              children: const [
+                                            TextSpan(
+                                                text: '  ' 'Name',
+                                                style: KTextStyle2)
+                                          ])),
+                                      SizedBox(height: height * 0.02),
+                                      RichText(
+                                          text: TextSpan(
+                                              text: users[index].phone_number +
+                                                  ' ,',
+                                              style: KTextStyle1,
+                                              children: const [
+                                            TextSpan(
+                                                text: '  ' 'Phone Number',
+                                                style: KTextStyle2)
+                                          ])),
+                                      SizedBox(height: height * 0.02),
+                                      RichText(
+                                          text: TextSpan(
+                                              text: users[index].type + ' ,',
+                                              style: KTextStyle1,
+                                              children: const [
+                                            TextSpan(
+                                                text: '  ' 'Type',
+                                                style: KTextStyle2)
+                                          ])),
+                                      SizedBox(height: height * 0.02),
+                                      RichText(
+                                          text: TextSpan(
+                                              text: users[index].status + ' ,',
+                                              style: KTextStyle1,
+                                              children: const [
+                                            TextSpan(
+                                                text: '  ' 'Status',
+                                                style: KTextStyle2)
+                                          ])),
+                                      RichText(
+                                          text: TextSpan(
+                                              text: Date + ' ,',
+                                              style: KTextStyle1,
+                                              children: const [
+                                            TextSpan(
+                                                text: '  ' 'Date',
+                                                style: KTextStyle2)
+                                          ])),
+                                    ],
+                                  ),
+                                ));
                           });
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");

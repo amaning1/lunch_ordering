@@ -95,14 +95,15 @@ class AuthProvider extends Manage {
       user = User.fromJson(rest);
       saveToken(user.token);
       saveUserDetails(user.phone_number, passwordController.text);
-      clearForm();
 
       if (user.type == "chef" || user.type == "admin") {
         saveToken(user.token);
         Navigator.pushNamed(context, '/menuLoading');
+        clearForm();
       } else {
         saveToken(user.token);
         Navigator.pushNamed(context, '/splash');
+        clearForm();
       }
     } else {
       String data = response.body;
@@ -115,7 +116,7 @@ class AuthProvider extends Manage {
           builder: (BuildContext context) {
             return alertDialog(context, () {
               Navigator.pop(context);
-            }, 'Invalid Login', message.toString(), 'Exit');
+            }, 'Something went wrong', message.toString(), 'Exit');
           });
     }
     return null;

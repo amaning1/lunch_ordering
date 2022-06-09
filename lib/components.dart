@@ -122,15 +122,7 @@ class NavDrawer extends StatelessWidget {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/allMenus', (route) => false);
                 }),
-            ListTile(
-                hoverColor: darkBlue,
-                leading: Icon(Icons.dashboard),
-                title: const Text('Dashboard',
-                    style: TextStyle(fontFamily: 'Poppins')),
-                onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/fourth', (route) => false);
-                }),
+
             ListTile(
                 hoverColor: darkBlue,
                 leading: Icon(Icons.remove_red_eye),
@@ -160,12 +152,21 @@ class NavDrawer extends StatelessWidget {
                 }),
             ListTile(
                 hoverColor: darkBlue,
-                leading: Icon(Icons.history),
+                leading: Icon(Icons.local_pizza),
                 title: const Text('View Foods',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/adminOrders', (route) => false);
+                }),
+            ListTile(
+                hoverColor: darkBlue,
+                leading: Icon(Icons.wine_bar),
+                title: const Text('View Drinks',
+                    style: TextStyle(fontFamily: 'Poppins')),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/allDrinks', (route) => false);
                 }),
             ListTile(
                 hoverColor: darkBlue,

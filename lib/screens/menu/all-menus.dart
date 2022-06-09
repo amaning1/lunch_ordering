@@ -114,7 +114,8 @@ class _AllMenusState extends State<AllMenus> {
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
+          padding: EdgeInsets.only(
+              top: height * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
