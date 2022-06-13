@@ -5,10 +5,18 @@ Color darkBlue = const Color(0xFF002C59);
 Color grayish = const Color(0xFFE4EBF2);
 Color gray = const Color(0xff4d002c59);
 
+final scaffoldKey = GlobalKey<ScaffoldState>();
+
 bool state = false;
 bool switchSelected = false;
 bool isObscure = true;
 DateTime selectedDate = DateTime.now();
+
+const KBorderRadius = BorderRadius.only(
+    topLeft: Radius.circular(20),
+    topRight: Radius.circular(20),
+    bottomLeft: Radius.circular(20),
+    bottomRight: Radius.circular(20));
 
 const KTextStyle1 = TextStyle(
     color: Color(0xFF002C59),

@@ -40,6 +40,7 @@ class _AddMenuState extends State<AddMenu> {
     width = MediaQuery.of(context).size.width;
     bool isSelected = false;
     final menuProvider = Provider.of<MenuProvider>(context);
+    final foodProvider = Provider.of<FoodProvider>(context);
 
     return Scaffold(
       key: scaffoldKey,
@@ -103,44 +104,44 @@ class _AddMenuState extends State<AddMenu> {
                           },
                         ),
                       ),
-                      row('Food', menuProvider.isLoading, () {
-                        menuProvider.typeFood();
+                      row('Food', foodProvider.isLoading, () {
+                        foodProvider.typeFood();
                         Navigator.pushNamed(context, '/adminAdd');
                       }),
                       Padding(
                         padding: const EdgeInsets.only(top: 10, bottom: 10),
                         child: GestureDetector(
                           onTap: () {
-                            menuProvider.typeFood();
+                            foodProvider.typeFood();
                             Navigator.pushNamed(context, '/adminAdd');
                           },
-                          child: column(menuProvider.foodChips.isEmpty, context,
-                              'Food', menuProvider.foodChips, () {
-                            menuProvider.typeFood();
+                          child: column(foodProvider.foodChips.isEmpty, context,
+                              'Food', foodProvider.foodChips, () {
+                            foodProvider.typeFood();
                             Navigator.pushNamed(context, '/adminAdd');
-                          }, menuProvider.isLoading),
+                          }, foodProvider.isLoading),
                         ),
                       ),
                       SizedBox(height: height * 0.03),
-                      row('Drink', menuProvider.isLoading, () {
-                        menuProvider.typeDrink();
+                      row('Drink', foodProvider.isLoading, () {
+                        foodProvider.typeDrink();
                         Navigator.pushNamed(context, '/adminAdd');
                       }),
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                         child: GestureDetector(
                           onTap: () {
-                            menuProvider.typeDrink();
+                            foodProvider.typeDrink();
                             Navigator.pushNamed(context, '/adminAdd');
                           },
-                          child: column(menuProvider.drinkChips.isEmpty,
-                              context, 'Drink', menuProvider.drinkChips, () {
-                            menuProvider.typeDrink();
+                          child: column(foodProvider.drinkChips.isEmpty,
+                              context, 'Drink', foodProvider.drinkChips, () {
+                            foodProvider.typeDrink();
                             Navigator.pushNamed(context, '/adminAdd');
-                          }, menuProvider.isLoading),
+                          }, foodProvider.isLoading),
                         ),
                       ),
-                      menuProvider.drinkChips.isEmpty
+                      foodProvider.drinkChips.isEmpty
                           ? SizedBox(height: height * 0.02)
                           : SizedBox(),
                       SizedBox(
@@ -149,8 +150,8 @@ class _AddMenuState extends State<AddMenu> {
                           text: 'Add to Menu',
                           isLoading: menuProvider.isLoading,
                           onPressed: () {
-                            menuProvider.addMenu(menuProvider.foodIDS,
-                                menuProvider.drinkIDS, context);
+                            menuProvider.addMenu(foodProvider.foodIDS,
+                                foodProvider.drinkIDS, context);
                           },
                         ),
                       ),

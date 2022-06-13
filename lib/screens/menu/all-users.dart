@@ -33,7 +33,8 @@ class _EveryUserState extends State<EveryUser> {
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20.0),
+          padding: EdgeInsets.only(
+              top: height * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -51,6 +52,7 @@ class _EveryUserState extends State<EveryUser> {
                     if (snapshot.hasData) {
                       List<AllUsers>? users = snapshot.data;
                       return ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: users?.length,
                           itemBuilder: (BuildContext context, int index) {
@@ -73,6 +75,11 @@ class _EveryUserState extends State<EveryUser> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
+                                      RichText(
+                                          text: TextSpan(
+                                        text: users[index].name + ' ,',
+                                        style: KTextStyle1,
+                                      )),
                                       SizedBox(height: height * 0.02),
                                       RichText(
                                           text: TextSpan(
@@ -84,17 +91,8 @@ class _EveryUserState extends State<EveryUser> {
                                                 text: '  ' 'Id',
                                                 style: KTextStyle2)
                                           ])),
-                                      SizedBox(height: height * 0.02),
-                                      RichText(
-                                          text: TextSpan(
-                                              text: users[index].name + ' ,',
-                                              style: KTextStyle1,
-                                              children: const [
-                                            TextSpan(
-                                                text: '  ' 'Name',
-                                                style: KTextStyle2)
-                                          ])),
-                                      SizedBox(height: height * 0.02),
+                                      //SizedBox(height: height * 0.02),
+
                                       RichText(
                                           text: TextSpan(
                                               text: users[index].phone_number +
@@ -105,7 +103,7 @@ class _EveryUserState extends State<EveryUser> {
                                                 text: '  ' 'Phone Number',
                                                 style: KTextStyle2)
                                           ])),
-                                      SizedBox(height: height * 0.02),
+                                      //SizedBox(height: height * 0.02),
                                       RichText(
                                           text: TextSpan(
                                               text: users[index].type + ' ,',
@@ -115,7 +113,7 @@ class _EveryUserState extends State<EveryUser> {
                                                 text: '  ' 'Type',
                                                 style: KTextStyle2)
                                           ])),
-                                      SizedBox(height: height * 0.02),
+                                      // SizedBox(height: height * 0.02),
                                       RichText(
                                           text: TextSpan(
                                               text: users[index].status + ' ,',
@@ -131,7 +129,7 @@ class _EveryUserState extends State<EveryUser> {
                                               style: KTextStyle1,
                                               children: const [
                                             TextSpan(
-                                                text: '  ' 'Date',
+                                                text: '  ' 'Date Added',
                                                 style: KTextStyle2)
                                           ])),
                                     ],

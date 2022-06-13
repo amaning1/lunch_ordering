@@ -1,12 +1,9 @@
-import 'dart:async';
 import 'package:lunch_ordering/providers/auth_provider.dart';
 import 'package:lunch_ordering/screens/sign-up.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
 import 'package:lunch_ordering/components.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,24 +17,14 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  bool isLoggedin = false;
-  var size, height, width, token;
-  late String phone_number = '';
-  late String password = '';
-  bool SwitchSelected = false;
-  late AuthProvider authVm;
-  GlobalKey<FormState> formKey = GlobalKey<FormState>(debugLabel: 'signin');
+  static final GlobalKey<FormState> _formKey =
+      GlobalKey<FormState>(debugLabel: 'signin');
 
   @override
   void initState() {
     super.initState();
+    Provider.of<AuthProvider>(context, listen: false).loadUserNumberPassword();
     getToken();
-  }
-
-  @override
-  void didChangeDependencies() {
-    Provider.of<AuthProvider>(context, listen: true).loadUserNumberPassword();
-    super.didChangeDependencies();
   }
 
   @override
@@ -47,8 +34,8 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
@@ -57,7 +44,7 @@ class _SignInState extends State<SignIn> {
           child: Padding(
             padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05),
             child: Form(
-              key: formKey,
+              key: _formKey,
               child: Padding(
                 padding: EdgeInsets.all(width * 0.02),
                 child: Column(
@@ -85,7 +72,7 @@ class _SignInState extends State<SignIn> {
                             color: Colors.grey.withOpacity(0.2),
                             spreadRadius: 4,
                             blurRadius: 8,
-                            offset: Offset(0, 4),
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
@@ -97,29 +84,29 @@ class _SignInState extends State<SignIn> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             SizedBox(height: height * 0.02),
-                            Center(
+                            const Center(
                               child: Text('Nice to see you again',
                                   style: KNTSYAStyle),
                             ),
                             SizedBox(height: height * 0.05),
-                            Text('Phone Number', style: KButtonTextStyle),
+                            const Text('Phone Number', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
                             numberForm(
                               focusedBorder: true,
                               controller: authProvider.numberController,
                               label: 'Phone Number',
                               type: TextInputType.number,
-                              colour: Color(0xFFF2F2F2),
+                              colour: const Color(0xFFF2F2F2),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Password', style: KButtonTextStyle),
+                                const Text('Password', style: KButtonTextStyle),
                                 TextButton(
                                   onPressed: () {
                                     authProvider.forgotPassword(context);
                                   },
-                                  child: Text('Forgot Password ?',
+                                  child: const Text('Forgot Password ?',
                                       style: KForgotPassword),
                                 ),
                               ],
@@ -150,17 +137,17 @@ class _SignInState extends State<SignIn> {
                               ],
                             ),
                             Center(
-                              child: Container(
+                              child: SizedBox(
                                 width: width,
                                 height: height * 0.1,
                                 child: Button(
                                   text: 'Continue',
                                   isLoading: authProvider.isLoading,
                                   onPressed: () async {
-                                    if (formKey.currentState!.validate()) {
+                                    if (_formKey.currentState!.validate()) {
                                       authProvider.changeStatus(true);
                                       authProvider.login(context);
-                                      formKey.currentState?.reset();
+                                      //formKey.currentState?.reset();
                                     }
                                   },
                                 ),
@@ -168,7 +155,7 @@ class _SignInState extends State<SignIn> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(top: width * 0.025),
-                              child: Divider(
+                              child: const Divider(
                                 thickness: 1.0,
                               ),
                             ),
@@ -187,7 +174,7 @@ class _SignInState extends State<SignIn> {
                                           builder: (context) => const SignUp()),
                                     );
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'Sign up now',
                                     style: KForgotPassword,
                                   ),

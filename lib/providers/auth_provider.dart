@@ -4,11 +4,16 @@ import 'dart:core';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/Manage.dart';
+import 'package:lunch_ordering/screens/loading-screen.dart';
+import 'package:lunch_ordering/screens/main-screen.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
 import '../Domain/user.dart';
 import '../components.dart';
+import '../screens/menu-loading-screen.dart';
+import '../screens/menu/all-menus.dart';
+import '../screens/sign-in.dart';
 
 class AuthProvider extends Manage {
   bool isAuthenticating = false;
@@ -17,7 +22,7 @@ class AuthProvider extends Manage {
   TextEditingController passwordController = TextEditingController();
   late User user;
 
-  Future loadUserNumberPassword() async {
+  loadUserNumberPassword() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var phone_number = prefs.getString('phone_number');
@@ -36,19 +41,27 @@ class AuthProvider extends Manage {
   Future autoLogIn(context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      var phoneNumber = prefs.getString('phone_number');
-      var password = prefs.getString('password');
+      String? phoneNumber = prefs.getString('phone_number');
+      String? password = prefs.getString('password');
       notifyListeners();
+      print(phoneNumber);
+      print(password);
 
-      if (phoneNumber != null) {
+      if (password != null && phoneNumber != null) {
+        print('autoLogin0');
         numberController.text = phoneNumber;
-        passwordController.text = password!;
+        passwordController.text = password;
+        print('autoLogin1');
         notifyListeners();
+        print('autoLogin2');
         login(context);
       } else {
-        Navigator.pushReplacementNamed(context, '/signin');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const SignIn()));
       }
-    } catch (e) {}
+    } catch (e) {
+      Navigator.pushNamed(context, '/signin');
+    }
   }
 
   Future forgotPassword(context) async {
@@ -76,7 +89,6 @@ class AuthProvider extends Manage {
 
   Future login(context) async {
     changeStatus(true);
-
     final response = await http.post(
       Uri.parse(AppURL.Login),
       headers: <String, String>{
@@ -87,10 +99,10 @@ class AuthProvider extends Manage {
         'password': passwordController.text,
       }),
     );
+    print('login0');
     if (response.statusCode == 202) {
       String data = response.body;
       changeStatus(false);
-
       var rest = jsonDecode(data)['data'];
       user = User.fromJson(rest);
       saveToken(user.token);
@@ -98,26 +110,19 @@ class AuthProvider extends Manage {
 
       if (user.type == "chef" || user.type == "admin") {
         saveToken(user.token);
-        Navigator.pushNamed(context, '/menuLoading');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const MenuLoadingScreen()));
         clearForm();
       } else {
         saveToken(user.token);
-        Navigator.pushNamed(context, '/splash');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const SplashScreen()));
         clearForm();
       }
     } else {
-      String data = response.body;
-      var message = jsonDecode(data)['message'];
-
       changeStatus(false);
-      notifyListeners();
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return alertDialog(context, () {
-              Navigator.pop(context);
-            }, 'Something went wrong', message.toString(), 'Exit');
-          });
+
+      Navigator.pushReplacementNamed(context, '/signin');
     }
     return null;
   }

@@ -16,6 +16,7 @@ class AdminViewOrders extends StatefulWidget {
 
 class _AdminViewOrdersState extends State<AdminViewOrders> {
   late FoodProvider foodVm;
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -32,7 +33,6 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
   @override
   Widget build(BuildContext context) {
     var height, width;
-    var scaffoldKey = GlobalKey<ScaffoldState>();
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     final foodProvider = Provider.of<FoodProvider>(context);
@@ -40,16 +40,14 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
     return Scaffold(
       key: scaffoldKey,
       drawer: NavDrawer(),
-      //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-              top: width * 0.05, left: width * 0.05, right: width * 0.05),
+              top: height * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              SizedBox(height: height * 0.02),
               foodProvider.listOrders.isEmpty
                   ? ChefCards(
                       height: height,
@@ -60,8 +58,7 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
                   : RefreshIndicator(
                       onRefresh: () async {
                         foodProvider.getOrders(context);
-                        return Future<void>.delayed(
-                            const Duration(seconds: 10));
+                        return Future<void>.delayed(const Duration(seconds: 3));
                       },
                       child: ordersWidget(
                           orders: foodProvider.listOrders,
@@ -91,6 +88,7 @@ class ordersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: orders?.length,
         itemBuilder: (BuildContext context, int index) {
@@ -106,7 +104,10 @@ class ordersWidget extends StatelessWidget {
               ),
               child: Padding(
                 padding: EdgeInsets.only(
-                    top: width * 0.05, left: width * 0.05, right: width * 0.05),
+                    top: width * 0.05,
+                    left: width * 0.05,
+                    right: width * 0.05,
+                    bottom: width * 0.05),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -133,7 +134,7 @@ class ordersWidget extends StatelessWidget {
                             children: const [
                           TextSpan(text: '  ' 'Drink', style: KTextStyle2)
                         ])),
-                    SizedBox(height: height * 0.04),
+                    SizedBox(height: height * 0.03),
                     const Text(
                       'Comments',
                       style: KTextStyle2,

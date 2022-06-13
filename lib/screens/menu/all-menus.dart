@@ -11,6 +11,8 @@ import '../../providers/food_providers.dart';
 import '../../shared_preferences.dart';
 
 class AllMenus extends StatefulWidget {
+  const AllMenus({Key? key}) : super(key: key);
+
   @override
   State<AllMenus> createState() => _AllMenusState();
 }
@@ -40,79 +42,89 @@ class _AllMenusState extends State<AllMenus> {
     width = MediaQuery.of(context).size.width;
     final menuProvider = Provider.of<MenuProvider>(context);
 
-    var foodList = ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        reverse: true,
-        itemCount: menuProvider.allMenu.length,
-        itemBuilder: (context, index) {
-          var foodMenus = menuProvider.allMenu[index];
-          var formatDate = DateTime.tryParse(foodMenus.createdAt);
-          String date = DateFormat("yyyy-MM-dd").format(formatDate!);
-          return SizedBox(
-            child: Card(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: height * 0.04,
-                    top: height * 0.03,
-                    bottom: height * 0.02),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                        text: TextSpan(
-                            text: foodMenus.menuId.toString() + ' ,',
-                            style: KTextStyle1,
-                            children: const [
-                          TextSpan(text: '  ' 'Menu Id', style: KTextStyle2)
-                        ])),
-                    SizedBox(height: height * 0.02),
-                    RichText(
-                        text: TextSpan(
-                            text: date + ' ,',
-                            style: KTextStyle1,
-                            children: const [
-                          TextSpan(text: '  ' 'Menu date', style: KTextStyle2)
-                        ])),
-                    SizedBox(height: height * 0.02),
-                    Row(
+    var foodList = RefreshIndicator(
+        onRefresh: () async {
+          menuProvider.fetchPreviousMenus(context);
+          return Future<void>.delayed(const Duration(seconds: 3));
+        },
+        child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
+            // shrinkWrap: true,
+            itemCount: menuProvider.allMenu.length,
+            itemBuilder: (context, index) {
+              var foodMenus = menuProvider.allMenu[index];
+              var formatDate = DateTime.tryParse(foodMenus.createdAt);
+              String date = DateFormat("yyyy-MM-dd").format(formatDate!);
+              return SizedBox(
+                child: Card(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: height * 0.04,
+                        top: height * 0.03,
+                        bottom: height * 0.02),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: foodMenus.foods.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(foodMenus.foods[index].foodName),
-                              );
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: foodMenus.drinks.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(foodMenus.drinks[index].drinkName),
-                              );
-                            },
-                          ),
+                        RichText(
+                            text: TextSpan(
+                                text: foodMenus.menuId.toString() + ' ,',
+                                style: KTextStyle1,
+                                children: const [
+                              TextSpan(text: '  ' 'Menu Id', style: KTextStyle2)
+                            ])),
+                        SizedBox(height: height * 0.02),
+                        RichText(
+                            text: TextSpan(
+                                text: date + ' ,',
+                                style: KTextStyle1,
+                                children: const [
+                              TextSpan(
+                                  text: '  ' 'Menu date', style: KTextStyle2)
+                            ])),
+                        SizedBox(height: height * 0.02),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: foodMenus.foods.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title:
+                                        Text(foodMenus.foods[index].foodName),
+                                  );
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: foodMenus.drinks.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title:
+                                        Text(foodMenus.drinks[index].drinkName),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          );
-        });
+              );
+            }));
 
     return Scaffold(
       key: scaffoldKey,
       drawer: NavDrawer(),
       //resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
+      body: WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
         child: Padding(
           padding: EdgeInsets.only(
               top: height * 0.05, left: width * 0.05, right: width * 0.05),
@@ -121,7 +133,7 @@ class _AllMenusState extends State<AllMenus> {
             children: [
               bslMenu(width: width, scaffoldKey: scaffoldKey),
               //SizedBox(height: width * 0.5),
-              foodList,
+              Expanded(child: foodList),
               SizedBox(
                 width: width,
                 child: Button(

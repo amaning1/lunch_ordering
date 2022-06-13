@@ -18,16 +18,19 @@ import '../Domain/oldOrders.dart';
 import '../Domain/orders.dart';
 import '../constants.dart';
 import '../screens/main-screen.dart';
+import '../screens/user-main.dart';
 import '../screens/view-history.dart';
 import '../shared_preferences.dart';
 import 'Manage.dart';
 
 class FoodProvider extends Manage {
-  TextEditingController textFieldController = TextEditingController();
+  final TextEditingController comments = TextEditingController();
   List<Menu> menu = [];
   List<OldOrders> list = [];
   List<Orders> listOrders = [];
-  List<Drinks> drinks = [];
+  List<Drink> drinks = [];
+  List<Drinks> allDrinks = [];
+  List<Foods> allFoods = [];
   List<ChipData> foodChips = [];
   List<ChipData> drinkChips = [];
   List<int> foodIDS = [];
@@ -35,6 +38,8 @@ class FoodProvider extends Manage {
   int menuIDx = 0;
   List allOrders = [];
   late OldOrders oldOrders;
+  int? selectedFoodIndex;
+  int? selectedDrinkIndex;
 
   var time = DateTime.now().add(const Duration(days: 1));
   var newHour = 7;
@@ -109,6 +114,60 @@ class FoodProvider extends Manage {
     );
   }
 
+  Future addNewFood(food, context) async {
+    await getToken();
+    final response = await http.post(
+      Uri.parse(AppURL.Drinks),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
+      },
+      body: jsonEncode(<String, dynamic>{
+        'foods': "[$food]",
+      }),
+    );
+    if (response.statusCode == 201) {
+      changeStatus(false);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            Navigator.pop(context);
+          }, 'Food Added', 'Your food has been added', 'Exit');
+        },
+      );
+    } else {
+      print(response.body);
+    }
+  }
+
+  Future addNewDrink(drink, context) async {
+    await getToken();
+    final response = await http.post(
+      Uri.parse(AppURL.Drinks),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
+      },
+      body: jsonEncode(<String, dynamic>{
+        'drinks': "[$drink]",
+      }),
+    );
+    if (response.statusCode == 201) {
+      changeStatus(false);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            Navigator.pop(context);
+          }, 'Drink Added', 'Your drink has been added', 'Exit');
+        },
+      );
+    } else {
+      print(response.body);
+    }
+  }
+
   Future updateFoodOrder(context) async {
     changeStatus(true);
     // await getToken();
@@ -124,8 +183,7 @@ class FoodProvider extends Manage {
         'menu_id': menuIDx,
         'food_id': foodSelected.toString(),
         'drink_id': drinkSelected.toString(),
-        'comment':
-            textFieldController.text.isEmpty ? ' ' : textFieldController.text,
+        'comment': comments.text.isEmpty ? ' ' : comments.text,
       }),
     );
     getPreviousOrders(context);
@@ -195,7 +253,7 @@ class FoodProvider extends Manage {
         'menu_id': menuIDx,
         'food_id': foodSelected.toString(),
         'drink_id': drinkSelected.toString(),
-        'comment': textFieldController.text,
+        'comment': comments.text,
       }),
     );
     getPreviousOrders(context);
@@ -251,9 +309,11 @@ class FoodProvider extends Manage {
       changeMenu(true);
       var foods = jsonDecode(data)['data']['foods'] as List;
       var allDrinks = jsonDecode(data)['data']['drinks'] as List;
+      print(allDrinks);
       menu = foods.map<Menu>((json) => Menu.fromJson(json)).toList();
-      drinks = allDrinks.map<Drinks>((json) => Drinks.fromJson(json)).toList();
-      Navigator.pushNamed(context, '/User');
+      drinks = allDrinks.map<Drink>((json) => Drink.fromJson(json)).toList();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const UserMain()));
     } else if (response.statusCode == 401) {
       changeMenu(false);
       Navigator.pushNamed(context, '/User');
@@ -308,7 +368,6 @@ class FoodProvider extends Manage {
 
   Future<List<Foods>?> fetchAllFoods(context) async {
     await getToken();
-    List<Foods>? list;
     final response = await http.get(
       Uri.parse(AppURL.Foods),
       headers: <String, String>{
@@ -319,9 +378,9 @@ class FoodProvider extends Manage {
 
     if (response.statusCode == 200) {
       String data = response.body;
-
+      print(data);
       var rest = jsonDecode(data)['foods'] as List;
-      list = rest.map<Foods>((json) => Foods.fromJson(json)).toList();
+      allFoods = rest.map<Foods>((json) => Foods.fromJson(json)).toList();
       notifyListeners();
     } else {
       showDialog(
@@ -332,12 +391,11 @@ class FoodProvider extends Manage {
         },
       );
     }
-    return list;
+    return allFoods;
   }
 
-  Future<List<Foods>?> fetchAllDrinks(context) async {
+  Future<List<Drinks>?> fetchAllDrinks(context) async {
     await getToken();
-    List<Foods>? list;
     final response = await http.get(
       Uri.parse(AppURL.Drinks),
       headers: <String, String>{
@@ -348,10 +406,14 @@ class FoodProvider extends Manage {
 
     if (response.statusCode == 200) {
       String data = response.body;
-
+      print('why?');
+      print(data);
       var rest = jsonDecode(data)['drinks'] as List;
-      list = rest.map<Foods>((json) => Foods.fromJson(json)).toList();
+      print('done0');
+      allDrinks = rest.map<Drinks>((json) => Drinks.fromJson(json)).toList();
+      print('done1');
       notifyListeners();
+      print('done2');
     } else {
       showDialog(
         context: context,
@@ -361,6 +423,6 @@ class FoodProvider extends Manage {
         },
       );
     }
-    return list;
+    return allDrinks;
   }
 }

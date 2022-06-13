@@ -33,7 +33,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-              top: width * 0.05, left: width * 0.05, right: width * 0.05),
+              top: height * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -46,7 +46,6 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                   Text('APPROVALS', style: KMENUTextStyle),
                 ],
               ),
-              SizedBox(height: height * 0.02),
               FutureBuilder<List<NewUser>?>(
                   future: approvalProvider.getAllApprovalRequests(context),
                   builder: (context, snapshot) {

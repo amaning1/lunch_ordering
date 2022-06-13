@@ -5,6 +5,7 @@ import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 
+import '../../Domain/allMenus.dart';
 import '../../Domain/drinks.dart';
 import '../../Domain/foods.dart';
 import '../../Domain/menu.dart';
@@ -21,7 +22,6 @@ class _ViewDrinksState extends State<ViewDrinks> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var height, width;
   int selectedIndex = 0;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
   late FoodProvider foodVm;
 
   @override
@@ -30,17 +30,13 @@ class _ViewDrinksState extends State<ViewDrinks> {
   }
 
   @override
-  void didChangeDependencies() {
-    Provider.of<FoodProvider>(context, listen: true).fetchAllDrinks(context);
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     final foodProvider = Provider.of<FoodProvider>(context);
-    bool isSelected = false;
+    TextEditingController drink = TextEditingController();
+    var scaffoldKey = GlobalKey<ScaffoldState>();
+
     return Scaffold(
       key: scaffoldKey,
       drawer: const NavDrawer(),
@@ -52,52 +48,37 @@ class _ViewDrinksState extends State<ViewDrinks> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              SizedBox(height: height * 0.02),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    FutureBuilder<List<Foods>?>(
-                        future: foodProvider.fetchAllDrinks(context),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List<Foods>? menu = snapshot.data;
-                            return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: menu?.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: ListTile(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      title: Text(menu![index].Option!),
-                                      subtitle:
-                                          Text(menu[index].id!.toString()),
-                                      trailing: IconButton(
-                                        onPressed: () {
-                                          foodProvider
-                                              .deleteFood(menu[index].id!);
-                                          setState(() {
-                                            menu;
-                                          });
-                                        },
-                                        icon: Icon(Icons.delete),
-                                      ),
-                                    ),
-                                  );
-                                });
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: blue,
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: foodProvider.allDrinks.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              title:
+                                  Text(foodProvider.allDrinks[index].Option!),
+                              subtitle: Text(
+                                  foodProvider.allDrinks[index].id.toString()),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  foodProvider.deleteFood(
+                                      foodProvider.allDrinks[index].id);
+                                  setState(() {
+                                    foodProvider.allDrinks;
+                                  });
+                                },
+                                icon: Icon(Icons.delete),
+                              ),
                             ),
                           );
                         }),
@@ -109,7 +90,32 @@ class _ViewDrinksState extends State<ViewDrinks> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  title: Text('Add Food', style: KAlertHeader),
+                  //insetPadding: EdgeInsets.symmetric(vertical: 240),
+                  content: TextFormField(
+                    controller: drink,
+                  ),
+                  actions: [
+                    TextButton(
+                      child: const Text(
+                        'Add',
+                        style: KAlertButton,
+                      ),
+                      onPressed: () {
+                        foodProvider.addNewDrink(drink, context);
+                      },
+                    ),
+                  ]);
+            },
+          );
+        },
         backgroundColor: darkBlue,
         label: Text('Add Drink'),
         icon: const Icon(Icons.add),

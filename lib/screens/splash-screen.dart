@@ -18,18 +18,17 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  late AuthProvider authVm;
-
   @override
   void initState() {
     super.initState();
+    isConnected();
   }
 
-  @override
-  Future<void> didChangeDependencies() async {
+  void isConnected() async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('start');
         Provider.of<AuthProvider>(context, listen: false).autoLogIn(context);
       }
     } on SocketException catch (_) {
@@ -44,8 +43,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
                 'Exit');
           });
     }
-
-    super.didChangeDependencies();
   }
 
   @override

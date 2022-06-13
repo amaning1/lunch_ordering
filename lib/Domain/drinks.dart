@@ -6,8 +6,8 @@ class Drinks {
 
   factory Drinks.fromJson(Map<String, dynamic> responseData) {
     return Drinks(
-      id: responseData['drink_id'],
-      Option: responseData['drink_name'],
+      id: responseData['id'],
+      Option: responseData['name'],
     );
   }
 }

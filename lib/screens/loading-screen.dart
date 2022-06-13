@@ -1,10 +1,43 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
-import '../providers/Manage.dart';
-import 'main-screen.dart';
+
+// class SplashScreen extends StatelessWidget {
+//   const SplashScreen({Key? key}) : super(key: key);
+//
+//
+//   @override
+//   void didChangeDependencies() {
+//     Provider.of<FoodProvider>(context, listen: false).fetchFood(context);
+//     super.didChangeDependencies();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     var height = MediaQuery.of(context).size.height;
+//     var width = MediaQuery.of(context).size.width;
+//
+//     return Scaffold(
+//         body: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             Padding(
+//               padding: EdgeInsets.all(height * 0.08),
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Image.asset('images/img.png',
+//                       height: width * 0.2, width: width * 0.2),
+//                   const SizedBox(width: 5),
+//                   const Text('BSL ORDERS', style: KMENUTextStyle),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ));
+//   }
+// }
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -14,17 +47,10 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  late FoodProvider foodVm;
-
   @override
   void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
     Provider.of<FoodProvider>(context, listen: false).fetchFood(context);
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override

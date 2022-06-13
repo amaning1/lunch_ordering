@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lunch_ordering/constants.dart';
+import 'package:lunch_ordering/providers/auth_provider.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +30,7 @@ AlertDialog alertDialogLogin(http.Response response) {
 }
 
 AlertDialog alertDialog(BuildContext context, onPressed, String textHeader,
-    String textContent, String textButton) {
+    textContent, String textButton) {
   return AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
@@ -98,8 +99,7 @@ void logout(context) async {
   sharedPreferences.remove('phone_number');
   sharedPreferences.remove('password');
   sharedPreferences.remove('remember_me');
-  print(sharedPreferences.getBool('remember_me'));
-  Navigator.pushNamed(context, '/signin');
+  Navigator.pushNamedAndRemoveUntil(context, '/signin', (route) => false);
 }
 
 class NavDrawer extends StatelessWidget {
@@ -107,6 +107,8 @@ class NavDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: true);
+
     return Drawer(
       child: Padding(
         padding: const EdgeInsets.only(top: 60.0),
@@ -119,27 +121,35 @@ class NavDrawer extends StatelessWidget {
                 title:
                     const Text('Menu', style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/allMenus', (route) => false);
+                  Navigator.pushNamed(context, '/allMenus');
                 }),
-
             ListTile(
-                hoverColor: darkBlue,
-                leading: Icon(Icons.remove_red_eye),
-                title: const Text('View All Users',
-                    style: TextStyle(fontFamily: 'Poppins')),
+                hoverColor: Colors.white,
+                leading: const Icon(Icons.dashboard),
+                title: const Text(
+                  'Order Food',
+                  style: TextStyle(fontFamily: 'Poppins'),
+                ),
                 onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/allUsers', (route) => false);
+                  Navigator.pushNamed(context, '/third');
                 }),
+            authProvider.user.type == 'admin'
+                ? ListTile(
+                    hoverColor: darkBlue,
+                    leading: Icon(Icons.remove_red_eye),
+                    title: const Text('View All Users',
+                        style: TextStyle(fontFamily: 'Poppins')),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/allUsers');
+                    })
+                : SizedBox(),
             ListTile(
                 hoverColor: darkBlue,
                 leading: Icon(Icons.approval),
                 title: const Text('Approvals',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/adminApprovalRequests', (route) => false);
+                  Navigator.pushNamed(context, '/adminApprovalRequests');
                 }),
             ListTile(
                 hoverColor: darkBlue,
@@ -156,8 +166,7 @@ class NavDrawer extends StatelessWidget {
                 title: const Text('View Foods',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/adminOrders', (route) => false);
+                  Navigator.pushNamed(context, '/adminOrders');
                 }),
             ListTile(
                 hoverColor: darkBlue,
@@ -165,8 +174,7 @@ class NavDrawer extends StatelessWidget {
                 title: const Text('View Drinks',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/allDrinks', (route) => false);
+                  Navigator.pushNamed(context, '/allDrinks');
                 }),
             ListTile(
                 hoverColor: darkBlue,
@@ -174,8 +182,7 @@ class NavDrawer extends StatelessWidget {
                 title: const Text('View Orders',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/adminViewOrders', (route) => false);
+                  Navigator.pushNamed(context, '/adminViewOrders');
                 }),
             ListTile(
                 hoverColor: darkBlue,
@@ -184,8 +191,6 @@ class NavDrawer extends StatelessWidget {
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
                   logout(context);
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/signin', (route) => false);
                 }),
           ],
         ),
@@ -361,6 +366,32 @@ class _formState extends State<form> {
   }
 }
 
+class TextInput extends StatefulWidget {
+  TextInput({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  final TextEditingController controller;
+
+  @override
+  State<TextInput> createState() => _TextInputState();
+}
+
+class _TextInputState extends State<TextInput> {
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        cursorColor: Colors.white,
+        controller: widget.controller,
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+        decoration: const InputDecoration(
+            border: InputBorder.none, focusedBorder: InputBorder.none));
+  }
+}
+
 class numberForm extends StatefulWidget {
   numberForm(
       {Key? key,
@@ -490,14 +521,6 @@ class MainScreenDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           ListTile(
-              hoverColor: darkBlue,
-              leading: const Icon(Icons.menu),
-              title: const Text(
-                'Menu',
-                style: TextStyle(fontFamily: 'Poppins'),
-              ),
-              onTap: () {}),
-          ListTile(
               hoverColor: Colors.white,
               leading: const Icon(Icons.dashboard),
               title: const Text(
@@ -527,8 +550,6 @@ class MainScreenDrawer extends StatelessWidget {
               ),
               onTap: () {
                 logout(context);
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/signin', (route) => false);
               }),
         ],
       ),

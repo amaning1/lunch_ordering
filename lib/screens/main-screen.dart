@@ -1,12 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/screens/splash-screen.dart';
-import 'package:lunch_ordering/screens/loading-screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/food_providers.dart';
-import '../shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 int? foodSelected;
@@ -20,30 +16,20 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  var size, height, width;
   int? selectedFoodIndex;
   int? selectedDrinkIndex;
 
-  var scaffoldKey = GlobalKey<ScaffoldState>();
-  late FoodProvider foodVm;
+  static final GlobalKey<FormState> _formKey =
+      GlobalKey<FormState>(debugLabel: 'main');
 
-  @override
-  void initState() {
-    super.initState();
-    getToken();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  TextEditingController comments = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
-    bool isSelected = false;
-    final foodProvider = Provider.of<FoodProvider>(context, listen: true);
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    final foodProvider = Provider.of<FoodProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
 
     Widget foodMenu(BuildContext context) {
       return ListView.builder(
@@ -86,12 +72,12 @@ class _MenuScreenState extends State<MenuScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                title: Text(foodProvider.drinks[index].Option!),
+                title: Text(foodProvider.drinks[index].drinkName),
                 selected: index == selectedDrinkIndex,
                 onTap: () {
                   setState(() {
                     selectedDrinkIndex = index;
-                    drinkSelected = foodProvider.drinks[index].id!;
+                    drinkSelected = foodProvider.drinks[index].drinkId;
                   });
                 },
                 selectedTileColor: darkBlue,
@@ -103,12 +89,13 @@ class _MenuScreenState extends State<MenuScreen> {
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: MainScreenDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          foodProvider.fetchFood(context);
-        },
-        child: SingleChildScrollView(
+      drawer: authProvider.user.type == 'user'
+          ? MainScreenDrawer()
+          : const NavDrawer(),
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
           child: Padding(
             padding: EdgeInsets.only(
                 left: width * 0.05, right: width * 0.05, top: width * 0.05),
@@ -121,17 +108,13 @@ class _MenuScreenState extends State<MenuScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                              bottomLeft: Radius.circular(20),
-                              bottomRight: Radius.circular(20)),
+                          borderRadius: KBorderRadius,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.2),
                               spreadRadius: 4,
                               blurRadius: 8,
-                              offset: Offset(0, 4),
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
@@ -157,40 +140,32 @@ class _MenuScreenState extends State<MenuScreen> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Choose Food',
+                                    const Text('Choose Food',
                                         style: KButtonTextStyle),
                                     foodMenu(context),
                                     SizedBox(height: height * 0.04),
-                                    Text('Choose Drink',
+                                    const Text('Choose Drink',
                                         style: KButtonTextStyle),
                                     drinksMenu(context),
                                     SizedBox(height: height * 0.04),
-                                    Text('Comments', style: KButtonTextStyle),
+                                    const Text('Comments',
+                                        style: KButtonTextStyle),
                                     SizedBox(height: height * 0.04),
                                     Container(
                                         decoration: BoxDecoration(
                                           color: darkBlue,
-                                          borderRadius: BorderRadius.all(
+                                          borderRadius: const BorderRadius.all(
                                               Radius.circular(10)),
                                         ),
                                         height: width * 0.3,
                                         child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: TextFormField(
-                                              cursorColor: Colors.white,
-                                              controller: foodProvider
-                                                  .textFieldController,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                              decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  focusedBorder:
-                                                      InputBorder.none)),
-                                        )),
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextInput(
+                                              controller: foodProvider.comments,
+                                            ))),
                                     SizedBox(height: height * 0.02),
                                     Center(
-                                      child: Container(
+                                      child: SizedBox(
                                         width: width * 0.5,
                                         height: height * 0.1,
                                         child: Button(
@@ -220,15 +195,11 @@ class _MenuScreenState extends State<MenuScreen> {
                       child: Container(
                         height: height * 0.25,
                         width: height * 0.6,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                              bottomLeft: Radius.circular(20),
-                              bottomRight: Radius.circular(20)),
+                          borderRadius: KBorderRadius,
                         ),
-                        child: Center(
+                        child: const Center(
                             child: Text('No Menu for Today',
                                 style: KCardTextStyle)),
                       ),
@@ -237,12 +208,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   ? Positioned(
                       left: width * 0.33,
                       top: width * 0.13,
-                      child: Container(
-                        child: Image.asset('images/img_1.png',
-                            height: width * 0.175, width: width * 0.25),
-                      ),
+                      child: Image.asset('images/img_1.png',
+                          height: width * 0.175, width: width * 0.25),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             ]),
           ),
         ),

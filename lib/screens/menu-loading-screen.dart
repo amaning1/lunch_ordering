@@ -18,15 +18,12 @@ class _MenuLoadingScreenState extends State<MenuLoadingScreen> {
 
   @override
   void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
     Provider.of<MenuProvider>(context, listen: false)
         .fetchPreviousMenus(context);
     Provider.of<FoodProvider>(context, listen: false).getOrders(context);
-    super.didChangeDependencies();
+    Provider.of<FoodProvider>(context, listen: false).fetchAllFoods(context);
+    Provider.of<FoodProvider>(context, listen: false).fetchAllDrinks(context);
+    super.initState();
   }
 
   @override

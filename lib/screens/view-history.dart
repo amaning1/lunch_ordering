@@ -31,28 +31,27 @@ class _ViewHistoryState extends State<ViewHistory> {
       key: scaffoldKey,
       drawer: MainScreenDrawer(),
       //resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: height * 0.04, left: height * 0.04, right: height * 0.04),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              SizedBox(height: height * 0.05),
-              Row(
-                children: const [
-                  Text('ORDER HISTORY', style: KMENUTextStyle),
-                ],
-              ),
-              SizedBox(height: height * 0.02),
-              RefreshIndicator(
+      body: Padding(
+        padding: EdgeInsets.only(
+            top: height * 0.04, left: height * 0.04, right: height * 0.04),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+            SizedBox(height: height * 0.05),
+            Row(
+              children: const [
+                Text('ORDER HISTORY', style: KMENUTextStyle),
+              ],
+            ),
+            SizedBox(height: height * 0.02),
+            Expanded(
+              child: RefreshIndicator(
                 onRefresh: () async {
                   foodProvider.getPreviousOrders(context);
-                  return Future<void>.delayed(const Duration(seconds: 10));
                 },
                 child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     shrinkWrap: true,
                     reverse: true,
                     itemCount: foodProvider.list.length,
@@ -110,9 +109,9 @@ class _ViewHistoryState extends State<ViewHistory> {
                             ),
                           ));
                     }),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
