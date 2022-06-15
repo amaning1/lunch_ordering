@@ -2,13 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/screens/loading-screen.dart';
 import 'package:lunch_ordering/screens/main-screen.dart';
-import 'package:lunch_ordering/screens/splash-screen.dart';
-import '../Domain/user.dart';
 import '../providers/auth_provider.dart';
-import '../providers/food_providers.dart';
-import '../shared_preferences.dart';
+
 import 'package:provider/provider.dart';
 
 class UserMain extends StatefulWidget {
@@ -33,8 +29,6 @@ class _UserMainState extends State<UserMain> {
   Widget build(BuildContext context) {
     var _height = MediaQuery.of(context).size.height;
     var _width = MediaQuery.of(context).size.width;
-    bool isSelected = false;
-    TextEditingController comments = TextEditingController();
 
     final authProvider = Provider.of<AuthProvider>(context);
 

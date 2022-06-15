@@ -86,6 +86,7 @@ class _AllMenusState extends State<AllMenus> {
                           children: [
                             Expanded(
                               child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: foodMenus.foods.length,
                                 itemBuilder: (context, index) {
@@ -98,6 +99,7 @@ class _AllMenusState extends State<AllMenus> {
                             ),
                             Expanded(
                               child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: foodMenus.drinks.length,
                                 itemBuilder: (context, index) {

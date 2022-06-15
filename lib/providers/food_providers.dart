@@ -34,6 +34,9 @@ class FoodProvider extends Manage {
   List<ChipData> foodChips = [];
   List<ChipData> drinkChips = [];
   List<int> foodIDS = [];
+  List<String> newFood = [];
+  List<String> newDrink = [];
+
   List<int> drinkIDS = [];
   int menuIDx = 0;
   List allOrders = [];
@@ -61,9 +64,9 @@ class FoodProvider extends Manage {
       }
     } else {
       if (currentTime.isBefore(chefTime)) {
-        time = DateTime.now();
+        ordersDate = DateTime.now();
       } else {
-        time = time;
+        ordersDate = time;
       }
     }
   }
@@ -117,13 +120,13 @@ class FoodProvider extends Manage {
   Future addNewFood(food, context) async {
     await getToken();
     final response = await http.post(
-      Uri.parse(AppURL.Drinks),
+      Uri.parse(AppURL.Foods),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
       body: jsonEncode(<String, dynamic>{
-        'foods': "[$food]",
+        'foods': [food],
       }),
     );
     if (response.statusCode == 201) {
@@ -217,10 +220,32 @@ class FoodProvider extends Manage {
     }
   }
 
+  Future<List<Orders>?> getNewOrders(context) async {
+    await getToken();
+    String formatDate = DateFormat("yyyy-MM-dd").format(ordersDate);
+    print(formatDate);
+    List<Orders>? list;
+    final response = await http.get(
+        Uri.parse(AppURL.allOrders + '?menu_date=$formatDate'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        });
+    if (response.statusCode == 200) {
+      String data = response.body;
+      print(data);
+      var rest = jsonDecode(data)['data'] as List;
+      listOrders = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
+    } else {
+      listOrders = [];
+    }
+    return list;
+  }
+
   Future<List<Orders>?> getOrders(context) async {
     await getToken();
     date();
-    String formatDate = DateFormat("yyyy-MM-dd").format(time);
+    String formatDate = DateFormat("yyyy-MM-dd").format(ordersDate);
     print(formatDate);
     List<Orders>? list;
     final response = await http.get(
@@ -346,7 +371,7 @@ class FoodProvider extends Manage {
     if (response.statusCode == 200) {
       String data = response.body;
       var rest = jsonDecode(data)['data'] as List;
-      oldOrders = OldOrders.fromJson(rest.last);
+      oldOrders = OldOrders.fromJson(rest.first);
       print(oldOrders);
 
       list = rest.map<OldOrders>((json) => OldOrders.fromJson(json)).toList();

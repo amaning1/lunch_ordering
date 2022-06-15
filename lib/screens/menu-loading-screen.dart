@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lunch_ordering/providers/approval_provider.dart';
+import 'package:lunch_ordering/providers/auth_provider.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
 import '../providers/menu_provider.dart';
-import 'main-screen.dart';
 
 class MenuLoadingScreen extends StatefulWidget {
   const MenuLoadingScreen({Key? key}) : super(key: key);
@@ -23,6 +24,11 @@ class _MenuLoadingScreenState extends State<MenuLoadingScreen> {
     Provider.of<FoodProvider>(context, listen: false).getOrders(context);
     Provider.of<FoodProvider>(context, listen: false).fetchAllFoods(context);
     Provider.of<FoodProvider>(context, listen: false).fetchAllDrinks(context);
+    if (Provider.of<AuthProvider>(context, listen: false).user.type ==
+        'admin') {
+      Provider.of<ApprovalProvider>(context, listen: false)
+          .getAllUsers(context);
+    }
     super.initState();
   }
 

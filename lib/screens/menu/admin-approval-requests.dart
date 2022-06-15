@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/approval_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../../Domain/allUsers.dart';
 import '../../Domain/new-user.dart';
-import '../../Domain/user.dart';
 import '../../components.dart';
 import '../../constants.dart';
-import '../../providers/food_providers.dart';
 
 class AdminApprovalRequests extends StatefulWidget {
   const AdminApprovalRequests({Key? key}) : super(key: key);
@@ -28,21 +24,20 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-              top: height * 0.05, left: width * 0.05, right: width * 0.05),
+              top: width * 0.05, left: width * 0.05, right: width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(height: height * 0.050),
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
               SizedBox(height: height * 0.035),
-              SizedBox(height: height * 0.05),
               Row(
-                children: [
+                children: const [
                   Text('APPROVALS', style: KMENUTextStyle),
                 ],
               ),
@@ -90,6 +85,9 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                                           onPressed: () {
                                             approvalProvider.approveUser(
                                                 users[index].user_id);
+                                            setState(() {
+                                              users;
+                                            });
                                           },
                                           color: darkBlue,
                                         ),

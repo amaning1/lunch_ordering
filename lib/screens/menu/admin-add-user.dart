@@ -22,11 +22,11 @@ class _AdminAddUserState extends State<AdminAddUser> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    bool isSelected = false;
     final regProvider = Provider.of<RegProvider>(context);
+
     return Scaffold(
         key: scaffoldKey,
-        drawer: NavDrawer(),
+        drawer: const NavDrawer(),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
@@ -45,17 +45,13 @@ class _AdminAddUserState extends State<AdminAddUser> {
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20)),
+                        borderRadius: KBorderRadius,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.2),
                             spreadRadius: 4,
                             blurRadius: 8,
-                            offset: Offset(0, 4),
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
@@ -67,37 +63,37 @@ class _AdminAddUserState extends State<AdminAddUser> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             SizedBox(height: height * 0.02),
-                            Center(
+                            const Center(
                               child:
                                   Text('Add User Account', style: KNTSYAStyle),
                             ),
                             SizedBox(height: height * 0.05),
-                            Text('Name', style: KButtonTextStyle),
+                            const Text('Name', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            form(
+                            FormLocal(
                               focusedBorder: true,
                               controller: regProvider.nameController,
                               label: 'Enter Name',
                               type: TextInputType.text,
-                              colour: Color(0xFFF2F2F2),
+                              colour: const Color(0xFFF2F2F2),
                             ),
-                            Text('Phone Number', style: KButtonTextStyle),
+                            const Text('Phone Number', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            numberForm(
+                            NumberForm(
                               focusedBorder: true,
                               controller: regProvider.numberController,
                               label: 'Phone Number',
                               type: TextInputType.number,
-                              colour: Color(0xFFF2F2F2),
+                              colour: const Color(0xFFF2F2F2),
                             ),
-                            Text('Password', style: KButtonTextStyle),
+                            const Text('Password', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            passwordForm(
+                            PasswordForm(
                               passwordcontroller:
                                   regProvider.passwordController,
                             ),
                             SizedBox(height: height * 0.01),
-                            Text('User', style: KButtonTextStyle),
+                            const Text('User', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
                             Container(
                               height: height * 0.07,
@@ -117,7 +113,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                                             const EdgeInsets.only(left: 8.0),
                                         child: Text(
                                           value,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontFamily: 'Poppins',
                                           ),
                                         ),

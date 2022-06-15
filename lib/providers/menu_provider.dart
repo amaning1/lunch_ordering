@@ -69,6 +69,53 @@ class MenuProvider extends Manage {
     return list;
   }
 
+  Future addMenuAdmin(chefID, foodList, drinkList, context) async {
+    await getToken();
+    changeStatus(true);
+    final response = await http.post(
+      Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+      },
+      body: jsonEncode(<String, dynamic>{
+        "menu_date": "$selectedDate",
+        "foods_id": foodList,
+        "drinks_id": drinkList,
+        "chef_id": chefID,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      String data = response.body;
+      print(response.body);
+      changeStatus(false);
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            Navigator.pushReplacementNamed(context, '/allMenus');
+          }, 'Menu Added', 'The menu has been added successfully',
+              'View Menus');
+        },
+      );
+    } else {
+      changeStatus(false);
+      notifyListeners();
+      print(response.statusCode);
+      print(response.body);
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            Navigator.popAndPushNamed(context, '/allMenus');
+          }, 'Error ', 'There was a problem adding your menu. Try again later',
+              'View Menus');
+        },
+      );
+    }
+  }
+
   Future addMenu(foodList, drinkList, context) async {
     await getToken();
     changeStatus(true);

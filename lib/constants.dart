@@ -11,6 +11,7 @@ bool state = false;
 bool switchSelected = false;
 bool isObscure = true;
 DateTime selectedDate = DateTime.now();
+DateTime ordersDate = DateTime.now();
 
 const KBorderRadius = BorderRadius.only(
     topLeft: Radius.circular(20),

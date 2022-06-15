@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/providers/auth_provider.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
@@ -15,24 +14,25 @@ AlertDialog alertDialogLogin(http.Response response) {
       title: Icon(Icons.cancel, color: Colors.red),
       content: Center(child: Text('Invalid Login Credentials, Try Again')),
     );
-  } else
+  } else {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
       title: Column(
-        children: [
+        children: const [
           Icon(Icons.cancel, color: Colors.red),
           Text('Something went wrong. Try Again'),
         ],
       ),
       content: Text(response.body),
     );
+  }
 }
 
 AlertDialog alertDialog(BuildContext context, onPressed, String textHeader,
     textContent, String textButton) {
   return AlertDialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
       title: Text(textHeader, style: KAlertHeader),
       //insetPadding: EdgeInsets.symmetric(vertical: 240),
@@ -48,17 +48,17 @@ AlertDialog alertDialog(BuildContext context, onPressed, String textHeader,
       ]);
 }
 
-Widget row(String type, bool isloading, onPressed) {
+Widget row(String type, bool isLoading, onPressed) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(type, style: KMENUTextStyle),
-      Button(text: 'ADD', isLoading: isloading, onPressed: onPressed)
+      Button(text: 'ADD', isLoading: isLoading, onPressed: onPressed)
     ],
   );
 }
 
-Widget column(isEmpty, context, String type, chipType, onPressed, isloading) {
+Widget column(isEmpty, context, String type, chipType, onPressed, isLoading) {
   return Column(
     children: [
       isEmpty
@@ -68,7 +68,7 @@ Widget column(isEmpty, context, String type, chipType, onPressed, isloading) {
                 Button(
                   onPressed: onPressed,
                   text: 'ADD',
-                  isLoading: isloading,
+                  isLoading: isLoading,
                 ),
               ],
             )
@@ -80,7 +80,7 @@ Widget column(isEmpty, context, String type, chipType, onPressed, isloading) {
                     .map<Widget>((chip) => Chip(
                           label: Text(chip.name),
                           key: ValueKey(chip.id),
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: const TextStyle(color: Colors.white),
                           backgroundColor: darkBlue,
                           padding: const EdgeInsets.symmetric(
                               vertical: 7, horizontal: 10),
@@ -117,52 +117,58 @@ class NavDrawer extends StatelessWidget {
           children: [
             ListTile(
                 hoverColor: darkBlue,
-                leading: Icon(Icons.menu),
+                leading: const Icon(Icons.menu),
                 title:
                     const Text('Menu', style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
                   Navigator.pushNamed(context, '/allMenus');
                 }),
-            ListTile(
-                hoverColor: Colors.white,
-                leading: const Icon(Icons.dashboard),
-                title: const Text(
-                  'Order Food',
-                  style: TextStyle(fontFamily: 'Poppins'),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/third');
-                }),
+            authProvider.user.type == 'admin'
+                ? ListTile(
+                    hoverColor: Colors.white,
+                    leading: const Icon(Icons.dashboard),
+                    title: const Text(
+                      'Order Food',
+                      style: TextStyle(fontFamily: 'Poppins'),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/third');
+                    })
+                : const SizedBox(),
             authProvider.user.type == 'admin'
                 ? ListTile(
                     hoverColor: darkBlue,
-                    leading: Icon(Icons.remove_red_eye),
+                    leading: const Icon(Icons.remove_red_eye),
                     title: const Text('View All Users',
                         style: TextStyle(fontFamily: 'Poppins')),
                     onTap: () {
                       Navigator.pushNamed(context, '/allUsers');
                     })
-                : SizedBox(),
+                : const SizedBox(),
+            authProvider.user.type == 'admin'
+                ? ListTile(
+                    hoverColor: darkBlue,
+                    leading: const Icon(Icons.approval),
+                    title: const Text('Approvals',
+                        style: TextStyle(fontFamily: 'Poppins')),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/adminApprovalRequests');
+                    })
+                : const SizedBox(),
+            authProvider.user.type == 'admin'
+                ? ListTile(
+                    hoverColor: darkBlue,
+                    leading: const Icon(Icons.add),
+                    title: const Text('Add User',
+                        style: TextStyle(fontFamily: 'Poppins')),
+                    onTap: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/adminAddUser', (route) => false);
+                    })
+                : const SizedBox(),
             ListTile(
                 hoverColor: darkBlue,
-                leading: Icon(Icons.approval),
-                title: const Text('Approvals',
-                    style: TextStyle(fontFamily: 'Poppins')),
-                onTap: () {
-                  Navigator.pushNamed(context, '/adminApprovalRequests');
-                }),
-            ListTile(
-                hoverColor: darkBlue,
-                leading: Icon(Icons.add),
-                title: const Text('Add User',
-                    style: TextStyle(fontFamily: 'Poppins')),
-                onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/adminAddUser', (route) => false);
-                }),
-            ListTile(
-                hoverColor: darkBlue,
-                leading: Icon(Icons.local_pizza),
+                leading: const Icon(Icons.local_pizza),
                 title: const Text('View Foods',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
@@ -170,7 +176,7 @@ class NavDrawer extends StatelessWidget {
                 }),
             ListTile(
                 hoverColor: darkBlue,
-                leading: Icon(Icons.wine_bar),
+                leading: const Icon(Icons.wine_bar),
                 title: const Text('View Drinks',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
@@ -178,7 +184,7 @@ class NavDrawer extends StatelessWidget {
                 }),
             ListTile(
                 hoverColor: darkBlue,
-                leading: Icon(Icons.fastfood),
+                leading: const Icon(Icons.fastfood),
                 title: const Text('View Orders',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
@@ -186,7 +192,7 @@ class NavDrawer extends StatelessWidget {
                 }),
             ListTile(
                 hoverColor: darkBlue,
-                leading: Icon(Icons.logout),
+                leading: const Icon(Icons.logout),
                 title: const Text('Logout',
                     style: TextStyle(fontFamily: 'Poppins')),
                 onTap: () {
@@ -199,16 +205,16 @@ class NavDrawer extends StatelessWidget {
   }
 }
 
-class passwordForm extends StatefulWidget {
-  const passwordForm({Key? key, required this.passwordcontroller})
+class PasswordForm extends StatefulWidget {
+  const PasswordForm({Key? key, required this.passwordcontroller})
       : super(key: key);
   final TextEditingController passwordcontroller;
 
   @override
-  _passwordFormState createState() => _passwordFormState();
+  _PasswordFormState createState() => _PasswordFormState();
 }
 
-class _passwordFormState extends State<passwordForm> {
+class _PasswordFormState extends State<PasswordForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -226,7 +232,7 @@ class _passwordFormState extends State<passwordForm> {
         textAlign: TextAlign.left,
         obscureText: isObscure,
         decoration: InputDecoration(
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
               borderRadius: BorderRadius.zero,
               borderSide: BorderSide(width: 2.0)),
           suffixIcon: IconButton(
@@ -238,10 +244,10 @@ class _passwordFormState extends State<passwordForm> {
             },
           ),
           labelStyle:
-              TextStyle(fontFamily: 'Poppins', color: Color(0xFF808080)),
+              const TextStyle(fontFamily: 'Poppins', color: Color(0xFF808080)),
           labelText: "Enter Password",
           floatingLabelStyle: TextStyle(color: blue),
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.blue, width: 2.0),
           ),
         ),
@@ -303,8 +309,8 @@ class ChefCards extends StatelessWidget {
   }
 }
 
-class form extends StatefulWidget {
-  form(
+class FormLocal extends StatefulWidget {
+  FormLocal(
       {Key? key,
       required this.focusedBorder,
       required this.controller,
@@ -324,10 +330,10 @@ class form extends StatefulWidget {
   bool focusedBorder;
 
   @override
-  State<form> createState() => _formState();
+  State<FormLocal> createState() => _FormLocalState();
 }
 
-class _formState extends State<form> {
+class _FormLocalState extends State<FormLocal> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -344,20 +350,20 @@ class _formState extends State<form> {
         decoration: InputDecoration(
             fillColor: widget.colour,
             hintText: widget.hintText,
-            hintStyle: TextStyle(
+            hintStyle: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
             contentPadding: widget.contentPadding,
-            border: OutlineInputBorder(
+            border: const OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
                 borderSide: BorderSide(width: 2.0)),
-            labelStyle:
-                TextStyle(fontFamily: 'Poppins', color: Color(0xFF808080)),
+            labelStyle: const TextStyle(
+                fontFamily: 'Poppins', color: Color(0xFF808080)),
             labelText: widget.label,
             floatingLabelStyle: TextStyle(color: blue),
             focusedBorder: widget.focusedBorder
-                ? OutlineInputBorder(
+                ? const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 2.0),
                   )
                 : null),
@@ -367,7 +373,7 @@ class _formState extends State<form> {
 }
 
 class TextInput extends StatefulWidget {
-  TextInput({
+  const TextInput({
     Key? key,
     required this.controller,
   }) : super(key: key);
@@ -392,8 +398,8 @@ class _TextInputState extends State<TextInput> {
   }
 }
 
-class numberForm extends StatefulWidget {
-  numberForm(
+class NumberForm extends StatefulWidget {
+  NumberForm(
       {Key? key,
       required this.focusedBorder,
       required this.controller,
@@ -413,10 +419,10 @@ class numberForm extends StatefulWidget {
   bool focusedBorder;
 
   @override
-  State<numberForm> createState() => _numberFormState();
+  State<NumberForm> createState() => _NumberFormState();
 }
 
-class _numberFormState extends State<numberForm> {
+class _NumberFormState extends State<NumberForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -435,20 +441,20 @@ class _numberFormState extends State<numberForm> {
         decoration: InputDecoration(
             fillColor: widget.colour,
             hintText: widget.hintText,
-            hintStyle: TextStyle(
+            hintStyle: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
             contentPadding: widget.contentPadding,
-            border: OutlineInputBorder(
+            border: const OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
                 borderSide: BorderSide(width: 2.0)),
-            labelStyle:
-                TextStyle(fontFamily: 'Poppins', color: Color(0xFF808080)),
+            labelStyle: const TextStyle(
+                fontFamily: 'Poppins', color: Color(0xFF808080)),
             labelText: widget.label,
             floatingLabelStyle: TextStyle(color: blue),
             focusedBorder: widget.focusedBorder
-                ? OutlineInputBorder(
+                ? const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 2.0),
                   )
                 : null),

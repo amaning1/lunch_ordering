@@ -1,15 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:provider/provider.dart';
-
-import '../../Domain/allMenus.dart';
-import '../../Domain/drinks.dart';
-import '../../Domain/foods.dart';
-import '../../Domain/menu.dart';
-import '../main-screen.dart';
 
 class ViewDrinks extends StatefulWidget {
   const ViewDrinks({Key? key}) : super(key: key);
@@ -33,60 +26,56 @@ class _ViewDrinksState extends State<ViewDrinks> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    final foodProvider = Provider.of<FoodProvider>(context);
     TextEditingController drink = TextEditingController();
-    var scaffoldKey = GlobalKey<ScaffoldState>();
+    final foodProvider = Provider.of<FoodProvider>(context);
 
+    var allFoods = RefreshIndicator(
+      onRefresh: () async {
+        foodProvider.fetchAllDrinks(context);
+        return Future<void>.delayed(const Duration(seconds: 3));
+      },
+      child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          //shrinkWrap: true,
+          itemCount: foodProvider.allDrinks.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                title: Text(foodProvider.allDrinks[index].Option!),
+                subtitle: Text(foodProvider.allDrinks[index].id!.toString()),
+                trailing: IconButton(
+                  onPressed: () {
+                    foodProvider.deleteFood(foodProvider.allDrinks[index].id!);
+                    setState(() {
+                      foodProvider.allDrinks;
+                    });
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
+              ),
+            );
+          }),
+    );
     return Scaffold(
       key: scaffoldKey,
       drawer: const NavDrawer(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: height * 0.05, left: width * 0.05, right: width * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: foodProvider.allDrinks.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              title:
-                                  Text(foodProvider.allDrinks[index].Option!),
-                              subtitle: Text(
-                                  foodProvider.allDrinks[index].id.toString()),
-                              trailing: IconButton(
-                                onPressed: () {
-                                  foodProvider.deleteFood(
-                                      foodProvider.allDrinks[index].id);
-                                  setState(() {
-                                    foodProvider.allDrinks;
-                                  });
-                                },
-                                icon: Icon(Icons.delete),
-                              ),
-                            ),
-                          );
-                        }),
-                  ],
-                ),
-              ),
-            ],
-          ),
+      body: Padding(
+        padding: EdgeInsets.only(
+            top: height * 0.05, left: width * 0.05, right: width * 0.05),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+            Expanded(
+              child: allFoods,
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -95,9 +84,9 @@ class _ViewDrinksState extends State<ViewDrinks> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  title: Text('Add Food', style: KAlertHeader),
+                  title: const Text('Add Drink', style: KAlertHeader),
                   //insetPadding: EdgeInsets.symmetric(vertical: 240),
                   content: TextFormField(
                     controller: drink,
@@ -109,7 +98,9 @@ class _ViewDrinksState extends State<ViewDrinks> {
                         style: KAlertButton,
                       ),
                       onPressed: () {
-                        foodProvider.addNewDrink(drink, context);
+                        foodProvider.newDrink.add(drink.text);
+                        foodProvider.addNewDrink(
+                            foodProvider.newDrink, context);
                       },
                     ),
                   ]);
@@ -117,7 +108,7 @@ class _ViewDrinksState extends State<ViewDrinks> {
           );
         },
         backgroundColor: darkBlue,
-        label: Text('Add Drink'),
+        label: const Text('Add Drink'),
         icon: const Icon(Icons.add),
       ),
     );

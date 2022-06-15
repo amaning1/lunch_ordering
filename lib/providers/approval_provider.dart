@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../Domain/allChefs.dart';
 import '../Domain/allUsers.dart';
 import '../Domain/menu.dart';
 import 'Manage.dart';
@@ -19,6 +20,8 @@ import 'Manage.dart';
 
 class ApprovalProvider extends Manage {
   List<AllUsers> allUsers = [];
+  List<AllUsers>? allChefs = [];
+  List<String> chefNames = [];
 
   Future<List<NewUser>?> getAllApprovalRequests(context) async {
     await getToken();
@@ -101,6 +104,13 @@ class ApprovalProvider extends Manage {
       var users = jsonDecode(data)['data'] as List;
       allUsers =
           users.map<AllUsers>((json) => AllUsers.fromJson(json)).toList();
+      for (int i = 0; i < allUsers.length; i++) {
+        allChefs = allUsers.where((element) => element.type == 'chef').toList();
+      }
+      for (int i = 0; i < allChefs!.length; i++) {
+        chefNames.add(allChefs![i].name);
+      }
+      print(chefNames);
     } else if (response.statusCode == 401) {
     } else {
       changeMenu(false);

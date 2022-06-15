@@ -1,11 +1,7 @@
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/auth_provider.dart';
-import 'package:lunch_ordering/providers/food_providers.dart';
-import 'package:lunch_ordering/screens/sign-in.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../components.dart';
 import '../constants.dart';
 import 'dart:io';
@@ -28,7 +24,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print('start');
         Provider.of<AuthProvider>(context, listen: false).autoLogIn(context);
       }
     } on SocketException catch (_) {

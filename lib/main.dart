@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/providers/approval_provider.dart';
 import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:lunch_ordering/providers/menu_provider.dart';
@@ -45,25 +46,28 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Lunch Ordering',
+        theme: ThemeData(
+          primaryColor: darkBlue,
+        ),
         initialRoute: '/loadingscreen',
         routes: {
-          '/loadingscreen': (context) => LoadingScreen(),
-          '/signin': (context) => SignIn(),
-          '/signup': (context) => SignUp(),
-          '/third': (context) => MenuScreen(),
-          '/adminAdd': (context) => AdminAdd(),
-          '/adminOrders': (context) => AdminOrders(),
-          '/history': (context) => ViewHistory(),
-          '/splash': (context) => SplashScreen(),
-          '/allMenus': (context) => AllMenus(),
-          '/addMenu': (context) => AddMenu(),
-          '/adminViewOrders': (context) => AdminViewOrders(),
-          '/adminAddUser': (context) => AdminAddUser(),
-          '/adminApprovalRequests': (context) => AdminApprovalRequests(),
-          '/User': (context) => UserMain(),
-          '/menuLoading': (context) => MenuLoadingScreen(),
-          '/allUsers': (context) => EveryUser(),
-          '/allDrinks': (context) => ViewDrinks(),
+          '/loadingscreen': (context) => const LoadingScreen(),
+          '/signin': (context) => const SignIn(),
+          '/signup': (context) => const SignUp(),
+          '/third': (context) => const MenuScreen(),
+          '/adminAdd': (context) => const AdminAdd(),
+          '/adminOrders': (context) => const AdminOrders(),
+          '/history': (context) => const ViewHistory(),
+          '/splash': (context) => const SplashScreen(),
+          '/allMenus': (context) => const AllMenus(),
+          '/addMenu': (context) => const AddMenu(),
+          '/adminViewOrders': (context) => const AdminViewOrders(),
+          '/adminAddUser': (context) => const AdminAddUser(),
+          '/adminApprovalRequests': (context) => const AdminApprovalRequests(),
+          '/User': (context) => const UserMain(),
+          '/menuLoading': (context) => const MenuLoadingScreen(),
+          '/allUsers': (context) => const EveryUser(),
+          '/allDrinks': (context) => const ViewDrinks(),
         },
       ),
     );

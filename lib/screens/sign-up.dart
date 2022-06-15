@@ -1,13 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/screens/sign-in.dart';
 import 'package:provider/provider.dart';
-
-import '../providers/auth_provider.dart';
 import '../providers/registration_provider.dart';
 
 class SignUp extends StatefulWidget {
@@ -20,6 +16,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool isLoading = false;
   var height, width;
+
   @override
   void dispose() {
     super.dispose();
@@ -69,7 +66,7 @@ class _SignUpState extends State<SignUp> {
                             color: Colors.grey.withOpacity(0.2),
                             spreadRadius: 4,
                             blurRadius: 8,
-                            offset: Offset(0, 4),
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
@@ -81,38 +78,38 @@ class _SignUpState extends State<SignUp> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             SizedBox(height: height * 0.02),
-                            Center(
+                            const Center(
                               child: Text('Nice to see you here',
                                   style: KNTSYAStyle),
                             ),
                             SizedBox(height: height * 0.05),
-                            Text('Name', style: KButtonTextStyle),
+                            const Text('Name', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            form(
+                            FormLocal(
                               focusedBorder: true,
                               controller: regProvider.nameController,
                               label: 'Enter Name',
                               type: TextInputType.text,
-                              colour: Color(0xFFF2F2F2),
+                              colour: const Color(0xFFF2F2F2),
                             ),
-                            Text('Phone Number', style: KButtonTextStyle),
+                            const Text('Phone Number', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            numberForm(
+                            NumberForm(
                               focusedBorder: true,
                               controller: regProvider.numberController,
                               label: 'Phone Number',
                               type: TextInputType.number,
-                              colour: Color(0xFFF2F2F2),
+                              colour: const Color(0xFFF2F2F2),
                             ),
-                            Text('Password', style: KButtonTextStyle),
+                            const Text('Password', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            passwordForm(
+                            PasswordForm(
                               passwordcontroller:
                                   regProvider.passwordController,
                             ),
                             SizedBox(height: height * 0.01),
                             Center(
-                              child: Container(
+                              child: SizedBox(
                                 width: width,
                                 height: height * 0.1,
                                 child: Button(
@@ -124,8 +121,8 @@ class _SignUpState extends State<SignUp> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 14),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 14),
                               child: Divider(
                                 thickness: 1.0,
                               ),
@@ -145,7 +142,7 @@ class _SignUpState extends State<SignUp> {
                                           builder: (context) => const SignIn()),
                                     );
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'Sign in',
                                     style: KTextStyle3,
                                   ),

@@ -91,7 +91,7 @@ class _SignInState extends State<SignIn> {
                             SizedBox(height: height * 0.05),
                             const Text('Phone Number', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
-                            numberForm(
+                            NumberForm(
                               focusedBorder: true,
                               controller: authProvider.numberController,
                               label: 'Phone Number',
@@ -111,7 +111,7 @@ class _SignInState extends State<SignIn> {
                                 ),
                               ],
                             ),
-                            passwordForm(
+                            PasswordForm(
                               passwordcontroller:
                                   authProvider.passwordController,
                             ),

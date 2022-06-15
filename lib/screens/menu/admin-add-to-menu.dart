@@ -1,17 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/Domain/ChipData.dart';
 import 'package:provider/provider.dart';
-import '../../Domain/allMenus.dart';
-import '../../Domain/drinks.dart';
-import '../../Domain/foods.dart';
-import '../../Domain/menu.dart';
 import '../../providers/food_providers.dart';
-import '../main-screen.dart';
 
 int? selected = 0;
 
@@ -45,7 +38,7 @@ class _AdminAddState extends State<AdminAdd> {
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       body: Padding(
         padding: EdgeInsets.only(
             top: height * 0.05, left: width * 0.05, right: width * 0.05),
@@ -58,7 +51,7 @@ class _AdminAddState extends State<AdminAdd> {
                   children: [
                     Image.asset('images/img.png', height: 40, width: 45),
                     SizedBox(width: width * 0.05),
-                    Text('ADD', style: KMENUTextStyle),
+                    const Text('ADD', style: KMENUTextStyle),
                     SizedBox(width: width * 0.02),
                     Text(foodProvider.type, style: KCardTextStyle),
                   ],
@@ -88,7 +81,8 @@ class _AdminAddState extends State<AdminAdd> {
                           .map((chip) => Chip(
                                 key: ValueKey(chip.id),
                                 label: Text(chip.name),
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
                                 backgroundColor: darkBlue,
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 7, horizontal: 10),
@@ -147,7 +141,6 @@ class _AdminAddState extends State<AdminAdd> {
                                           foodProvider.allFoods,
                                           index,
                                           selectedIndex);
-                                  print(foodProvider.foodIDS);
                                   //selected = menu[index].id!;
                                 });
                               },
@@ -194,7 +187,7 @@ class _AdminAddState extends State<AdminAdd> {
                         }),
                   ),
             SizedBox(height: height * 0.03),
-            Container(
+            SizedBox(
               width: width * 0.4,
               child: Button(
                 text: 'Add to Menu',

@@ -25,6 +25,12 @@ class _MenuScreenState extends State<MenuScreen> {
   TextEditingController comments = TextEditingController();
 
   @override
+  void initState() {
+    Provider.of<FoodProvider>(context, listen: false).updateFoodOrder(false);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;

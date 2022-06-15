@@ -1,4 +1,3 @@
-import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,8 +5,6 @@ import 'package:lunch_ordering/providers/food_providers.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:provider/provider.dart';
-import '../Domain/oldOrders.dart';
-import '../Domain/orders.dart';
 
 class ViewHistory extends StatefulWidget {
   const ViewHistory({Key? key}) : super(key: key);

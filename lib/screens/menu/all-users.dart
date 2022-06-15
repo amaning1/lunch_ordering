@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lunch_ordering/providers/approval_provider.dart';
 import 'package:provider/provider.dart';
-
 import '../../Domain/allUsers.dart';
-import '../../Domain/new-user.dart';
-import '../../Domain/user.dart';
 import '../../components.dart';
 import '../../constants.dart';
-import '../../providers/food_providers.dart';
 
 class EveryUser extends StatefulWidget {
   const EveryUser({Key? key}) : super(key: key);
@@ -21,6 +17,7 @@ class _EveryUserState extends State<EveryUser> {
   var height, width;
   bool isLoading = false;
   var scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -39,9 +36,9 @@ class _EveryUserState extends State<EveryUser> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              SizedBox(height: height * 0.05),
+              SizedBox(height: height * 0.035),
               Row(
-                children: [
+                children: const [
                   Text('ALL USERS', style: KMENUTextStyle),
                 ],
               ),
@@ -50,15 +47,15 @@ class _EveryUserState extends State<EveryUser> {
                   future: approvalProvider.getAllUsers(context),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<AllUsers>? users = snapshot.data;
+                      // List<AllUsers>? users = snapshot.data;
                       return ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: users?.length,
+                          itemCount: approvalProvider.allUsers.length,
                           itemBuilder: (BuildContext context, int index) {
-                            var formatDate =
-                                DateTime.tryParse(users![index].created_at);
-                            String Date =
+                            var formatDate = DateTime.tryParse(
+                                approvalProvider.allUsers[index].created_at);
+                            String date =
                                 DateFormat("yyyy-MM-dd").format(formatDate!);
 
                             return Card(
@@ -77,13 +74,18 @@ class _EveryUserState extends State<EveryUser> {
                                     children: <Widget>[
                                       RichText(
                                           text: TextSpan(
-                                        text: users[index].name + ' ,',
+                                        text: approvalProvider
+                                                .allUsers[index].name +
+                                            ' ,',
                                         style: KTextStyle1,
                                       )),
                                       SizedBox(height: height * 0.02),
+
                                       RichText(
                                           text: TextSpan(
-                                              text: users[index].id.toString() +
+                                              text: approvalProvider
+                                                      .allUsers[index].id
+                                                      .toString() +
                                                   ' ,',
                                               style: KTextStyle1,
                                               children: const [
@@ -95,7 +97,9 @@ class _EveryUserState extends State<EveryUser> {
 
                                       RichText(
                                           text: TextSpan(
-                                              text: users[index].phone_number +
+                                              text: approvalProvider
+                                                      .allUsers[index]
+                                                      .phone_number +
                                                   ' ,',
                                               style: KTextStyle1,
                                               children: const [
@@ -106,7 +110,9 @@ class _EveryUserState extends State<EveryUser> {
                                       //SizedBox(height: height * 0.02),
                                       RichText(
                                           text: TextSpan(
-                                              text: users[index].type + ' ,',
+                                              text: approvalProvider
+                                                      .allUsers[index].type +
+                                                  ' ,',
                                               style: KTextStyle1,
                                               children: const [
                                             TextSpan(
@@ -116,7 +122,9 @@ class _EveryUserState extends State<EveryUser> {
                                       // SizedBox(height: height * 0.02),
                                       RichText(
                                           text: TextSpan(
-                                              text: users[index].status + ' ,',
+                                              text: approvalProvider
+                                                      .allUsers[index].status +
+                                                  ' ,',
                                               style: KTextStyle1,
                                               children: const [
                                             TextSpan(
@@ -125,7 +133,7 @@ class _EveryUserState extends State<EveryUser> {
                                           ])),
                                       RichText(
                                           text: TextSpan(
-                                              text: Date + ' ,',
+                                              text: date + ' ,',
                                               style: KTextStyle1,
                                               children: const [
                                             TextSpan(

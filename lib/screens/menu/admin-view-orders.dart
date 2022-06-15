@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../Domain/orders.dart';
 import '../../components.dart';
 import '../../constants.dart';
 import '../../providers/food_providers.dart';
-import '../../shared_preferences.dart';
 
 class AdminViewOrders extends StatefulWidget {
   const AdminViewOrders({Key? key}) : super(key: key);
@@ -19,27 +17,15 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  void initState() {
-    super.initState();
-
-    getToken();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var height, width;
+    double height, width;
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     final foodProvider = Provider.of<FoodProvider>(context);
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
@@ -48,6 +34,16 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+              SizedBox(
+                width: width,
+                child: Button(
+                  text: "${ordersDate.toLocal()}".split(' ')[0],
+                  isLoading: false,
+                  onPressed: () {
+                    selectDate(context);
+                  },
+                ),
+              ),
               foodProvider.listOrders.isEmpty
                   ? ChefCards(
                       height: height,
@@ -60,7 +56,7 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
                         foodProvider.getOrders(context);
                         return Future<void>.delayed(const Duration(seconds: 3));
                       },
-                      child: ordersWidget(
+                      child: OrdersWidget(
                           orders: foodProvider.listOrders,
                           height: height,
                           width: width),
@@ -71,10 +67,27 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
       ),
     );
   }
+
+  void selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: ordersDate.add(const Duration(days: 1)),
+      firstDate: DateTime(2022),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != ordersDate) {
+      setState(() {
+        ordersDate = picked;
+        Provider.of<FoodProvider>(context, listen: false).getNewOrders(context);
+        // Provider.of<FoodProvider>(context, listen: false).listOrders;
+        OrdersWidget;
+      });
+    }
+  }
 }
 
-class ordersWidget extends StatelessWidget {
-  ordersWidget({
+class OrdersWidget extends StatefulWidget {
+  OrdersWidget({
     Key? key,
     required this.orders,
     required this.height,
@@ -86,60 +99,63 @@ class ordersWidget extends StatelessWidget {
   var width;
 
   @override
+  State<OrdersWidget> createState() => _OrdersWidgetState();
+}
+
+class _OrdersWidgetState extends State<OrdersWidget> {
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: orders?.length,
+        itemCount: widget.orders?.length,
         itemBuilder: (BuildContext context, int index) {
-          var foodCount = orders![index].food.length;
-          var drinkCount = orders![index].drink.length;
-          var commentCount = orders![index].comment?.length;
-          print(foodCount);
-          print(drinkCount);
-          print(commentCount);
+          // var foodCount = orders![index].food.length;
+          // var drinkCount = orders![index].drink.length;
+          // var commentCount = orders![index].comment?.length;
+
           return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Padding(
                 padding: EdgeInsets.only(
-                    top: width * 0.05,
-                    left: width * 0.05,
-                    right: width * 0.05,
-                    bottom: width * 0.05),
+                    top: widget.width * 0.05,
+                    left: widget.width * 0.05,
+                    right: widget.width * 0.05,
+                    bottom: widget.width * 0.05),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     RichText(
                         text: TextSpan(
-                            text: orders![index].name! + ' ,',
+                            text: widget.orders![index].name! + ' ,',
                             style: KTextStyle1,
                             children: const [
                           TextSpan(text: '  ' 'Name', style: KTextStyle2)
                         ])),
-                    SizedBox(height: height * 0.02),
+                    SizedBox(height: widget.height * 0.02),
                     RichText(
                         text: TextSpan(
-                            text: orders![index].food + ' ,',
+                            text: widget.orders![index].food + ' ,',
                             style: KTextStyle1,
                             children: const [
                           TextSpan(text: '  ' 'Food', style: KTextStyle2)
                         ])),
-                    SizedBox(height: height * 0.02),
+                    SizedBox(height: widget.height * 0.02),
                     RichText(
                         text: TextSpan(
-                            text: orders![index].drink + ' ,',
+                            text: widget.orders![index].drink + ' ,',
                             style: KTextStyle1,
                             children: const [
                           TextSpan(text: '  ' 'Drink', style: KTextStyle2)
                         ])),
-                    SizedBox(height: height * 0.03),
+                    SizedBox(height: widget.height * 0.03),
                     const Text(
                       'Comments',
                       style: KTextStyle2,
                     ),
-                    Text(orders![index].comment!, style: KTextStyle4),
+                    Text(widget.orders![index].comment!, style: KTextStyle4),
                   ],
                 ),
               ));

@@ -1,19 +1,19 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/Domain/ChipData.dart';
+import 'package:lunch_ordering/providers/approval_provider.dart';
 import 'package:lunch_ordering/providers/menu_provider.dart';
 import 'package:provider/provider.dart';
-import '../../Domain/menu.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/food_providers.dart';
-import '../main-screen.dart';
 
 int? selected = 0;
 
 class AddMenu extends StatefulWidget {
+  const AddMenu({Key? key}) : super(key: key);
+
   @override
   State<AddMenu> createState() => _AddMenuState();
 }
@@ -23,8 +23,6 @@ class _AddMenuState extends State<AddMenu> {
   var height, width;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   final List<ChipData> allChips = [];
-  TextEditingController foodcontroller = TextEditingController();
-  TextEditingController drinkcontroller = TextEditingController();
   int selectedIndex = 0;
 
   int index = 0;
@@ -38,13 +36,15 @@ class _AddMenuState extends State<AddMenu> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    bool isSelected = false;
     final menuProvider = Provider.of<MenuProvider>(context);
     final foodProvider = Provider.of<FoodProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
+    final approvalProvider = Provider.of<ApprovalProvider>(context);
 
+    var dropDownValue = approvalProvider.chefNames.first;
     return Scaffold(
       key: scaffoldKey,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
@@ -61,9 +61,9 @@ class _AddMenuState extends State<AddMenu> {
                     children: [
                       Image.asset('images/img.png', height: 40, width: 45),
                       SizedBox(width: width * 0.03),
-                      Text('ADD', style: KMENUTextStyle),
+                      const Text('ADD', style: KMENUTextStyle),
                       SizedBox(width: width * 0.02),
-                      Text('MENU', style: KCardTextStyle),
+                      const Text('MENU', style: KCardTextStyle),
                     ],
                   ),
                   IconButton(
@@ -76,17 +76,13 @@ class _AddMenuState extends State<AddMenu> {
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20)),
+                  borderRadius: KBorderRadius,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.2),
                       spreadRadius: 4,
                       blurRadius: 8,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -104,6 +100,41 @@ class _AddMenuState extends State<AddMenu> {
                           },
                         ),
                       ),
+                      authProvider.user.type == 'admin'
+                          ? Container(
+                              height: height * 0.07,
+                              decoration:
+                                  BoxDecoration(border: Border.all(width: 0.1)),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  value: dropDownValue,
+                                  items: approvalProvider.chefNames
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      dropDownValue = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
                       row('Food', foodProvider.isLoading, () {
                         foodProvider.typeFood();
                         Navigator.pushNamed(context, '/adminAdd');
@@ -143,15 +174,21 @@ class _AddMenuState extends State<AddMenu> {
                       ),
                       foodProvider.drinkChips.isEmpty
                           ? SizedBox(height: height * 0.02)
-                          : SizedBox(),
+                          : const SizedBox(),
                       SizedBox(
                         width: width,
                         child: Button(
                           text: 'Add to Menu',
                           isLoading: menuProvider.isLoading,
                           onPressed: () {
-                            menuProvider.addMenu(foodProvider.foodIDS,
-                                foodProvider.drinkIDS, context);
+                            authProvider.user.type == 'admin'
+                                ? menuProvider.addMenuAdmin(
+                                    dropDownValue,
+                                    foodProvider.foodIDS,
+                                    foodProvider.drinkIDS,
+                                    context)
+                                : menuProvider.addMenu(foodProvider.foodIDS,
+                                    foodProvider.drinkIDS, context);
                           },
                         ),
                       ),
@@ -169,9 +206,26 @@ class _AddMenuState extends State<AddMenu> {
   void selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate.add(Duration(days: 1)),
+      initialDate: selectedDate.add(const Duration(days: 1)),
       firstDate: DateTime(2022),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: darkBlue,
+              onPrimary: Colors.white,
+              onSurface: darkBlue,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: darkBlue, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null && picked != selectedDate) {
       setState(() {

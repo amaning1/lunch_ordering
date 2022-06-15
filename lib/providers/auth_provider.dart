@@ -110,6 +110,7 @@ class AuthProvider extends Manage {
 
       if (user.type == "chef" || user.type == "admin") {
         saveToken(user.token);
+        if (user.type == "admin") {}
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const MenuLoadingScreen()));
         clearForm();
