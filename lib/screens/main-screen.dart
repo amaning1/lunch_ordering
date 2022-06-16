@@ -16,17 +16,16 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  int? selectedFoodIndex;
-  int? selectedDrinkIndex;
-
   static final GlobalKey<FormState> _formKey =
       GlobalKey<FormState>(debugLabel: 'main');
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController comments = TextEditingController();
 
   @override
   void initState() {
-    Provider.of<FoodProvider>(context, listen: false).updateFoodOrder(false);
+    comments.text = '';
+
     super.initState();
   }
 
@@ -39,6 +38,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
     Widget foodMenu(BuildContext context) {
       return ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: foodProvider.menu.length,
           itemBuilder: (BuildContext context, int index) {
@@ -51,10 +51,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 title: Text(foodProvider.menu[index].food_name!),
-                selected: index == selectedFoodIndex,
+                selected: index == foodProvider.selectedFoodIndex,
                 onTap: () {
                   setState(() {
-                    selectedFoodIndex = index;
+                    foodProvider.selectedFoodIndex = index;
                     foodSelected = foodProvider.menu[index].food_id!;
                   });
                 },
@@ -67,6 +67,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
     Widget drinksMenu(BuildContext context) {
       return ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: foodProvider.drinks.length,
           itemBuilder: (BuildContext context, int index) {
@@ -79,10 +80,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 title: Text(foodProvider.drinks[index].drinkName),
-                selected: index == selectedDrinkIndex,
+                selected: index == foodProvider.selectedDrinkIndex,
                 onTap: () {
                   setState(() {
-                    selectedDrinkIndex = index;
+                    foodProvider.selectedDrinkIndex = index;
                     drinkSelected = foodProvider.drinks[index].drinkId;
                   });
                 },
@@ -104,7 +105,7 @@ class _MenuScreenState extends State<MenuScreen> {
           key: _formKey,
           child: Padding(
             padding: EdgeInsets.only(
-                left: width * 0.05, right: width * 0.05, top: width * 0.05),
+                left: width * 0.05, right: width * 0.05, top: width * 0.1),
             child: Stack(children: <Widget>[
               bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
               SizedBox(height: height * 0.10),
@@ -170,25 +171,29 @@ class _MenuScreenState extends State<MenuScreen> {
                                               controller: foodProvider.comments,
                                             ))),
                                     SizedBox(height: height * 0.02),
-                                    Center(
-                                      child: SizedBox(
-                                        width: width * 0.5,
-                                        height: height * 0.1,
-                                        child: Button(
-                                          onPressed: () async {
-                                            foodProvider.updateOrder
-                                                ? foodProvider
-                                                    .updateFoodOrder(context)
-                                                : foodProvider
-                                                    .orderFood(context);
-                                          },
-                                          isLoading: foodProvider.isLoading,
-                                          text: foodProvider.updateOrder
-                                              ? 'Update Order'
-                                              : 'Order Food',
-                                        ),
-                                      ),
-                                    ),
+                                    foodProvider.selectedFoodIndex == null
+                                        ? const SizedBox()
+                                        : Center(
+                                            child: SizedBox(
+                                              width: width * 0.5,
+                                              height: height * 0.1,
+                                              child: Button(
+                                                onPressed: () async {
+                                                  foodProvider.updateOrder
+                                                      ? foodProvider
+                                                          .updateFoodOrder(
+                                                              context)
+                                                      : foodProvider
+                                                          .orderFood(context);
+                                                },
+                                                isLoading:
+                                                    foodProvider.isLoading,
+                                                text: foodProvider.updateOrder
+                                                    ? 'Update Order'
+                                                    : 'Order Food',
+                                              ),
+                                            ),
+                                          ),
                                   ],
                                 ),
                                 SizedBox(height: height * 0.02),

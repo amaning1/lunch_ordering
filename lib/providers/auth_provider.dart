@@ -121,9 +121,18 @@ class AuthProvider extends Manage {
         clearForm();
       }
     } else {
-      changeStatus(false);
+      String data = response.body;
+      var message = jsonDecode(data)['message'];
 
-      Navigator.pushReplacementNamed(context, '/signin');
+      changeStatus(false);
+      notifyListeners();
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alertDialog(context, () {
+              Navigator.pop(context);
+            }, 'Invalid Login', message.toString(), 'Exit');
+          });
     }
     return null;
   }

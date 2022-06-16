@@ -28,6 +28,8 @@ class _MenuLoadingScreenState extends State<MenuLoadingScreen> {
         'admin') {
       Provider.of<ApprovalProvider>(context, listen: false)
           .getAllUsers(context);
+      Provider.of<ApprovalProvider>(context, listen: false)
+          .getAllApprovalRequests(context);
     }
     super.initState();
   }

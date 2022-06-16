@@ -12,10 +12,9 @@ class ViewDrinks extends StatefulWidget {
 }
 
 class _ViewDrinksState extends State<ViewDrinks> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var height, width;
   int selectedIndex = 0;
-  late FoodProvider foodVm;
 
   @override
   void initState() {

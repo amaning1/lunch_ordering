@@ -20,7 +20,7 @@ class NewUser {
       name: responseData['name'],
       phone_number: responseData['phone_number'],
       type: responseData['type'],
-      user_id: responseData['user_id'],
+      user_id: responseData['id'],
       date: responseData['created_at'],
     );
   }

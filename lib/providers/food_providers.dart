@@ -6,14 +6,12 @@ import 'package:intl/intl.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:lunch_ordering/screens/menu/all-menus.dart';
 import '../APIs.dart';
 import '../Domain/ChipData.dart';
 import '../Domain/drinks.dart';
 import '../Domain/foods.dart';
 import '../Domain/menu.dart';
 import '../Domain/allMenus.dart';
-import '../Domain/new-user.dart';
 import '../Domain/oldOrders.dart';
 import '../Domain/orders.dart';
 import '../constants.dart';
@@ -52,7 +50,6 @@ class FoodProvider extends Manage {
     var currentTime = DateTime.now();
     DateTime userTime =
         DateTime(currentTime.year, currentTime.month, currentTime.day, newHour);
-    print(isUser);
     DateTime chefTime = DateTime(
         currentTime.year, currentTime.month, currentTime.day, chefHour);
 
@@ -109,7 +106,7 @@ class FoodProvider extends Manage {
       Uri.parse(AppURL.Foods),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + token!,
+        HttpHeaders.authorizationHeader: "Bearer" " " + token!,
       },
       body: jsonEncode(<String, int>{
         'food_id': foodId,
@@ -129,7 +126,7 @@ class FoodProvider extends Manage {
         'foods': [food],
       }),
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       changeStatus(false);
       showDialog(
         context: context,
@@ -140,7 +137,7 @@ class FoodProvider extends Manage {
         },
       );
     } else {
-      print(response.body);
+      Navigator.pop(context);
     }
   }
 
@@ -153,10 +150,10 @@ class FoodProvider extends Manage {
         HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
       body: jsonEncode(<String, dynamic>{
-        'drinks': "[$drink]",
+        'drinks': [drink],
       }),
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       changeStatus(false);
       showDialog(
         context: context,
@@ -167,13 +164,12 @@ class FoodProvider extends Manage {
         },
       );
     } else {
-      print(response.body);
+      Navigator.pop(context);
     }
   }
 
   Future updateFoodOrder(context) async {
     changeStatus(true);
-    // await getToken();
     final response = await http.put(
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/order'),
       headers: <String, String>{
@@ -190,8 +186,12 @@ class FoodProvider extends Manage {
       }),
     );
     getPreviousOrders(context);
+    clearForm();
+
     if (response.statusCode == 200) {
       changeStatus(false);
+      changeUpdateOrder(false);
+      notifyListeners();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -202,10 +202,8 @@ class FoodProvider extends Manage {
         },
       );
     } else {
-      print(response.body);
-
       var formatDate = DateTime.tryParse(oldOrders.time!);
-      String Date = DateFormat("yyyy-MM-dd").format(formatDate!);
+      String date = DateFormat("yyyy-MM-dd").format(formatDate!);
       changeStatus(false);
       showDialog(
         context: context,
@@ -213,7 +211,7 @@ class FoodProvider extends Manage {
           return CustomWidget(
             food: oldOrders.food,
             drink: oldOrders.drink,
-            date: Date,
+            date: date,
           );
         },
       );
@@ -223,40 +221,35 @@ class FoodProvider extends Manage {
   Future<List<Orders>?> getNewOrders(context) async {
     await getToken();
     String formatDate = DateFormat("yyyy-MM-dd").format(ordersDate);
-    print(formatDate);
-    List<Orders>? list;
     final response = await http.get(
         Uri.parse(AppURL.allOrders + '?menu_date=$formatDate'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+          HttpHeaders.authorizationHeader: "Bearer" " " "$token",
         });
     if (response.statusCode == 200) {
       String data = response.body;
-      print(data);
       var rest = jsonDecode(data)['data'] as List;
       listOrders = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
     } else {
       listOrders = [];
     }
-    return list;
+    return listOrders;
   }
 
   Future<List<Orders>?> getOrders(context) async {
     await getToken();
     date();
     String formatDate = DateFormat("yyyy-MM-dd").format(ordersDate);
-    print(formatDate);
     List<Orders>? list;
     final response = await http.get(
         Uri.parse(AppURL.allOrders + '?menu_date=$formatDate'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+          HttpHeaders.authorizationHeader: "Bearer" " " "$token",
         });
     if (response.statusCode == 200) {
       String data = response.body;
-      print(data);
       var rest = jsonDecode(data)['data'] as List;
       listOrders = rest.map<Orders>((json) => Orders.fromJson(json)).toList();
     } else {
@@ -282,8 +275,12 @@ class FoodProvider extends Manage {
       }),
     );
     getPreviousOrders(context);
+    clearForm();
+    notifyListeners();
+
     if (response.statusCode == 202) {
       changeStatus(false);
+      notifyListeners();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -295,7 +292,7 @@ class FoodProvider extends Manage {
       );
     } else {
       var formatDate = DateTime.tryParse(oldOrders.time!);
-      String Date = DateFormat("yyyy-MM-dd").format(formatDate!);
+      String date = DateFormat("yyyy-MM-dd").format(formatDate!);
 
       changeStatus(false);
       showDialog(
@@ -304,11 +301,18 @@ class FoodProvider extends Manage {
           return CustomWidget(
             food: oldOrders.food,
             drink: oldOrders.drink,
-            date: Date,
+            date: date,
           );
         },
       );
     }
+  }
+
+  void clearForm() {
+    foodSelected = null;
+    drinkSelected = null;
+    selectedDrinkIndex = null;
+    selectedFoodIndex = null;
   }
 
   Future<List<Menu>?> fetchFood(context) async {
@@ -317,7 +321,6 @@ class FoodProvider extends Manage {
     notifyListeners();
     date();
     String formatDate = DateFormat("yyyy-MM-dd").format(time);
-    print(formatDate);
     getPreviousOrders(context);
 
     final response = await http.get(
@@ -334,7 +337,6 @@ class FoodProvider extends Manage {
       changeMenu(true);
       var foods = jsonDecode(data)['data']['foods'] as List;
       var allDrinks = jsonDecode(data)['data']['drinks'] as List;
-      print(allDrinks);
       menu = foods.map<Menu>((json) => Menu.fromJson(json)).toList();
       drinks = allDrinks.map<Drink>((json) => Drink.fromJson(json)).toList();
       Navigator.pushReplacement(
@@ -344,14 +346,13 @@ class FoodProvider extends Manage {
       Navigator.pushNamed(context, '/User');
     } else {
       changeMenu(false);
-      print(response);
-      print(response.statusCode);
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return alertDialog(context, () {
             logout(context);
-          }, 'Uh Oh', 'We\'ve run into a problem', 'Logout');
+          }, 'Try Again Later', 'Sorry we can\'t get that for you now',
+              'Logout');
         },
       );
     }
@@ -359,34 +360,21 @@ class FoodProvider extends Manage {
   }
 
   Future<List<OldOrders>?> getPreviousOrders(context) async {
-    // await getToken();
     final response = await http.get(
       Uri.parse(AppURL.orderMenu),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
     );
 
     if (response.statusCode == 200) {
       String data = response.body;
       var rest = jsonDecode(data)['data'] as List;
-      oldOrders = OldOrders.fromJson(rest.first);
-      print(oldOrders);
-
+      oldOrders = OldOrders.fromJson(rest.last);
       list = rest.map<OldOrders>((json) => OldOrders.fromJson(json)).toList();
-      print(list);
     } else {
-      String data = response.body;
-      print(data);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            logout(context);
-          }, 'Uh Oh', 'We\'ve run into a serious problem', 'Logout');
-        },
-      );
+      list = [];
     }
     return list;
   }
@@ -397,24 +385,17 @@ class FoodProvider extends Manage {
       Uri.parse(AppURL.Foods),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
     );
 
     if (response.statusCode == 200) {
       String data = response.body;
-      print(data);
       var rest = jsonDecode(data)['foods'] as List;
       allFoods = rest.map<Foods>((json) => Foods.fromJson(json)).toList();
       notifyListeners();
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(
-              context, null, 'Uh Oh', 'We\'ve run into a problem', '');
-        },
-      );
+      allFoods = [];
     }
     return allFoods;
   }
@@ -425,28 +406,17 @@ class FoodProvider extends Manage {
       Uri.parse(AppURL.Drinks),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
     );
 
     if (response.statusCode == 200) {
       String data = response.body;
-      print('why?');
-      print(data);
       var rest = jsonDecode(data)['drinks'] as List;
-      print('done0');
       allDrinks = rest.map<Drinks>((json) => Drinks.fromJson(json)).toList();
-      print('done1');
       notifyListeners();
-      print('done2');
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(
-              context, null, 'Uh Oh', 'We\'ve run into a problem', '');
-        },
-      );
+      allDrinks = [];
     }
     return allDrinks;
   }

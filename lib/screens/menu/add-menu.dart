@@ -20,8 +20,8 @@ class AddMenu extends StatefulWidget {
 
 class _AddMenuState extends State<AddMenu> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var height, width;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
   final List<ChipData> allChips = [];
   int selectedIndex = 0;
 

@@ -16,12 +16,11 @@ class ViewHistory extends StatefulWidget {
 class _ViewHistoryState extends State<ViewHistory> {
   var height, width;
   bool isLoading = false;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    bool isSelected = false;
     final foodProvider = Provider.of<FoodProvider>(context);
 
     return Scaffold(
@@ -30,12 +29,12 @@ class _ViewHistoryState extends State<ViewHistory> {
       //resizeToAvoidBottomInset: false,
       body: Padding(
         padding: EdgeInsets.only(
-            top: height * 0.04, left: height * 0.04, right: height * 0.04),
+            left: width * 0.05, right: width * 0.05, top: width * 0.1),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-            SizedBox(height: height * 0.05),
+            SizedBox(height: height * 0.035),
             Row(
               children: const [
                 Text('ORDER HISTORY', style: KMENUTextStyle),
@@ -46,6 +45,7 @@ class _ViewHistoryState extends State<ViewHistory> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   foodProvider.getPreviousOrders(context);
+                  return Future<void>.delayed(const Duration(seconds: 3));
                 },
                 child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),

@@ -16,7 +16,7 @@ class EveryUser extends StatefulWidget {
 class _EveryUserState extends State<EveryUser> {
   var height, width;
   bool isLoading = false;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,137 +24,112 @@ class _EveryUserState extends State<EveryUser> {
     width = MediaQuery.of(context).size.width;
     final approvalProvider = Provider.of<ApprovalProvider>(context);
 
+    var allUsers = RefreshIndicator(
+      onRefresh: () async {
+        approvalProvider.getAllApprovalRequests(context);
+        return Future<void>.delayed(const Duration(seconds: 3));
+      },
+      child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: approvalProvider.allUsers.length,
+          itemBuilder: (BuildContext context, int index) {
+            var formatDate =
+                DateTime.tryParse(approvalProvider.allUsers[index].created_at);
+            String date = DateFormat("yyyy-MM-dd").format(formatDate!);
+
+            return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(height * 0.04, height * 0.02,
+                      height * 0.04, height * 0.02),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      RichText(
+                          text: TextSpan(
+                        text: approvalProvider.allUsers[index].name + ' ,',
+                        style: KTextStyle1,
+                      )),
+                      SizedBox(height: height * 0.02),
+
+                      RichText(
+                          text: TextSpan(
+                              text: approvalProvider.allUsers[index].id
+                                      .toString() +
+                                  ' ,',
+                              style: KTextStyle1,
+                              children: const [
+                            TextSpan(text: '  ' 'Id', style: KTextStyle2)
+                          ])),
+                      //SizedBox(height: height * 0.02),
+
+                      RichText(
+                          text: TextSpan(
+                              text: approvalProvider
+                                      .allUsers[index].phone_number +
+                                  ' ,',
+                              style: KTextStyle1,
+                              children: const [
+                            TextSpan(
+                                text: '  ' 'Phone Number', style: KTextStyle2)
+                          ])),
+                      //SizedBox(height: height * 0.02),
+                      RichText(
+                          text: TextSpan(
+                              text:
+                                  approvalProvider.allUsers[index].type + ' ,',
+                              style: KTextStyle1,
+                              children: const [
+                            TextSpan(text: '  ' 'Type', style: KTextStyle2)
+                          ])),
+                      // SizedBox(height: height * 0.02),
+                      RichText(
+                          text: TextSpan(
+                              text: approvalProvider.allUsers[index].status +
+                                  ' ,',
+                              style: KTextStyle1,
+                              children: const [
+                            TextSpan(text: '  ' 'Status', style: KTextStyle2)
+                          ])),
+                      RichText(
+                          text: TextSpan(
+                              text: date + ' ,',
+                              style: KTextStyle1,
+                              children: const [
+                            TextSpan(
+                                text: '  ' 'Date Added', style: KTextStyle2)
+                          ])),
+                    ],
+                  ),
+                ));
+          }),
+    );
+
     return Scaffold(
       key: scaffoldKey,
       drawer: NavDrawer(),
       //resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: height * 0.05, left: width * 0.05, right: width * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              SizedBox(height: height * 0.035),
-              Row(
-                children: const [
-                  Text('ALL USERS', style: KMENUTextStyle),
-                ],
-              ),
-              SizedBox(height: height * 0.02),
-              FutureBuilder<List<AllUsers>?>(
-                  future: approvalProvider.getAllUsers(context),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      // List<AllUsers>? users = snapshot.data;
-                      return ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: approvalProvider.allUsers.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var formatDate = DateTime.tryParse(
-                                approvalProvider.allUsers[index].created_at);
-                            String date =
-                                DateFormat("yyyy-MM-dd").format(formatDate!);
-
-                            return Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(
-                                      height * 0.04,
-                                      height * 0.02,
-                                      height * 0.04,
-                                      height * 0.02),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      RichText(
-                                          text: TextSpan(
-                                        text: approvalProvider
-                                                .allUsers[index].name +
-                                            ' ,',
-                                        style: KTextStyle1,
-                                      )),
-                                      SizedBox(height: height * 0.02),
-
-                                      RichText(
-                                          text: TextSpan(
-                                              text: approvalProvider
-                                                      .allUsers[index].id
-                                                      .toString() +
-                                                  ' ,',
-                                              style: KTextStyle1,
-                                              children: const [
-                                            TextSpan(
-                                                text: '  ' 'Id',
-                                                style: KTextStyle2)
-                                          ])),
-                                      //SizedBox(height: height * 0.02),
-
-                                      RichText(
-                                          text: TextSpan(
-                                              text: approvalProvider
-                                                      .allUsers[index]
-                                                      .phone_number +
-                                                  ' ,',
-                                              style: KTextStyle1,
-                                              children: const [
-                                            TextSpan(
-                                                text: '  ' 'Phone Number',
-                                                style: KTextStyle2)
-                                          ])),
-                                      //SizedBox(height: height * 0.02),
-                                      RichText(
-                                          text: TextSpan(
-                                              text: approvalProvider
-                                                      .allUsers[index].type +
-                                                  ' ,',
-                                              style: KTextStyle1,
-                                              children: const [
-                                            TextSpan(
-                                                text: '  ' 'Type',
-                                                style: KTextStyle2)
-                                          ])),
-                                      // SizedBox(height: height * 0.02),
-                                      RichText(
-                                          text: TextSpan(
-                                              text: approvalProvider
-                                                      .allUsers[index].status +
-                                                  ' ,',
-                                              style: KTextStyle1,
-                                              children: const [
-                                            TextSpan(
-                                                text: '  ' 'Status',
-                                                style: KTextStyle2)
-                                          ])),
-                                      RichText(
-                                          text: TextSpan(
-                                              text: date + ' ,',
-                                              style: KTextStyle1,
-                                              children: const [
-                                            TextSpan(
-                                                text: '  ' 'Date Added',
-                                                style: KTextStyle2)
-                                          ])),
-                                    ],
-                                  ),
-                                ));
-                          });
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: blue,
-                      ),
-                    );
-                  }),
-            ],
-          ),
+      body: Padding(
+        padding: EdgeInsets.only(
+            top: height * 0.05, left: width * 0.05, right: width * 0.05),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+            SizedBox(height: height * 0.035),
+            Row(
+              children: const [
+                Text('ALL USERS', style: KMENUTextStyle),
+              ],
+            ),
+            SizedBox(height: height * 0.02),
+            Expanded(
+              child: allUsers,
+            ),
+          ],
         ),
       ),
     );

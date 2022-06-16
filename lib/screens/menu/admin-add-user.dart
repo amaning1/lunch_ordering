@@ -15,7 +15,7 @@ class AdminAddUser extends StatefulWidget {
 
 class _AdminAddUserState extends State<AdminAddUser> {
   bool isLoading = false;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var height, width;
   String dropDownValue = 'user';
 

@@ -531,7 +531,7 @@ class MainScreenDrawer extends StatelessWidget {
               leading: const Icon(Icons.dashboard),
               title: const Text(
                 'Order Food',
-                style: TextStyle(fontFamily: 'Poppins'),
+                style: KCardTextStyle,
               ),
               onTap: () {
                 Navigator.popAndPushNamed(context, '/third');
@@ -541,7 +541,7 @@ class MainScreenDrawer extends StatelessWidget {
               leading: const Icon(Icons.history),
               title: const Text(
                 'History',
-                style: TextStyle(fontFamily: 'Poppins'),
+                style: KCardTextStyle,
               ),
               onTap: () {
                 Navigator.popAndPushNamed(context, '/history');
@@ -552,7 +552,7 @@ class MainScreenDrawer extends StatelessWidget {
               leading: const Icon(Icons.logout),
               title: const Text(
                 'Logout',
-                style: TextStyle(fontFamily: 'Poppins'),
+                style: KCardTextStyle,
               ),
               onTap: () {
                 logout(context);

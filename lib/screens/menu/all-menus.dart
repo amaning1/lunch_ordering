@@ -20,8 +20,7 @@ class AllMenus extends StatefulWidget {
 class _AllMenusState extends State<AllMenus> {
   var height, width;
   bool isLoading = false;
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late FoodProvider foodVm;
 
   @override
@@ -65,13 +64,23 @@ class _AllMenusState extends State<AllMenus> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        RichText(
-                            text: TextSpan(
-                                text: foodMenus.menuId.toString() + ' ,',
-                                style: KTextStyle1,
-                                children: const [
-                              TextSpan(text: '  ' 'Menu Id', style: KTextStyle2)
-                            ])),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RichText(
+                                text: TextSpan(
+                                    text: foodMenus.menuId.toString() + ' ,',
+                                    style: KTextStyle1,
+                                    children: const [
+                                  TextSpan(
+                                      text: '  ' 'Menu Id', style: KTextStyle2)
+                                ])),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.edit),
+                            )
+                          ],
+                        ),
                         SizedBox(height: height * 0.02),
                         RichText(
                             text: TextSpan(

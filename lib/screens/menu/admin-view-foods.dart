@@ -17,7 +17,7 @@ class AdminOrders extends StatefulWidget {
 }
 
 class _AdminOrdersState extends State<AdminOrders> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var height, width;
   int selectedIndex = 0;
 

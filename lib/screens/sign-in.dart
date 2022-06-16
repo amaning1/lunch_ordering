@@ -7,8 +7,6 @@ import 'package:lunch_ordering/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../APIs.dart';
-
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
 
@@ -42,7 +40,8 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05),
+            padding: EdgeInsets.only(
+                left: width * 0.05, right: width * 0.05, top: width * 0.05),
             child: Form(
               key: _formKey,
               child: Padding(
@@ -104,7 +103,18 @@ class _SignInState extends State<SignIn> {
                                 const Text('Password', style: KButtonTextStyle),
                                 TextButton(
                                   onPressed: () {
-                                    authProvider.forgotPassword(context);
+                                    authProvider.numberController.text.isEmpty
+                                        ? showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return alertDialog(context, () {
+                                                Navigator.pop(context);
+                                              },
+                                                  'No Number Provided',
+                                                  'Please Provide a valid phone number',
+                                                  'Exit');
+                                            })
+                                        : authProvider.forgotPassword(context);
                                   },
                                   child: const Text('Forgot Password ?',
                                       style: KForgotPassword),

@@ -17,7 +17,7 @@ class AdminAdd extends StatefulWidget {
 
 class _AdminAddState extends State<AdminAdd> {
   var height, width;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final List<ChipData> allChips = [];
   int? selectedIndex;
 

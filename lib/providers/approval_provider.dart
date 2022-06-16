@@ -22,6 +22,7 @@ class ApprovalProvider extends Manage {
   List<AllUsers> allUsers = [];
   List<AllUsers>? allChefs = [];
   List<String> chefNames = [];
+  List<NewUser> newUsers = [];
 
   Future<List<NewUser>?> getAllApprovalRequests(context) async {
     await getToken();
@@ -34,41 +35,43 @@ class ApprovalProvider extends Manage {
     String data = response.body;
 
     if (response.statusCode == 200) {
-      print(data);
       var rest = jsonDecode(data)['data'] as List;
-
-      list = rest.map<NewUser>((json) => NewUser.fromJson(json)).toList();
+      newUsers = rest.map<NewUser>((json) => NewUser.fromJson(json)).toList();
     } else {
-      var message = jsonDecode(data)['message'];
-
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog(context, () {
-            Navigator.popAndPushNamed(context, '/addMenu');
-          }, 'Error', message, 'Exit');
-        },
-      );
-      print(response.statusCode);
-      print(response);
+      newUsers = [];
     }
-    return list;
+    return newUsers;
   }
 
-  Future approveUser(userId) async {
+  Future approveUser(userId, context) async {
     changeStatus(true);
     await getToken();
     final response = await http.put(
       Uri.parse(AppURL.approveUser),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
       body: jsonEncode(<String, int>{
         'user_id': userId,
       }),
     );
     if (response.statusCode == 200) {
+      String data = response.body;
+      var message = jsonDecode(data)['message'];
+      changeStatus(false);
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog(context, () {
+            Navigator.pop(context);
+          }, 'Success', message, 'Exit');
+        },
+      );
+    } else {
+      String data = response.body;
+      var message = jsonDecode(data)['message'];
       changeStatus(false);
     }
   }
@@ -80,7 +83,7 @@ class ApprovalProvider extends Manage {
       Uri.parse(AppURL.denyUser + '?user_id=' + userId),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
     );
     if (response.statusCode == 200) {
@@ -110,12 +113,9 @@ class ApprovalProvider extends Manage {
       for (int i = 0; i < allChefs!.length; i++) {
         chefNames.add(allChefs![i].name);
       }
-      print(chefNames);
     } else if (response.statusCode == 401) {
     } else {
       changeMenu(false);
-      print(response);
-      print(response.statusCode);
       showDialog(
         context: context,
         builder: (BuildContext context) {

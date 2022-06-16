@@ -5,8 +5,6 @@ Color darkBlue = const Color(0xFF002C59);
 Color grayish = const Color(0xFFE4EBF2);
 Color gray = const Color(0xff4d002c59);
 
-final scaffoldKey = GlobalKey<ScaffoldState>();
-
 bool state = false;
 bool switchSelected = false;
 bool isObscure = true;

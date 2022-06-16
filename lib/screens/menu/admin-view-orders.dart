@@ -14,7 +14,7 @@ class AdminViewOrders extends StatefulWidget {
 
 class _AdminViewOrdersState extends State<AdminViewOrders> {
   late FoodProvider foodVm;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +22,43 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     final foodProvider = Provider.of<FoodProvider>(context);
+
+    void selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: ordersDate,
+        firstDate: DateTime(2022),
+        lastDate: DateTime(2100),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                primary: darkBlue,
+                onPrimary: Colors.white,
+                onSurface: darkBlue,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: darkBlue, // button text color
+                ),
+              ),
+            ),
+            child: child!,
+          );
+        },
+      );
+      if (picked != null) {
+        await Provider.of<FoodProvider>(context, listen: false)
+            .getNewOrders(context);
+        setState(() {
+          ordersDate = picked;
+          print(ordersDate);
+
+          OrdersWidget(
+              orders: foodProvider.listOrders, height: height, width: width);
+        });
+      }
+    }
 
     return Scaffold(
       key: scaffoldKey,
@@ -66,23 +103,6 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
         ),
       ),
     );
-  }
-
-  void selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: ordersDate.add(const Duration(days: 1)),
-      firstDate: DateTime(2022),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != ordersDate) {
-      setState(() {
-        ordersDate = picked;
-        Provider.of<FoodProvider>(context, listen: false).getNewOrders(context);
-        // Provider.of<FoodProvider>(context, listen: false).listOrders;
-        OrdersWidget;
-      });
-    }
   }
 }
 
