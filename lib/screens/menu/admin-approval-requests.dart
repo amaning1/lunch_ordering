@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/approval_provider.dart';
 import 'package:provider/provider.dart';
-import '../../Domain/new-user.dart';
 import '../../components.dart';
 import '../../constants.dart';
 
@@ -67,6 +66,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
 
                           setState(() {
                             isLoading = false;
+                            approvalProvider.getAllApprovalRequests(context);
                             approvalProvider.newUsers;
                           });
                         },
@@ -93,7 +93,7 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
       //resizeToAvoidBottomInset: false,
       body: Padding(
         padding: EdgeInsets.only(
-            top: width * 0.05, left: width * 0.05, right: width * 0.05),
+            top: height * 0.05, left: width * 0.05, right: width * 0.05),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -105,9 +105,16 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
                 Text('APPROVALS', style: KMENUTextStyle),
               ],
             ),
-            Expanded(
-              child: approvalRequests,
-            ),
+            approvalProvider.newUsers.isEmpty
+                ? ChefCards(
+                    height: height,
+                    width: width,
+                    number: '0',
+                    text: 'No New Approvals',
+                    icon: Icons.approval)
+                : Expanded(
+                    child: approvalRequests,
+                  ),
           ],
         ),
       ),

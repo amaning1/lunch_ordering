@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../components.dart';
 import '../../constants.dart';
 import '../../providers/registration_provider.dart';
-import '../sign-in.dart';
 
 class AdminAddUser extends StatefulWidget {
   const AdminAddUser({Key? key}) : super(key: key);
@@ -19,6 +17,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
   var height, width;
   String dropDownValue = 'user';
 
+  @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
@@ -92,7 +91,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                               passwordcontroller:
                                   regProvider.passwordController,
                             ),
-                            SizedBox(height: height * 0.01),
+                            SizedBox(height: height * 0.02),
                             const Text('User', style: KButtonTextStyle),
                             SizedBox(height: height * 0.01),
                             Container(

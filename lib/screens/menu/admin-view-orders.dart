@@ -48,12 +48,12 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
         },
       );
       if (picked != null) {
+        setState(() {
+          ordersDate = picked;
+        });
         await Provider.of<FoodProvider>(context, listen: false)
             .getNewOrders(context);
         setState(() {
-          ordersDate = picked;
-          print(ordersDate);
-
           OrdersWidget(
               orders: foodProvider.listOrders, height: height, width: width);
         });
@@ -90,7 +90,7 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
                       icon: Icons.fastfood)
                   : RefreshIndicator(
                       onRefresh: () async {
-                        foodProvider.getOrders(context);
+                        await foodProvider.getOrders(context);
                         return Future<void>.delayed(const Duration(seconds: 3));
                       },
                       child: OrdersWidget(
