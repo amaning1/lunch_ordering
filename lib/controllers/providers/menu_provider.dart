@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'Manage.dart';
 import 'dart:io';
-import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart' as http;
 import '../APIs.dart';
-import '../Domain/ChipData.dart';
-import '../Domain/allMenus.dart';
-import '../Domain/oldOrders.dart';
+import '../models/ChipData.dart';
+import '../models/allMenus.dart';
+import '../models/oldOrders.dart';
 import '../constants.dart';
 import '../shared_preferences.dart';
 
@@ -24,7 +23,6 @@ class MenuProvider extends Manage {
   List<int> drinkIDS = [];
   int menuIDx = 0;
   late OldOrders oldOrders;
-  var food;
 
   Future<List<Datum>?> fetchPreviousMenus(context) async {
     await getToken();
@@ -34,18 +32,14 @@ class MenuProvider extends Manage {
       Uri.parse(AppURL.allMenu),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
     );
 
     if (response.statusCode == 200) {
       String data = response.body;
-      var rest = jsonDecode(data)['data'] as List;
-
-      print(rest);
       final allMenus = allMenusFromJson(data);
       allMenu = allMenus.data;
-      print(allMenu);
 
       Navigator.pushNamed(context, '/allMenus');
     } else if (response.statusCode == 401) {
@@ -76,7 +70,7 @@ class MenuProvider extends Manage {
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
       body: jsonEncode(<String, dynamic>{
         "menu_date": "$selectedDate",
@@ -87,8 +81,6 @@ class MenuProvider extends Manage {
     );
 
     if (response.statusCode == 201) {
-      String data = response.body;
-      print(response.body);
       changeStatus(false);
       return showDialog(
         context: context,
@@ -102,8 +94,6 @@ class MenuProvider extends Manage {
     } else {
       changeStatus(false);
       notifyListeners();
-      print(response.statusCode);
-      print(response.body);
       return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -123,7 +113,7 @@ class MenuProvider extends Manage {
       Uri.parse('https://bsl-foodapp-backend.herokuapp.com/api/menu'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
       body: jsonEncode(<String, dynamic>{
         "menu_date": "$selectedDate",
@@ -133,8 +123,6 @@ class MenuProvider extends Manage {
     );
 
     if (response.statusCode == 201) {
-      String data = response.body;
-      print(response.body);
       changeStatus(false);
       return showDialog(
         context: context,
@@ -148,8 +136,6 @@ class MenuProvider extends Manage {
     } else {
       changeStatus(false);
       notifyListeners();
-      print(response.statusCode);
-      print(response.body);
       return showDialog(
         context: context,
         builder: (BuildContext context) {

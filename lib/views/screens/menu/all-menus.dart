@@ -75,9 +75,19 @@ class _AllMenusState extends State<AllMenus> {
                                   TextSpan(
                                       text: '  ' 'Menu Id', style: KTextStyle2)
                                 ])),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.edit),
+                            Row(
+                              children: [
+                                IconButton(
+                                  color: darkBlue,
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.edit),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  color: Colors.red,
+                                  icon: const Icon(Icons.delete),
+                                ),
+                              ],
                             )
                           ],
                         ),
@@ -130,8 +140,7 @@ class _AllMenusState extends State<AllMenus> {
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: NavDrawer(),
-      //resizeToAvoidBottomInset: false,
+      drawer: const NavDrawer(),
       body: WillPopScope(
         onWillPop: () async {
           return false;

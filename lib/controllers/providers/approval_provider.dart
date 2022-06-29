@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
-import '../Domain/allChefs.dart';
-import '../Domain/allUsers.dart';
-import '../Domain/menu.dart';
+import '../models/allUsers.dart';
 import 'Manage.dart';
 import 'dart:io';
-import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'package:intl/intl.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import 'package:lunch_ordering/screens/menu/all-menus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
-import '../Domain/new-user.dart';
+import '../models/new-user.dart';
 import '../shared_preferences.dart';
-import 'Manage.dart';
 
 class ApprovalProvider extends Manage {
   List<AllUsers> allUsers = [];
@@ -26,11 +18,10 @@ class ApprovalProvider extends Manage {
 
   Future<List<NewUser>?> getAllApprovalRequests(context) async {
     await getToken();
-    List<NewUser>? list;
     final response = await http
         .get(Uri.parse(AppURL.approvalRequests), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
-      HttpHeaders.authorizationHeader: "Bearer" + " " + "$token",
+      HttpHeaders.authorizationHeader: "Bearer" " " "$token",
     });
     String data = response.body;
 
@@ -70,8 +61,6 @@ class ApprovalProvider extends Manage {
         },
       );
     } else {
-      String data = response.body;
-      var message = jsonDecode(data)['message'];
       changeStatus(false);
     }
   }

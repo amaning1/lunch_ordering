@@ -12,7 +12,6 @@ class AdminAddUser extends StatefulWidget {
 }
 
 class _AdminAddUserState extends State<AdminAddUser> {
-  bool isLoading = false;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var height, width;
   String dropDownValue = 'user';
@@ -71,7 +70,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                             SizedBox(height: height * 0.01),
                             FormLocal(
                               focusedBorder: true,
-                              controller: regProvider.nameController,
+                              controller: regProvider.newNameController,
                               label: 'Enter Name',
                               type: TextInputType.text,
                               colour: const Color(0xFFF2F2F2),
@@ -80,7 +79,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                             SizedBox(height: height * 0.01),
                             NumberForm(
                               focusedBorder: true,
-                              controller: regProvider.numberController,
+                              controller: regProvider.newNumberController,
                               label: 'Phone Number',
                               type: TextInputType.number,
                               colour: const Color(0xFFF2F2F2),
@@ -89,7 +88,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                             SizedBox(height: height * 0.01),
                             PasswordForm(
                               passwordcontroller:
-                                  regProvider.passwordController,
+                                  regProvider.newPasswordController,
                             ),
                             SizedBox(height: height * 0.02),
                             const Text('User', style: KButtonTextStyle),

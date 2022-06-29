@@ -1,19 +1,15 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/Manage.dart';
-import 'package:lunch_ordering/screens/loading-screen.dart';
-import 'package:lunch_ordering/screens/main-screen.dart';
+import 'package:lunch_ordering/views/screens/loading-screen.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../APIs.dart';
-import '../Domain/user.dart';
+import '../models/user.dart';
 import '../components.dart';
-import '../screens/menu-loading-screen.dart';
-import '../screens/menu/all-menus.dart';
-import '../screens/sign-in.dart';
+import '../views/screens/sign-in.dart';
 
 class AuthProvider extends Manage {
   bool isAuthenticating = false;
@@ -25,12 +21,12 @@ class AuthProvider extends Manage {
   loadUserNumberPassword() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      var phone_number = prefs.getString('phone_number');
+      var phoneNumber = prefs.getString('phone_number');
       var password = prefs.getString('password');
       var rememberMe = prefs.getBool("remember_me");
 
       if (rememberMe == true) {
-        numberController.text = phone_number!;
+        numberController.text = phoneNumber!;
         passwordController.text = password!;
       }
     } catch (e) {
@@ -44,16 +40,11 @@ class AuthProvider extends Manage {
       String? phoneNumber = prefs.getString('phone_number');
       String? password = prefs.getString('password');
       notifyListeners();
-      print(phoneNumber);
-      print(password);
 
       if (password != null && phoneNumber != null) {
-        print('autoLogin0');
         numberController.text = phoneNumber;
         passwordController.text = password;
-        print('autoLogin1');
         notifyListeners();
-        print('autoLogin2');
         login(context);
       } else {
         Navigator.push(
@@ -99,7 +90,6 @@ class AuthProvider extends Manage {
         'password': passwordController.text,
       }),
     );
-    print('login0');
     if (response.statusCode == 202) {
       String data = response.body;
       changeStatus(false);
@@ -111,8 +101,7 @@ class AuthProvider extends Manage {
       if (user.type == "chef" || user.type == "admin") {
         saveToken(user.token);
         if (user.type == "admin") {}
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const MenuLoadingScreen()));
+        Navigator.pushReplacementNamed(context, '/menuLoading');
         clearForm();
       } else {
         saveToken(user.token);

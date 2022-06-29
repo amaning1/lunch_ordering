@@ -1,9 +1,10 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/providers/Manage.dart';
+import 'package:lunch_ordering/shared_preferences.dart';
 import '../APIs.dart';
 import '../components.dart';
 
@@ -11,9 +12,12 @@ class RegProvider extends Manage {
   final TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final TextEditingController newNameController = TextEditingController();
+  TextEditingController newNumberController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
   final formKey1 = GlobalKey<FormState>(debugLabel: 'signup');
-  String token = '';
   String dropDownValue = 'user';
+
   registerImplementation(BuildContext context) async {
     if (formKey1.currentState!.validate()) {
       changeStatus(true);
@@ -23,23 +27,23 @@ class RegProvider extends Manage {
   }
 
   Future addUser(context) async {
+    await getToken();
     changeStatus(true);
-    final String token;
     final response = await http.post(
-      Uri.parse(AppURL.Register),
+      Uri.parse(AppURL.User),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer" " " "$token",
       },
       body: jsonEncode(<String, String>{
-        'phone_number': numberController.text,
-        'password': passwordController.text,
+        'phone_number': newNumberController.text,
+        'password': newPasswordController.text,
         'type': dropDownValue,
-        'name': nameController.text,
+        'name': newNameController.text,
       }),
     );
 
     if (response.statusCode == 201) {
-      String data = response.body;
       changeStatus(false);
       notifyListeners();
       showDialog(
@@ -47,7 +51,7 @@ class RegProvider extends Manage {
           builder: (BuildContext context) {
             return alertDialog(context, () {
               Navigator.pop(context);
-            }, 'You\'ve Signed Up', "User has been added", 'Exit');
+            }, 'New User Added', "User has been added", 'Exit');
           });
     } else if (response.statusCode == 422) {
       changeStatus(false);
@@ -61,15 +65,12 @@ class RegProvider extends Manage {
           });
     } else {
       changeStatus(false);
-      print(response.statusCode);
-      print(response.body);
     }
     return null;
   }
 
   Future register(context) async {
     changeStatus(true);
-    final String token;
     final response = await http.post(
       Uri.parse(AppURL.Register),
       headers: <String, String>{
@@ -84,7 +85,6 @@ class RegProvider extends Manage {
     );
 
     if (response.statusCode == 201) {
-      String data = response.body;
       changeStatus(false);
       notifyListeners();
       showDialog(
@@ -106,8 +106,6 @@ class RegProvider extends Manage {
           });
     } else {
       changeStatus(false);
-      print(response.statusCode);
-      print(response.body);
     }
     return null;
   }

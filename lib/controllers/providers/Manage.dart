@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lunch_ordering/shared_preferences.dart';
-import '../Domain/ChipData.dart';
 
 class Manage extends ChangeNotifier {
   bool _isLoading = false;
