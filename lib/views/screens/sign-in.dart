@@ -1,5 +1,5 @@
-import 'package:lunch_ordering/providers/auth_provider.dart';
-import 'package:lunch_ordering/screens/sign-up.dart';
+import 'package:lunch_ordering/controllers/providers/auth_provider.dart';
+import 'package:lunch_ordering/views/screens/sign-up.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import '../providers/auth_provider.dart';
-import '../providers/food_providers.dart';
+import '/controllers/providers/auth_provider.dart';
+import '/controllers/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 
 int? foodSelected;

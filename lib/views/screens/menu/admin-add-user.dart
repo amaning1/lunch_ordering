@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../components.dart';
-import '../../constants.dart';
-import '../../providers/registration_provider.dart';
+import '../../../components.dart';
+import '../../../constants.dart';
+import '../../../controllers/providers/registration_provider.dart';
 
 class AdminAddUser extends StatefulWidget {
   const AdminAddUser({Key? key}) : super(key: key);
@@ -13,6 +13,8 @@ class AdminAddUser extends StatefulWidget {
 
 class _AdminAddUserState extends State<AdminAddUser> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formKey2 = GlobalKey<FormState>(debugLabel: 'adduser');
+
   var height, width;
   String dropDownValue = 'user';
 
@@ -30,7 +32,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
           child: Padding(
             padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05),
             child: Form(
-              key: regProvider.formKey1,
+              key: _formKey2,
               child: Padding(
                 padding: EdgeInsets.all(width * 0.02),
                 child: Column(
@@ -126,6 +128,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                                 ),
                               ),
                             ),
+                            SizedBox(height: height * 0.01),
                             Center(
                               child: SizedBox(
                                 width: width,

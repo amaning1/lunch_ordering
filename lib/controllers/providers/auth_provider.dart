@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'dart:core';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:lunch_ordering/providers/Manage.dart';
+import 'package:lunch_ordering/controllers/providers/Manage.dart';
 import 'package:lunch_ordering/views/screens/loading-screen.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../APIs.dart';
-import '../models/user.dart';
-import '../components.dart';
-import '../views/screens/sign-in.dart';
+import '../../APIs.dart';
+import '../../models/user.dart';
+import '../../components.dart';
+import '../../views/screens/sign-in.dart';
 
 class AuthProvider extends Manage {
   bool isAuthenticating = false;

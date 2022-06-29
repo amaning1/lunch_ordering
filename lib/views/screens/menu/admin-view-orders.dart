@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../Domain/orders.dart';
-import '../../components.dart';
-import '../../constants.dart';
-import '../../providers/food_providers.dart';
+import '../../../components.dart';
+import '../../../constants.dart';
+import '../../../models/orders.dart';
+import '../../../controllers/providers/food_providers.dart';
 
 class AdminViewOrders extends StatefulWidget {
   const AdminViewOrders({Key? key}) : super(key: key);

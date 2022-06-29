@@ -5,12 +5,12 @@ import 'dart:convert';
 import 'dart:core';
 import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart' as http;
-import '../APIs.dart';
-import '../models/ChipData.dart';
-import '../models/allMenus.dart';
-import '../models/oldOrders.dart';
-import '../constants.dart';
-import '../shared_preferences.dart';
+import '../../APIs.dart';
+import '../../models/ChipData.dart';
+import '../../models/allMenus.dart';
+import '../../models/oldOrders.dart';
+import '../../constants.dart';
+import '../../shared_preferences.dart';
 
 class MenuProvider extends Manage {
   List<Food> menu = [];

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/providers/food_providers.dart';
+import 'package:lunch_ordering/controllers/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 
 class ViewDrinks extends StatefulWidget {

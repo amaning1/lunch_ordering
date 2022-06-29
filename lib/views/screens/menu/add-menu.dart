@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/Domain/ChipData.dart';
-import 'package:lunch_ordering/providers/approval_provider.dart';
-import 'package:lunch_ordering/providers/menu_provider.dart';
+import 'package:lunch_ordering/models/ChipData.dart';
+import 'package:lunch_ordering/controllers/providers/approval_provider.dart';
+import 'package:lunch_ordering/controllers/providers/menu_provider.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/food_providers.dart';
+import '/controllers/providers/auth_provider.dart';
+import '/controllers/providers/food_providers.dart';
 
 int? selected = 0;
 

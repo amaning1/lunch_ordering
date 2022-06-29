@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lunch_ordering/providers/approval_provider.dart';
+import 'package:lunch_ordering/controllers/providers/approval_provider.dart';
 import 'package:provider/provider.dart';
-import '../../components.dart';
-import '../../constants.dart';
+import '../../../components.dart';
+import '../../../constants.dart';
 
 class AdminApprovalRequests extends StatefulWidget {
   const AdminApprovalRequests({Key? key}) : super(key: key);

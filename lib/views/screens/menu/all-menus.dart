@@ -2,13 +2,12 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lunch_ordering/providers/menu_provider.dart';
+import 'package:lunch_ordering/controllers/providers/menu_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/components.dart';
-import '../../providers/food_providers.dart';
-import '../../shared_preferences.dart';
+import '../../../controllers/providers/food_providers.dart';
 
 class AllMenus extends StatefulWidget {
   const AllMenus({Key? key}) : super(key: key);
@@ -22,18 +21,6 @@ class _AllMenusState extends State<AllMenus> {
   bool isLoading = false;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late FoodProvider foodVm;
-
-  @override
-  void initState() {
-    super.initState();
-
-    getToken();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +46,7 @@ class _AllMenusState extends State<AllMenus> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         left: height * 0.04,
+                        right: height * 0.03,
                         top: height * 0.03,
                         bottom: height * 0.02),
                     child: Column(
@@ -78,11 +66,13 @@ class _AllMenusState extends State<AllMenus> {
                             Row(
                               children: [
                                 IconButton(
+                                  iconSize: width * 0.05,
                                   color: darkBlue,
                                   onPressed: () {},
                                   icon: const Icon(Icons.edit),
                                 ),
                                 IconButton(
+                                  iconSize: width * 0.05,
                                   onPressed: () {},
                                   color: Colors.red,
                                   icon: const Icon(Icons.delete),

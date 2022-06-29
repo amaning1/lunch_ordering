@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/screens/sign-in.dart';
+import 'package:lunch_ordering/views/screens/sign-in.dart';
 import 'package:provider/provider.dart';
-import '../providers/registration_provider.dart';
+import '/controllers/providers/registration_provider.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);

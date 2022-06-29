@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lunch_ordering/providers/approval_provider.dart';
+import 'package:lunch_ordering/controllers/providers/approval_provider.dart';
 import 'package:provider/provider.dart';
-import '../../Domain/allUsers.dart';
-import '../../components.dart';
-import '../../constants.dart';
+import '../../../components.dart';
+import '../../../constants.dart';
 
 class EveryUser extends StatefulWidget {
   const EveryUser({Key? key}) : super(key: key);
@@ -26,8 +25,9 @@ class _EveryUserState extends State<EveryUser> {
 
     var allUsers = RefreshIndicator(
       onRefresh: () async {
-        approvalProvider.getAllApprovalRequests(context);
-        return Future<void>.delayed(const Duration(seconds: 3));
+        await approvalProvider.getAllUsers(context);
+
+        return Future<void>.delayed(const Duration(seconds: 5));
       },
       child: ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -50,7 +50,7 @@ class _EveryUserState extends State<EveryUser> {
                     children: <Widget>[
                       RichText(
                           text: TextSpan(
-                        text: approvalProvider.allUsers[index].name + ' ,',
+                        text: approvalProvider.allUsers[index].name,
                         style: KTextStyle1,
                       )),
                       SizedBox(height: height * 0.02),
@@ -110,11 +110,14 @@ class _EveryUserState extends State<EveryUser> {
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       //resizeToAvoidBottomInset: false,
       body: Padding(
         padding: EdgeInsets.only(
-            top: height * 0.05, left: width * 0.05, right: width * 0.05),
+            top: height * 0.05,
+            left: width * 0.05,
+            right: width * 0.05,
+            bottom: height * 0.05),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

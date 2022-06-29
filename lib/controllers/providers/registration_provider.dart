@@ -3,10 +3,10 @@ import 'dart:core';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:lunch_ordering/providers/Manage.dart';
+import 'package:lunch_ordering/controllers/providers/Manage.dart';
 import 'package:lunch_ordering/shared_preferences.dart';
-import '../APIs.dart';
-import '../components.dart';
+import '../../APIs.dart';
+import '../../components.dart';
 
 class RegProvider extends Manage {
   final TextEditingController nameController = TextEditingController();
@@ -16,6 +16,7 @@ class RegProvider extends Manage {
   TextEditingController newNumberController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   final formKey1 = GlobalKey<FormState>(debugLabel: 'signup');
+
   String dropDownValue = 'user';
 
   registerImplementation(BuildContext context) async {
@@ -54,6 +55,7 @@ class RegProvider extends Manage {
             }, 'New User Added', "User has been added", 'Exit');
           });
     } else if (response.statusCode == 422) {
+      print(response.body);
       changeStatus(false);
       notifyListeners();
       showDialog(

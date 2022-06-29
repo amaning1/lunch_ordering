@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import '../models/allUsers.dart';
+import '/models/allUsers.dart';
 import 'Manage.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:core';
 import 'package:lunch_ordering/components.dart';
 import 'package:http/http.dart' as http;
-import '../APIs.dart';
-import '../models/new-user.dart';
-import '../shared_preferences.dart';
+import '/APIs.dart';
+import '/models/new-user.dart';
+import '/shared_preferences.dart';
 
 class ApprovalProvider extends Manage {
   List<AllUsers> allUsers = [];

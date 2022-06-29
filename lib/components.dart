@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/providers/auth_provider.dart';
-import 'package:lunch_ordering/providers/food_providers.dart';
+import 'package:lunch_ordering/controllers/providers/auth_provider.dart';
+import 'package:lunch_ordering/controllers/providers/food_providers.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -162,8 +162,7 @@ class NavDrawer extends StatelessWidget {
                     title: const Text('Add User',
                         style: TextStyle(fontFamily: 'Poppins')),
                     onTap: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/adminAddUser', (route) => false);
+                      Navigator.pushNamed(context, '/adminAddUser');
                     })
                 : const SizedBox(),
             ListTile(
@@ -220,6 +219,7 @@ class _PasswordFormState extends State<PasswordForm> {
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: TextFormField(
+        textInputAction: TextInputAction.done,
         controller: widget.passwordcontroller,
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
@@ -428,6 +428,7 @@ class _NumberFormState extends State<NumberForm> {
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: widget.controller,
         validator: (value) {
           if (value!.length != 10) {

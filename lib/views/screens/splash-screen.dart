@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:lunch_ordering/providers/auth_provider.dart';
+import 'package:lunch_ordering/controllers/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
-import '../components.dart';
-import '../constants.dart';
+import '/components.dart';
+import '/constants.dart';
 import 'dart:io';
 
 class LoadingScreen extends StatefulWidget {

@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/components.dart';
 import 'package:lunch_ordering/constants.dart';
-import 'package:lunch_ordering/screens/main-screen.dart';
-import 'package:lunch_ordering/screens/view-history.dart';
-import '../providers/auth_provider.dart';
+import 'package:lunch_ordering/views/screens/main-screen.dart';
+import 'package:lunch_ordering/views/screens/view-history.dart';
+import '/controllers/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class UserMain extends StatefulWidget {
