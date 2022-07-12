@@ -19,10 +19,33 @@ class MenuProvider extends Manage {
   List<Drink> drinks = [];
   List<ChipData> foodChips = [];
   List<ChipData> drinkChips = [];
+  List<ChipData> chefChips = [];
+int? selectedIndex;
   List<int> foodIDS = [];
+  List<int> chefIDS = [];
+
+
   List<int> drinkIDS = [];
   int menuIDx = 0;
   late OldOrders oldOrders;
+
+
+  void deleteFoodChip(int id) {
+    chefChips.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
+
+  void removeChef(id) {
+    chefIDS.remove(id);
+    deleteFoodChip(id);
+  }
+
+
+  void addChef(menu, index, selectedIndex) {
+    chefChips.add(ChipData(id: menu[index].id!, name: menu[index].Option!));
+    chefIDS.add(menu[index].id!);
+    selectedIndex = index;
+  }
 
   Future<List<Datum>?> fetchPreviousMenus(context) async {
     await getToken();
@@ -93,6 +116,7 @@ class MenuProvider extends Manage {
       );
     } else {
       changeStatus(false);
+      print(response.body);
       notifyListeners();
       return showDialog(
         context: context,

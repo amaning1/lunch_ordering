@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '/controllers/providers/auth_provider.dart';
 import '/controllers/providers/food_providers.dart';
 
-int? selected = 0;
+int? chefSelected = 0;
 
 class AddMenu extends StatefulWidget {
   const AddMenu({Key? key}) : super(key: key);
@@ -42,7 +42,37 @@ class _AddMenuState extends State<AddMenu> {
     final approvalProvider = Provider.of<ApprovalProvider>(context);
 
     String? dropDownValue;
-    var ddV = '';
+
+    Widget allChefs(BuildContext context) {
+      return ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: approvalProvider.allChefs!.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                title: Text(approvalProvider.allChefs![index].name),
+                selected: index == menuProvider.selectedIndex,
+                onTap: () {
+                  setState(() {
+                    menuProvider.selectedIndex = index;
+                    chefSelected = approvalProvider.allChefs![index].id;
+                  });
+                },
+                selectedTileColor: darkBlue,
+                selectedColor: Colors.white,
+              ),
+            );
+          });
+    }
+
+    int? ddV;
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
@@ -103,45 +133,83 @@ class _AddMenuState extends State<AddMenu> {
                           ),
                         ),
                         authProvider.user.type == 'admin'
-                            ? Container(
-                                height: height * 0.07,
-                                decoration:
-                                    BoxDecoration(border: Border.all(width: 0.1)),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButtonFormField<String>(
-                                    value: dropDownValue,
-                                    hint: const Text('Select Chef'),
-                                    isExpanded: true,
-                                    items: approvalProvider.chefNames
-                                        .map(
-                                            (String value) {
-                                      return DropdownMenuItem(
-                                        value: value,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Text(
-                                            value,
-                                            style: const TextStyle(
-                                              fontFamily: 'Poppins',
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                    onSaved: (value) {
-                                      setState(() {
-                                        dropDownValue = value!;
-                                      });
-                                    },
-                                    onChanged: (value) {
-                                      setState(() {
-                                        dropDownValue = value!;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              )
+                            ?allChefs(context)
+                        //     Expanded(
+                        //   child: ListView.builder(
+                        //       scrollDirection: Axis.vertical,
+                        //       shrinkWrap: true,
+                        //       itemCount: approvalProvider.allChefs!.length,
+                        //       itemBuilder: (BuildContext context, int index) {
+                        //         return Card(
+                        //           shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(10.0),
+                        //           ),
+                        //           child: ListTile(
+                        //             shape: RoundedRectangleBorder(
+                        //               borderRadius: BorderRadius.circular(10.0),
+                        //             ),
+                        //             title: Text(approvalProvider.allChefs![index].name),
+                        //             selected: menuProvider.chefIDS
+                        //                 .contains(approvalProvider.allChefs![index].id),
+                        //             onTap: () {
+                        //               setState(() {
+                        //                 menuProvider.chefIDS.contains(
+                        //                     approvalProvider.allChefs![index].id)
+                        //                     ? menuProvider.removeChef(
+                        //                     foodProvider.allFoods[index].id)
+                        //                     : menuProvider.addChef(
+                        //                     foodProvider.allFoods,
+                        //                     index,
+                        //                     selectedIndex);
+                        //                 //selected = menu[index].id!;
+                        //               });
+                        //             },
+                        //             selectedTileColor: darkBlue,
+                        //             selectedColor: Colors.white,
+                        //           ),
+                        //         );
+                        //       }),
+                        // )
+                        // Container(
+                        //         height: height * 0.07,
+                        //         decoration:
+                        //             BoxDecoration(border: Border.all(width: 0.1)),
+                        //         child: DropdownButtonHideUnderline(
+                        //           child: DropdownButtonFormField(
+                        //             value: dropDownValue,
+                        //             hint: const Text('Select Chef'),
+                        //             isExpanded: true,
+                        //             items: approvalProvider.allChefs!
+                        //                 .map((allChefs) {
+                        //               return DropdownMenuItem(
+                        //                 value: allChefs.id,
+                        //                 child: Padding(
+                        //                   padding:
+                        //                   const EdgeInsets.only(left: 8.0),
+                        //                   child: Text(
+                        //                     allChefs.name,
+                        //                     style: const TextStyle(
+                        //                       fontFamily: 'Poppins',
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               );
+                        //             }).toList(),
+                        //             onSaved: ( value) {
+                        //               setState(() {
+                        //                 dropDownValue = value as String?;
+                        //
+                        //
+                        //               });
+                        //             },
+                        //             onChanged: (value) {
+                        //               setState(() {
+                        //                 dropDownValue = value! as String?;
+                        //               });
+                        //             },
+                        //           ),
+                        //         ),
+                        //       )
                             : const SizedBox(),
                         row('Food', foodProvider.isLoading, () {
                           foodProvider.typeFood();
@@ -191,7 +259,7 @@ class _AddMenuState extends State<AddMenu> {
                             onPressed: () {
                               authProvider.user.type == 'admin'
                                   ? menuProvider.addMenuAdmin(
-                                      dropDownValue,
+                                      chefSelected,
                                       foodProvider.foodIDS,
                                       foodProvider.drinkIDS,
                                       context)
