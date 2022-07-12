@@ -60,45 +60,47 @@ class _AdminViewOrdersState extends State<AdminViewOrders> {
       }
     }
 
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const NavDrawer(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: height * 0.05, left: width * 0.05, right: width * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-              SizedBox(
-                width: width,
-                child: Button(
-                  text: "${ordersDate.toLocal()}".split(' ')[0],
-                  isLoading: false,
-                  onPressed: () {
-                    selectDate(context);
-                  },
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: const NavDrawer(),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: height * 0.05, left: width * 0.05, right: width * 0.05),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+                SizedBox(
+                  width: width,
+                  child: Button(
+                    text: "${ordersDate.toLocal()}".split(' ')[0],
+                    isLoading: false,
+                    onPressed: () {
+                      selectDate(context);
+                    },
+                  ),
                 ),
-              ),
-              foodProvider.listOrders.isEmpty
-                  ? ChefCards(
-                      height: height,
-                      width: width,
-                      number: '0',
-                      text: 'Orders',
-                      icon: Icons.fastfood)
-                  : RefreshIndicator(
-                      onRefresh: () async {
-                        await foodProvider.getOrders(context);
-                        return Future<void>.delayed(const Duration(seconds: 3));
-                      },
-                      child: OrdersWidget(
-                          orders: foodProvider.listOrders,
-                          height: height,
-                          width: width),
-                    )
-            ],
+                foodProvider.listOrders.isEmpty
+                    ? ChefCards(
+                        height: height,
+                        width: width,
+                        number: '0',
+                        text: 'Orders',
+                        icon: Icons.fastfood)
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          await foodProvider.getOrders(context);
+                          return Future<void>.delayed(const Duration(seconds: 3));
+                        },
+                        child: OrdersWidget(
+                            orders: foodProvider.listOrders,
+                            height: height,
+                            width: width),
+                      )
+              ],
+            ),
           ),
         ),
       ),

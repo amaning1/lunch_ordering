@@ -53,7 +53,6 @@ class _AllMenusState extends State<AllMenus> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             RichText(
                                 text: TextSpan(
@@ -63,22 +62,6 @@ class _AllMenusState extends State<AllMenus> {
                                   TextSpan(
                                       text: '  ' 'Menu Id', style: KTextStyle2)
                                 ])),
-                            Row(
-                              children: [
-                                IconButton(
-                                  iconSize: width * 0.05,
-                                  color: darkBlue,
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.edit),
-                                ),
-                                IconButton(
-                                  iconSize: width * 0.05,
-                                  onPressed: () {},
-                                  color: Colors.red,
-                                  icon: const Icon(Icons.delete),
-                                ),
-                              ],
-                            )
                           ],
                         ),
                         SizedBox(height: height * 0.02),
@@ -128,33 +111,35 @@ class _AllMenusState extends State<AllMenus> {
               );
             }));
 
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const NavDrawer(),
-      body: WillPopScope(
-        onWillPop: () async {
-          return false;
-        },
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: height * 0.05, left: width * 0.05, right: width * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              bslMenu(width: width, scaffoldKey: scaffoldKey),
-              //SizedBox(height: width * 0.5),
-              Expanded(child: foodList),
-              SizedBox(
-                width: width,
-                child: Button(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/addMenu');
-                  },
-                  isLoading: menuProvider.isLoading,
-                  text: 'Add Menu',
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: const NavDrawer(),
+        body: WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: height * 0.05, left: width * 0.05, right: width * 0.05),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                bslMenu(width: width, scaffoldKey: scaffoldKey),
+                //SizedBox(height: width * 0.5),
+                Expanded(child: foodList),
+                SizedBox(
+                  width: width,
+                  child: Button(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/addMenu');
+                    },
+                    isLoading: menuProvider.isLoading,
+                    text: 'Add Menu',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

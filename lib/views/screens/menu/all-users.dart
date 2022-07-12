@@ -108,31 +108,33 @@ class _EveryUserState extends State<EveryUser> {
           }),
     );
 
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const NavDrawer(),
-      //resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: EdgeInsets.only(
-            top: height * 0.05,
-            left: width * 0.05,
-            right: width * 0.05,
-            bottom: height * 0.05),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-            SizedBox(height: height * 0.035),
-            Row(
-              children: const [
-                Text('ALL USERS', style: KMENUTextStyle),
-              ],
-            ),
-            SizedBox(height: height * 0.02),
-            Expanded(
-              child: allUsers,
-            ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: const NavDrawer(),
+        //resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: EdgeInsets.only(
+              top: height * 0.05,
+              left: width * 0.05,
+              right: width * 0.05,
+              bottom: height * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+              SizedBox(height: height * 0.035),
+              Row(
+                children: const [
+                  Text('ALL USERS', style: KMENUTextStyle),
+                ],
+              ),
+              SizedBox(height: height * 0.02),
+              Expanded(
+                child: allUsers,
+              ),
+            ],
+          ),
         ),
       ),
     );

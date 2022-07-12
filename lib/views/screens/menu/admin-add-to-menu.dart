@@ -36,170 +36,172 @@ class _AdminAddState extends State<AdminAdd> {
 
     final foodProvider = Provider.of<FoodProvider>(context);
 
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const NavDrawer(),
-      body: Padding(
-        padding: EdgeInsets.only(
-            top: height * 0.05, left: width * 0.05, right: width * 0.05),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Image.asset('images/img.png', height: 40, width: 45),
-                    SizedBox(width: width * 0.05),
-                    const Text('ADD', style: KMENUTextStyle),
-                    SizedBox(width: width * 0.02),
-                    Text(foodProvider.type, style: KCardTextStyle),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Switch(
-                        value: isSelected,
-                        onChanged: (bool value) {
-                          isSelected = value;
-                        }),
-                    IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: height * 0.05),
-            foodProvider.type == 'Food'
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Wrap(
-                      spacing: 10,
-                      children: foodProvider.foodChips
-                          .map((chip) => Chip(
-                                key: ValueKey(chip.id),
-                                label: Text(chip.name),
-                                labelStyle:
-                                    const TextStyle(color: Colors.white),
-                                backgroundColor: darkBlue,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 7, horizontal: 10),
-                                deleteIconColor: Colors.red,
-                                onDeleted: () =>
-                                    foodProvider.removeFood(chip.id),
-                              ))
-                          .toList(),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Wrap(
-                      spacing: 10,
-                      children: foodProvider.drinkChips
-                          .map((chip) => Chip(
-                                key: ValueKey(chip.id),
-                                label: Text(chip.name),
-                                labelStyle:
-                                    const TextStyle(color: Colors.white),
-                                backgroundColor: darkBlue,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 7, horizontal: 10),
-                                deleteIconColor: Colors.red,
-                                onDeleted: () =>
-                                    foodProvider.removeDrink(chip.id),
-                              ))
-                          .toList(),
-                    ),
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: const NavDrawer(),
+        body: Padding(
+          padding: EdgeInsets.only(
+              top: height * 0.05, left: width * 0.05, right: width * 0.05),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset('images/img.png', height: 40, width: 45),
+                      SizedBox(width: width * 0.05),
+                      const Text('ADD', style: KMENUTextStyle),
+                      SizedBox(width: width * 0.02),
+                      Text(foodProvider.type, style: KCardTextStyle),
+                    ],
                   ),
-            foodProvider.type == 'Food'
-                ? Expanded(
-                    child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: foodProvider.allFoods.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              title: Text(foodProvider.allFoods[index].Option!),
-                              selected: foodProvider.foodIDS
-                                  .contains(foodProvider.allFoods[index].id),
-                              onTap: () {
-                                setState(() {
-                                  foodProvider.foodIDS.contains(
-                                          foodProvider.allFoods[index].id)
-                                      ? foodProvider.removeFood(
-                                          foodProvider.allFoods[index].id)
-                                      : foodProvider.addFood(
-                                          foodProvider.allFoods,
-                                          index,
-                                          selectedIndex);
-                                  //selected = menu[index].id!;
-                                });
-                              },
-                              selectedTileColor: darkBlue,
-                              selectedColor: Colors.white,
-                            ),
-                          );
-                        }),
-                  )
-                : Expanded(
-                    child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: foodProvider.allDrinks.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              title:
-                                  Text(foodProvider.allDrinks[index].Option!),
-                              selected: foodProvider.drinkIDS
-                                  .contains(foodProvider.allDrinks[index].id),
-                              onTap: () {
-                                setState(() {
-                                  foodProvider.drinkIDS.contains(
-                                          foodProvider.allDrinks[index].id)
-                                      ? foodProvider.removeDrink(
-                                          foodProvider.allDrinks[index].id)
-                                      : foodProvider.addDrink(
-                                          foodProvider.allDrinks,
-                                          index,
-                                          selectedIndex);
-                                });
-                              },
-                              selectedTileColor: darkBlue,
-                              selectedColor: Colors.white,
-                            ),
-                          );
-                        }),
+                  Row(
+                    children: [
+                      Switch(
+                          value: isSelected,
+                          onChanged: (bool value) {
+                            isSelected = value;
+                          }),
+                      IconButton(
+                        icon: const Icon(Icons.menu),
+                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                      ),
+                    ],
                   ),
-            SizedBox(height: height * 0.03),
-            SizedBox(
-              width: width * 0.4,
-              child: Button(
-                text: 'Add to Menu',
-                isLoading: foodProvider.isLoading,
-                onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/addMenu', (route) => false);
-                },
+                ],
               ),
-            ),
-            SizedBox(height: height * 0.05),
-          ],
+              SizedBox(height: height * 0.05),
+              foodProvider.type == 'Food'
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Wrap(
+                        spacing: 10,
+                        children: foodProvider.foodChips
+                            .map((chip) => Chip(
+                                  key: ValueKey(chip.id),
+                                  label: Text(chip.name),
+                                  labelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  backgroundColor: darkBlue,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 7, horizontal: 10),
+                                  deleteIconColor: Colors.red,
+                                  onDeleted: () =>
+                                      foodProvider.removeFood(chip.id),
+                                ))
+                            .toList(),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Wrap(
+                        spacing: 10,
+                        children: foodProvider.drinkChips
+                            .map((chip) => Chip(
+                                  key: ValueKey(chip.id),
+                                  label: Text(chip.name),
+                                  labelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  backgroundColor: darkBlue,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 7, horizontal: 10),
+                                  deleteIconColor: Colors.red,
+                                  onDeleted: () =>
+                                      foodProvider.removeDrink(chip.id),
+                                ))
+                            .toList(),
+                      ),
+                    ),
+              foodProvider.type == 'Food'
+                  ? Expanded(
+                      child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: foodProvider.allFoods.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                title: Text(foodProvider.allFoods[index].Option!),
+                                selected: foodProvider.foodIDS
+                                    .contains(foodProvider.allFoods[index].id),
+                                onTap: () {
+                                  setState(() {
+                                    foodProvider.foodIDS.contains(
+                                            foodProvider.allFoods[index].id)
+                                        ? foodProvider.removeFood(
+                                            foodProvider.allFoods[index].id)
+                                        : foodProvider.addFood(
+                                            foodProvider.allFoods,
+                                            index,
+                                            selectedIndex);
+                                    //selected = menu[index].id!;
+                                  });
+                                },
+                                selectedTileColor: darkBlue,
+                                selectedColor: Colors.white,
+                              ),
+                            );
+                          }),
+                    )
+                  : Expanded(
+                      child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: foodProvider.allDrinks.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                title:
+                                    Text(foodProvider.allDrinks[index].Option!),
+                                selected: foodProvider.drinkIDS
+                                    .contains(foodProvider.allDrinks[index].id),
+                                onTap: () {
+                                  setState(() {
+                                    foodProvider.drinkIDS.contains(
+                                            foodProvider.allDrinks[index].id)
+                                        ? foodProvider.removeDrink(
+                                            foodProvider.allDrinks[index].id)
+                                        : foodProvider.addDrink(
+                                            foodProvider.allDrinks,
+                                            index,
+                                            selectedIndex);
+                                  });
+                                },
+                                selectedTileColor: darkBlue,
+                                selectedColor: Colors.white,
+                              ),
+                            );
+                          }),
+                    ),
+              SizedBox(height: height * 0.03),
+              SizedBox(
+                width: width * 0.4,
+                child: Button(
+                  text: 'Add to Menu',
+                  isLoading: foodProvider.isLoading,
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/addMenu', (route) => false);
+                  },
+                ),
+              ),
+              SizedBox(height: height * 0.05),
+            ],
+          ),
         ),
       ),
     );

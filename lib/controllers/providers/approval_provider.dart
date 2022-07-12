@@ -15,6 +15,7 @@ class ApprovalProvider extends Manage {
   List<AllUsers>? allChefs = [];
   List<String> chefNames = [];
   List<NewUser> newUsers = [];
+  //String dropDownValue = chefNames.first;
 
   Future<List<NewUser>?> getAllApprovalRequests(context) async {
     await getToken();
@@ -92,7 +93,7 @@ class ApprovalProvider extends Manage {
 
     if (response.statusCode == 200) {
       String data = response.body;
-      changeMenu(true);
+      //changeMenu(true);
       var users = jsonDecode(data)['data'] as List;
       allUsers =
           users.map<AllUsers>((json) => AllUsers.fromJson(json)).toList();
@@ -104,7 +105,7 @@ class ApprovalProvider extends Manage {
       }
     } else if (response.statusCode == 401) {
     } else {
-      changeMenu(false);
+      //changeMenu(false);
       showDialog(
         context: context,
         builder: (BuildContext context) {

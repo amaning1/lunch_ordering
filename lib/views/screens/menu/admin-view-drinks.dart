@@ -61,54 +61,56 @@ class _ViewDrinksState extends State<ViewDrinks> {
             );
           }),
     );
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const NavDrawer(),
-      body: Padding(
-        padding: EdgeInsets.only(
-            top: height * 0.05, left: width * 0.05, right: width * 0.05),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-            Expanded(
-              child: allFoods,
-            ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: const NavDrawer(),
+        body: Padding(
+          padding: EdgeInsets.only(
+              top: height * 0.05, left: width * 0.05, right: width * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+              Expanded(
+                child: allFoods,
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  title: const Text('Add Drink', style: KAlertHeader),
-                  //insetPadding: EdgeInsets.symmetric(vertical: 240),
-                  content: TextFormField(
-                    controller: drink,
-                  ),
-                  actions: [
-                    TextButton(
-                      child: const Text(
-                        'Add',
-                        style: KAlertButton,
-                      ),
-                      onPressed: () {
-                        foodProvider.newDrink.add(drink.text);
-                        foodProvider.addNewDrink(
-                            foodProvider.newDrink, context);
-                      },
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    title: const Text('Add Drink', style: KAlertHeader),
+                    //insetPadding: EdgeInsets.symmetric(vertical: 240),
+                    content: TextFormField(
+                      controller: drink,
                     ),
-                  ]);
-            },
-          );
-        },
-        backgroundColor: darkBlue,
-        label: const Text('Add Drink'),
-        icon: const Icon(Icons.add),
+                    actions: [
+                      TextButton(
+                        child: const Text(
+                          'Add',
+                          style: KAlertButton,
+                        ),
+                        onPressed: () {
+                          foodProvider.newDrink.add(drink.text);
+                          foodProvider.addNewDrink(
+                              foodProvider.newDrink, context);
+                        },
+                      ),
+                    ]);
+              },
+            );
+          },
+          backgroundColor: darkBlue,
+          label: const Text('Add Drink'),
+          icon: const Icon(Icons.add),
+        ),
       ),
     );
   }

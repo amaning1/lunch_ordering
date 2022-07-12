@@ -62,53 +62,55 @@ class _AdminOrdersState extends State<AdminOrders> {
             );
           }),
     );
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const NavDrawer(),
-      body: Padding(
-        padding: EdgeInsets.only(
-            top: height * 0.05, left: width * 0.05, right: width * 0.05),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-            Expanded(
-              child: allFoods,
-            ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: const NavDrawer(),
+        body: Padding(
+          padding: EdgeInsets.only(
+              top: height * 0.05, left: width * 0.05, right: width * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+              Expanded(
+                child: allFoods,
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  title: const Text('Add Food', style: KAlertHeader),
-                  //insetPadding: EdgeInsets.symmetric(vertical: 240),
-                  content: TextFormField(
-                    controller: food,
-                  ),
-                  actions: [
-                    TextButton(
-                      child: const Text(
-                        'Add',
-                        style: KAlertButton,
-                      ),
-                      onPressed: () {
-                        foodProvider.newFood.add(food.text);
-                        foodProvider.addNewFood(foodProvider.newFood, context);
-                      },
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    title: const Text('Add Food', style: KAlertHeader),
+                    //insetPadding: EdgeInsets.symmetric(vertical: 240),
+                    content: TextFormField(
+                      controller: food,
                     ),
-                  ]);
-            },
-          );
-        },
-        backgroundColor: darkBlue,
-        label: const Text('Add Food'),
-        icon: const Icon(Icons.add),
+                    actions: [
+                      TextButton(
+                        child: const Text(
+                          'Add',
+                          style: KAlertButton,
+                        ),
+                        onPressed: () {
+                          foodProvider.newFood.add(food.text);
+                          foodProvider.addNewFood(foodProvider.newFood, context);
+                        },
+                      ),
+                    ]);
+              },
+            );
+          },
+          backgroundColor: darkBlue,
+          label: const Text('Add Food'),
+          icon: const Icon(Icons.add),
+        ),
       ),
     );
   }

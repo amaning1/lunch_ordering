@@ -46,6 +46,7 @@ class FoodProvider extends Manage {
   var chefHour = 14;
 
   void date() {
+
     var currentTime = DateTime.now();
     DateTime userTime =
         DateTime(currentTime.year, currentTime.month, currentTime.day, newHour);
@@ -53,6 +54,7 @@ class FoodProvider extends Manage {
         currentTime.year, currentTime.month, currentTime.day, chefHour);
 
     if (isUser) {
+
       if (currentTime.isBefore(userTime)) {
         time = DateTime.now();
       } else {
@@ -320,6 +322,7 @@ class FoodProvider extends Manage {
     notifyListeners();
     date();
     String formatDate = DateFormat("yyyy-MM-dd").format(time);
+    print(formatDate);
     getPreviousOrders(context);
 
     final response = await http.get(

@@ -429,6 +429,8 @@ class _NumberFormState extends State<NumberForm> {
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: TextFormField(
         textInputAction: TextInputAction.next,
+        onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+
         controller: widget.controller,
         validator: (value) {
           if (value!.length != 10) {

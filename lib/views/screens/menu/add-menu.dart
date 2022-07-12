@@ -41,162 +41,171 @@ class _AddMenuState extends State<AddMenu> {
     final authProvider = Provider.of<AuthProvider>(context);
     final approvalProvider = Provider.of<ApprovalProvider>(context);
 
-    var dropDownValue = approvalProvider.chefNames.first;
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const NavDrawer(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: width * 0.05, left: width * 0.05, right: width * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(height: height * 0.030),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset('images/img.png', height: 40, width: 45),
-                      SizedBox(width: width * 0.03),
-                      const Text('ADD', style: KMENUTextStyle),
-                      SizedBox(width: width * 0.02),
-                      const Text('MENU', style: KCardTextStyle),
-                    ],
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                  ),
-                ],
-              ),
-              SizedBox(height: height * 0.030),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: KBorderRadius,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 4,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
+    String? dropDownValue;
+    var ddV = '';
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: const NavDrawer(),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: width * 0.05, left: width * 0.05, right: width * 0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(height: height * 0.030),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset('images/img.png', height: 40, width: 45),
+                        SizedBox(width: width * 0.03),
+                        const Text('ADD', style: KMENUTextStyle),
+                        SizedBox(width: width * 0.02),
+                        const Text('MENU', style: KCardTextStyle),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () => scaffoldKey.currentState?.openDrawer(),
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(height * 0.05),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: width,
-                        child: Button(
-                          text: "${selectedDate.toLocal()}".split(' ')[0],
-                          isLoading: false,
-                          onPressed: () {
-                            selectDate(context);
-                          },
-                        ),
-                      ),
-                      authProvider.user.type == 'admin'
-                          ? Container(
-                              height: height * 0.07,
-                              decoration:
-                                  BoxDecoration(border: Border.all(width: 0.1)),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  isExpanded: true,
-                                  value: dropDownValue,
-                                  items: approvalProvider.chefNames
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: Text(
-                                          value,
-                                          style: const TextStyle(
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      dropDownValue = newValue!;
-                                    });
-                                  },
-                                ),
-                              ),
-                            )
-                          : const SizedBox(),
-                      row('Food', foodProvider.isLoading, () {
-                        foodProvider.typeFood();
-                        Navigator.pushNamed(context, '/adminAdd');
-                      }),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10, bottom: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            foodProvider.typeFood();
-                            Navigator.pushNamed(context, '/adminAdd');
-                          },
-                          child: column(foodProvider.foodChips.isEmpty, context,
-                              'Food', foodProvider.foodChips, () {
-                            foodProvider.typeFood();
-                            Navigator.pushNamed(context, '/adminAdd');
-                          }, foodProvider.isLoading),
-                        ),
-                      ),
-                      SizedBox(height: height * 0.03),
-                      row('Drink', foodProvider.isLoading, () {
-                        foodProvider.typeDrink();
-                        Navigator.pushNamed(context, '/adminAdd');
-                      }),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            foodProvider.typeDrink();
-                            Navigator.pushNamed(context, '/adminAdd');
-                          },
-                          child: column(foodProvider.drinkChips.isEmpty,
-                              context, 'Drink', foodProvider.drinkChips, () {
-                            foodProvider.typeDrink();
-                            Navigator.pushNamed(context, '/adminAdd');
-                          }, foodProvider.isLoading),
-                        ),
-                      ),
-                      foodProvider.drinkChips.isEmpty
-                          ? SizedBox(height: height * 0.02)
-                          : const SizedBox(),
-                      SizedBox(
-                        width: width,
-                        child: Button(
-                          text: 'Add to Menu',
-                          isLoading: menuProvider.isLoading,
-                          onPressed: () {
-                            authProvider.user.type == 'admin'
-                                ? menuProvider.addMenuAdmin(
-                                    dropDownValue,
-                                    foodProvider.foodIDS,
-                                    foodProvider.drinkIDS,
-                                    context)
-                                : menuProvider.addMenu(foodProvider.foodIDS,
-                                    foodProvider.drinkIDS, context);
-                          },
-                        ),
+                SizedBox(height: height * 0.030),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: KBorderRadius,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 4,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
+                  child: Padding(
+                    padding: EdgeInsets.all(height * 0.05),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: width,
+                          child: Button(
+                            text: "${selectedDate.toLocal()}".split(' ')[0],
+                            isLoading: false,
+                            onPressed: () {
+                              selectDate(context);
+                            },
+                          ),
+                        ),
+                        authProvider.user.type == 'admin'
+                            ? Container(
+                                height: height * 0.07,
+                                decoration:
+                                    BoxDecoration(border: Border.all(width: 0.1)),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButtonFormField<String>(
+                                    value: dropDownValue,
+                                    hint: const Text('Select Chef'),
+                                    isExpanded: true,
+                                    items: approvalProvider.chefNames
+                                        .map(
+                                            (String value) {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: Text(
+                                            value,
+                                            style: const TextStyle(
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onSaved: (value) {
+                                      setState(() {
+                                        dropDownValue = value!;
+                                      });
+                                    },
+                                    onChanged: (value) {
+                                      setState(() {
+                                        dropDownValue = value!;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                        row('Food', foodProvider.isLoading, () {
+                          foodProvider.typeFood();
+                          Navigator.pushNamed(context, '/adminAdd');
+                        }),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: GestureDetector(
+                            onTap: () {
+                              foodProvider.typeFood();
+                              Navigator.pushNamed(context, '/adminAdd');
+                            },
+                            child: column(foodProvider.foodChips.isEmpty, context,
+                                'Food', foodProvider.foodChips, () {
+                              foodProvider.typeFood();
+                              Navigator.pushNamed(context, '/adminAdd');
+                            }, foodProvider.isLoading),
+                          ),
+                        ),
+                        SizedBox(height: height * 0.03),
+                        row('Drink', foodProvider.isLoading, () {
+                          foodProvider.typeDrink();
+                          Navigator.pushNamed(context, '/adminAdd');
+                        }),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              foodProvider.typeDrink();
+                              Navigator.pushNamed(context, '/adminAdd');
+                            },
+                            child: column(foodProvider.drinkChips.isEmpty,
+                                context, 'Drink', foodProvider.drinkChips, () {
+                              foodProvider.typeDrink();
+                              Navigator.pushNamed(context, '/adminAdd');
+                            }, foodProvider.isLoading),
+                          ),
+                        ),
+                        foodProvider.drinkChips.isEmpty
+                            ? SizedBox(height: height * 0.02)
+                            : const SizedBox(),
+                        SizedBox(
+                          width: width,
+                          child: Button(
+                            text: 'Add to Menu',
+                            isLoading: menuProvider.isLoading,
+                            onPressed: () {
+                              authProvider.user.type == 'admin'
+                                  ? menuProvider.addMenuAdmin(
+                                      dropDownValue,
+                                      foodProvider.foodIDS,
+                                      foodProvider.drinkIDS,
+                                      context)
+                                  : menuProvider.addMenu(foodProvider.foodIDS,
+                                      foodProvider.drinkIDS, context);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

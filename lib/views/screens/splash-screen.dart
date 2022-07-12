@@ -45,23 +45,25 @@ class _LoadingScreenState extends State<LoadingScreen> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(height * 0.08),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('images/img.png',
-                  height: width * 0.2, width: width * 0.2),
-              const SizedBox(width: 5),
-              const Text('BSL ORDERS', style: KCardTextStyle),
-            ],
+    return SafeArea(
+      child: Scaffold(
+          body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(height * 0.08),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('images/img.png',
+                    height: width * 0.2, width: width * 0.2),
+                const SizedBox(width: 5),
+                const Text('BSL ORDERS', style: KCardTextStyle),
+              ],
+            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      )),
+    );
   }
 }

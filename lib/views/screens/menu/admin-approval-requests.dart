@@ -87,35 +87,37 @@ class _AdminApprovalRequestsState extends State<AdminApprovalRequests> {
           }),
     );
 
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const NavDrawer(),
-      //resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: EdgeInsets.only(
-            top: height * 0.05, left: width * 0.05, right: width * 0.05),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: height * 0.050),
-            bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
-            SizedBox(height: height * 0.035),
-            Row(
-              children: const [
-                Text('APPROVALS', style: KMENUTextStyle),
-              ],
-            ),
-            approvalProvider.newUsers.isEmpty
-                ? ChefCards(
-                    height: height,
-                    width: width,
-                    number: '0',
-                    text: 'No New Approvals',
-                    icon: Icons.approval)
-                : Expanded(
-                    child: approvalRequests,
-                  ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        drawer: const NavDrawer(),
+        //resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: EdgeInsets.only(
+              top: height * 0.05, left: width * 0.05, right: width * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: height * 0.050),
+              bslOrdersRow(width: width, scaffoldKey: scaffoldKey),
+              SizedBox(height: height * 0.035),
+              Row(
+                children: const [
+                  Text('APPROVALS', style: KMENUTextStyle),
+                ],
+              ),
+              approvalProvider.newUsers.isEmpty
+                  ? ChefCards(
+                      height: height,
+                      width: width,
+                      number: '0',
+                      text: 'No New Approvals',
+                      icon: Icons.approval)
+                  : Expanded(
+                      child: approvalRequests,
+                    ),
+            ],
+          ),
         ),
       ),
     );
