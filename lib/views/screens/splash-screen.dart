@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lunch_ordering/controllers/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import '/components.dart';
@@ -14,11 +15,13 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   @override
   void initState() {
     super.initState();
     isConnected();
-  }
+    
+   }
 
   void isConnected() async {
     try {

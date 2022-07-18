@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_ordering/constants.dart';
 import 'package:lunch_ordering/controllers/providers/approval_provider.dart';
@@ -24,8 +25,19 @@ import 'package:lunch_ordering/views/screens/user-main.dart';
 import 'package:lunch_ordering/views/screens/view-history.dart';
 import 'package:provider/provider.dart';
 import 'package:lunch_ordering/controllers/providers/Manage.dart';
+import 'package:cron/cron.dart';
+
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  AwesomeNotifications().initialize('', [NotificationChannel(channelKey: 'key1',
+  channelName: 'Lunch Ordering',
+      channelDescription: 'Notification to order lunch', playSound: true,enableVibration: true)]);
+  final cron = Cron();
+  cron.schedule(Schedule.parse('0 15 * * *'), () async => {
+       await AwesomeNotifications().createNotification(content: NotificationContent(id: 1, channelKey: 'key1', title: 'Order for tomorrow', body: 'Tomorrow\'s menu is ready. Please order now '))
+
+});
   runApp(const MyApp());
 }
 
@@ -72,4 +84,10 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
+  void Notify() async {
+String timeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
+    await AwesomeNotifications().createNotification(content: NotificationContent(icon: '@mipmap/ic_launcher',id: 1, channelKey: 'key1', title: 'Order for tomorrow', body: 'Tomorrow\'s menu is ready. Please order now '),schedule: NotificationInterval(interval: 1,timeZone: timeZone,));
+  }
+
 }
