@@ -115,7 +115,7 @@ class _EveryUserState extends State<EveryUser> {
         //resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EdgeInsets.only(
-              top: height * 0.05,
+              top: height * 0.03,
               left: width * 0.05,
               right: width * 0.05,
               bottom: height * 0.05),

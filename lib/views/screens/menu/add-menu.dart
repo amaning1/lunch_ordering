@@ -80,7 +80,7 @@ class _AddMenuState extends State<AddMenu> {
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.only(
-                top: width * 0.05, left: width * 0.05, right: width * 0.05),
+                top: height * 0.03, left: width * 0.05, right: width * 0.05),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
